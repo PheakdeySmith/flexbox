@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\GenreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('backend.logout'
 
 // Dashboard Routes
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
+Route::get('/genre', [GenreController::class, 'index'])->name('backend.genre');
+
+
 
 // Add more backend routes as needed
