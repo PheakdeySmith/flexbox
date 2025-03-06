@@ -12,38 +12,55 @@
                                     <p class="mb-0">Enter your email and password to register</p>
                                 </div>
                                 <div class="card-body pb-3">
-                                    <form role="form">
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                    <form role="form" action="{{ route('register.submit') }}" method="POST">
+                                        @csrf
                                         <label>Name</label>
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" placeholder="Name" aria-label="Name"
-                                                data-sharkid="__0">
+                                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name" aria-label="Name"
+                                                value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                            @error('name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                         <label>Email</label>
                                         <div class="mb-3">
-                                            <input type="email" class="form-control" placeholder="Email"
-                                                aria-label="Email" data-sharkid="__1" data-sharklabel="email">
-                                            <shark-icon-container data-sharkidcontainer="__1"><template
-                                                    shadowrootmode="open">
-                                                    <surfhark-icon data-sharkidicon="__1"
-                                                        style="background-image: url(&quot;chrome-extension://ailoabdmgclmfmhdagmlohpjlbpffblp/autofill-action-light.svg&quot;); background-repeat: no-repeat; background-position: left center; background-size: cover; position: absolute; right: 0px; visibility: visible; display: block; z-index: 1; border: none; cursor: pointer; padding: 0px; transition: none; pointer-events: all; opacity: 1; left: 354.188px; top: 254.25px; width: 18px; height: 18px; min-width: 18px; min-height: 18px;">
-                                                    </surfhark-icon>
-                                                </template></shark-icon-container>
+                                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email"
+                                                aria-label="Email" value="{{ old('email') }}" required autocomplete="email">
+                                            @error('email')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                         <label>Password</label>
                                         <div class="mb-3">
-                                            <input type="password" class="form-control" placeholder="Password"
-                                                aria-label="Password" data-sharkid="__2">
+                                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password"
+                                                aria-label="Password" required autocomplete="new-password">
+                                            @error('password')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
-                                        <div class="form-check form-check-info text-left">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                id="flexCheckDefault" checked="" data-sharkid="__3">
-                                            <label class="form-check-label" for="flexCheckDefault">
-                                                I agree the <a href="" class="text-dark font-weight-bolder">Terms and
-                                                    Conditions</a>
-                                            </label>
+                                        <label>Confirm Password</label>
+                                        <div class="mb-3">
+                                            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm Password"
+                                                aria-label="Confirm Password" required autocomplete="new-password">
                                         </div>
                                         <div class="text-center">
-                                            <button type="button" class="btn btn-primary w-100 mt-4 mb-0">Sign
+                                            <button type="submit" class="btn btn-primary w-100 mt-4 mb-0">Sign
                                                 up</button>
                                         </div>
                                     </form>
@@ -51,7 +68,7 @@
                                 <div class="card-footer text-center pt-0 px-sm-4 px-1">
                                     <p class="mb-4 mx-auto">
                                         Already have an account?
-                                        <a href="{{ route('backend.login') }}"
+                                        <a href="{{ route('login') }}"
                                             class="text-primary text-gradient font-weight-bold">Sign in</a>
                                     </p>
                                 </div>

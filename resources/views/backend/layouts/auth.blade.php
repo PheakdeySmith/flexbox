@@ -40,5 +40,8 @@
     <script src="{{ asset('backend/assets') }}/js/smooth-scrollbar.min.js"></script>
     <script src="{{ asset('backend/assets') }}/js/dragula.min.js"></script>
     <script src="{{ asset('backend/assets') }}/js/jkanban.js"></script>
+
+    <!-- Stack for page-specific scripts -->
+    @stack('scripts')
 </body>
 </html>
