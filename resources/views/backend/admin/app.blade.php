@@ -98,7 +98,7 @@
         <!-- AdminLTE App -->
         <script src="{{ asset('AdminLTE/dist/js/adminlte.js') }}"></script>
         <!-- AdminLTE for demo purposes -->
-
+        @yield('scripts')
 </body>
 
 </html>
