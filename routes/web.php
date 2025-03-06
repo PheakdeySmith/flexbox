@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\GenreController;
 use App\Http\Controllers\Backend\ProfileController;
+
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\MovieController;
 use App\Http\Controllers\Backend\AuthController;
@@ -33,3 +34,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('movie', MovieController::class);
     });
 });
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
+Route::resource('genre', GenreController::class);
+
+Route::resource('actor', ActorController::class);
+
+Route::get('/movie', [MovieController::class, 'index'])->name('backend.movie');
+
+
+require __DIR__.'/auth.php';
