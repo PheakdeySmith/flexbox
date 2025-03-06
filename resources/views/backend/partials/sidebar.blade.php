@@ -38,6 +38,40 @@
                 </div>
             </li>
 
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#movieCollapse"
+                    class="nav-link active" aria-controls="movieCollapse"
+                    role="button" aria-expanded="true">
+                    <div
+                        class="icon icon-sm shadow-sm border-radius-md bg-white text-center d-flex align-items-center justify-content-center me-2">
+                        <i class="ni ni-tv-2" aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboards</span>
+                </a>
+                <div class="collapse show" id="movieCollapse">
+                    <ul class="nav ms-4 ps-3">
+                        <li class="nav-item {{ Request::routeIs('backend.dashboard') ? 'active' : '' }}">
+                            <a class="nav-link {{ Request::routeIs('backend.dashboard') ? 'active' : '' }}"
+                                href="{{ route('backend.dashboard') }}">
+                                <span class="sidenav-mini-icon"> M </span>
+                                <span class="sidenav-normal"> Movies </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse show" id="movieCollapse">
+                    <ul class="nav ms-4 ps-3">
+                        <li class="nav-item {{ Request::routeIs('backend.dashboard') ? 'active' : '' }}">
+                            <a class="nav-link {{ Request::routeIs('backend.dashboard') ? 'active' : '' }}"
+                                href="{{ route('backend.dashboard') }}">
+                                <span class="sidenav-mini-icon"> G </span>
+                                <span class="sidenav-normal"> Genres </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="nav-item mt-3">
                 <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Authentication</h6>
             </li>
