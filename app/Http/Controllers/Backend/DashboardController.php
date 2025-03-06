@@ -14,6 +14,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('backend.admin.app');
+        return view('backend.dashbaord.index');
     }
 }

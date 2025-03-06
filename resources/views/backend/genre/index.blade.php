@@ -1,17 +1,18 @@
-@extends('backend.admin.app')
+@extends('backend.layouts.app')
 
 @section('content')
+<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Genres</h1>
+            <h1>DataTables</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Genres</li>
+              <li class="breadcrumb-item active">DataTables</li>
             </ol>
           </div>
         </div>
@@ -23,36 +24,48 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <div class="d-flex justify-content-end mb-2">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
+                Add New Genre
+              </button>
+            </div>
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">All Genres</h3>
+                <h3 class="card-title">Genre Table</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="genreTable" class="table table-bordered table-hover">
+                <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Slug</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <!-- This will be populated with your genre data -->
                   <tr>
-                    <td>1</td>
-                    <td>Action</td>
-                    <td>action</td>
-                    <td>2023-07-15</td>
+                    <td>Other browsers</td>
+                    <td>All others</td>
+                    <td>-</td>
+                    <td>-</td>
                     <td>
-                      <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                      <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editModal">Edit</a>
+                        <a href="#" class="btn btn-danger delete-btn" data-id="1">Delete</a>
                     </td>
                   </tr>
-                  <!-- Add more rows as needed -->
                   </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                  </tfoot>
                 </table>
               </div>
               <!-- /.card-body -->
@@ -66,37 +79,68 @@
       <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-@endsection
+  </div>
 
-@section('styles')
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('AdminLTE/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-@endsection
 
-@section('scripts')
-  <!-- DataTables  & Plugins -->
-  <script src="{{ asset('AdminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-  <script src="{{ asset('AdminLTE/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('AdminLTE/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-  <script src="{{ asset('AdminLTE/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 
-  <!-- Page specific script -->
+  @include('backend.genre.create')
+  @include('backend.genre.edit')
+
+  <!-- Test buttons for SweetAlert2 -->
+  <div class="card mt-4">
+    <div class="card-header">
+      <h3 class="card-title">SweetAlert2 Examples</h3>
+    </div>
+    <div class="card-body">
+      <h5>Toast Notifications</h5>
+      <div class="mb-3">
+        <button type="button" class="btn btn-success" id="successToastBtn">Show Success Toast</button>
+        <button type="button" class="btn btn-danger" id="errorToastBtn">Show Error Toast</button>
+        <button type="button" class="btn btn-warning" id="warningToastBtn">Show Warning Toast</button>
+        <button type="button" class="btn btn-info" id="infoToastBtn">Show Info Toast</button>
+      </div>
+
+      <h5>Confirmation Dialogs</h5>
+      <div class="mb-3">
+        <button type="button" class="btn btn-secondary" id="confirmDialogBtn">Show Confirm Dialog</button>
+        <button type="button" class="btn btn-danger delete-test-btn">Test Delete Dialog</button>
+      </div>
+
+      <p class="text-muted">
+        Note: These examples show how the SweetAlert2 library works.
+        The delete buttons in the table also use SweetAlert2 for confirmation.
+      </p>
+    </div>
+  </div>
+
   <script>
-    $(function () {
-      $('#genreTable').DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": false,
-        "info": true,
-        "autoWidth": false,
-        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-               '<"row"<"col-sm-12"tr>>' +
-               '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#genreTable_wrapper .col-md-6:eq(0)');
+    document.addEventListener('DOMContentLoaded', function() {
+      var deleteButtons = document.querySelectorAll('.delete-btn');
+
+      // Add click event listener to each button
+      deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const genreId = this.getAttribute('data-id');
+
+          // Show SweetAlert2 confirmation
+          Swal.fire({
+            title: 'Delete Genre',
+            text: 'Are you sure you want to delete this genre?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Here you would handle the deletion
+              // Example: window.location.href = '/genre/delete/' + genreId;
+              showSuccessToast('This is a success message');
+            }
+          });
+        });
+      });
     });
   </script>
 @endsection
