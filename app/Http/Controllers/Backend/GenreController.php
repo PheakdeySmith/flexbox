@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 
@@ -37,24 +38,18 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:genres',
-                'slug' => 'required|string|max:255|unique:genres',
-            ]);
+        $request->validate([
+            'name' => 'required|string|max:255|unique:genres',
+            'slug' => 'required|string|max:255|unique:genres',
+        ]);
 
-            Genre::create([
-                'name' => $request->name,
-                'slug' => $request->slug,
-            ]);
+        Genre::create([
+            'name' => $request->name,
+            'slug' => $request->slug,
+        ]);
 
-            return redirect()->route('genre.index')
-                ->with('success', 'Genre created successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Error creating genre: ' . $e->getMessage())
-                ->withInput();
-        }
+        return redirect()->route('genre.index')
+            ->with('success', 'Genre created successfully.');
     }
 
     /**
@@ -90,26 +85,20 @@ class GenreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $genre = Genre::findOrFail($id);
+        $genre = Genre::findOrFail($id);
 
-            $validated = $request->validate([
-                'name' => 'required|string|max:255|unique:genres,name,' . $id,
-                'slug' => 'required|string|max:255|unique:genres,slug,' . $id,
-            ]);
+        $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name,' . $id,
+            'slug' => 'required|string|max:255|unique:genres,slug,' . $id,
+        ]);
 
-            $genre->update([
-                'name' => $request->name,
-                'slug' => $request->slug,
-            ]);
+        $genre->update([
+            'name' => $request->name,
+            'slug' => $request->slug,
+        ]);
 
-            return redirect()->route('genre.index')
-                ->with('success', 'Genre updated successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Error updating genre: ' . $e->getMessage())
-                ->withInput();
-        }
+        return redirect()->route('genre.index')
+            ->with('success', 'Genre updated successfully.');
     }
 
     /**
@@ -120,15 +109,10 @@ class GenreController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $genre = Genre::findOrFail($id);
-            $genre->delete();
+        $genre = Genre::findOrFail($id);
+        $genre->delete();
 
-            return redirect()->route('genre.index')
-                ->with('success', 'Genre deleted successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Error deleting genre: ' . $e->getMessage());
-        }
+        return redirect()->route('genre.index')
+            ->with('success', 'Genre deleted successfully.');
     }
 }

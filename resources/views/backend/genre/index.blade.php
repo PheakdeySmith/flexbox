@@ -7,17 +7,31 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>DataTables</h1>
+            <h1>Genres</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">DataTables</li>
+              <li class="breadcrumb-item active">Genres</li>
             </ol>
           </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>
+
+    <!-- Flash Message Display -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check for flash messages
+        @if(session('success'))
+          showSuccessToast("{{ session('success') }}");
+        @endif
+
+        @if(session('error'))
+          showErrorToast("{{ session('error') }}");
+        @endif
+      });
+    </script>
 
     <!-- Main content -->
     <section class="content">
@@ -25,45 +39,63 @@
         <div class="row">
           <div class="col-12">
             <div class="d-flex justify-content-end mb-2">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
-                Add New Genre
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-lg">
+                <i class="fas fa-plus"></i> Add New Genre
               </button>
             </div>
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Genre Table</h3>
+                <h3 class="card-title">Genre Management</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>Other browsers</td>
-                    <td>All others</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editModal">Edit</a>
-                        <a href="#" class="btn btn-danger delete-btn" data-id="1">Delete</a>
+                  @forelse($genres ?? [] as $genre)
+                    <tr>
+                      <td>{{ $loop->iteration }}</td>
+                      <td>{{ $genre->name }}</td>
+                      <td>{{ $genre->slug }}</td>
+                      <td>{{ $genre->created_at->diffForHumans() }}</td>
+                      <td>
+                        <a href="#" class="btn btn-primary btn-sm"
+                           data-toggle="modal"
+                           data-target="#editModal"
+                           data-id="{{ $genre->id }}"
+                           data-name="{{ $genre->name }}"
+                           data-slug="{{ $genre->slug }}">
+                          <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="#"
+                           class="btn btn-danger btn-sm delete-btn"
+                           data-id="{{ $genre->id }}"
+                           data-url="{{ route('genre.destroy', $genre->id) }}">
+                          <i class="fas fa-trash"></i> Delete
+                        </a>
                     </td>
                   </tr>
+                  @empty
+                    <tr>
+                      <td colspan="5" class="text-center">No genres found</td>
+                  </tr>
+                  @endforelse
                   </tbody>
                   <tfoot>
                   <tr>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
-                    <th>CSS grade</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -122,6 +154,7 @@
         button.addEventListener('click', function(e) {
           e.preventDefault();
           const genreId = this.getAttribute('data-id');
+          const deleteUrl = this.getAttribute('data-url');
 
           // Show SweetAlert2 confirmation
           Swal.fire({
@@ -134,9 +167,29 @@
             confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              // Here you would handle the deletion
-              // Example: window.location.href = '/genre/delete/' + genreId;
-              showSuccessToast('This is a success message');
+              // Create a form element
+              const form = document.createElement('form');
+              form.method = 'POST';
+              form.action = deleteUrl;
+              form.style.display = 'none';
+
+              // Add CSRF token
+              const csrfToken = document.createElement('input');
+              csrfToken.type = 'hidden';
+              csrfToken.name = '_token';
+              csrfToken.value = '{{ csrf_token() }}';
+              form.appendChild(csrfToken);
+
+              // Add method spoofing for DELETE
+              const methodField = document.createElement('input');
+              methodField.type = 'hidden';
+              methodField.name = '_method';
+              methodField.value = 'DELETE';
+              form.appendChild(methodField);
+
+              // Append form to body, submit it, then remove it
+              document.body.appendChild(form);
+              form.submit();
             }
           });
         });

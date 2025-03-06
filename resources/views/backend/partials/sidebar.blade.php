@@ -100,7 +100,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('backend.genre') }}" class="nav-link">
+                                    <a href="{{ route('genre.index') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Genre Table</p>
                                     </a>

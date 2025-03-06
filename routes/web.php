@@ -1,7 +1,11 @@
 <?php
 
-use App\Http\Controllers\GenresController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Backend\GenreController;
+use App\Http\Controllers\Backend\ProfileController;
+
+use App\Http\Controllers\Backend\DashboardController;
+
+use App\Http\Controllers\Backend\MovieController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,16 +21,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    //genres
-    Route::get('/genres', [GenresController::class, 'index'])->name('genres.index');
-
-
 });
 
-// Include Backend Routes with prefix
-Route::prefix('backend')->group(function () {
-    require __DIR__.'/backend.php';
-});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
+Route::resource('genre', GenreController::class);
+Route::get('/movie', [MovieController::class, 'index'])->name('backend.movie');
+
 
 require __DIR__.'/auth.php';

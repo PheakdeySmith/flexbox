@@ -179,23 +179,6 @@
       });
     };
 
-    // Show confirmation dialog
-    window.showConfirmDialog = function(title, text, callback) {
-      Swal.fire({
-        title: title || 'Are you sure?',
-        text: text || "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes'
-      }).then((result) => {
-        if (result.isConfirmed && typeof callback === 'function') {
-          callback();
-        }
-      });
-    };
-
     // Process Flash Messages from Laravel
     @if(session('success'))
       showSuccessToast("{{ session('success') }}");
