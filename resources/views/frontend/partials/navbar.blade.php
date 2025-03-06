@@ -155,10 +155,10 @@
                                     Korea</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link px-3" href="https://ww4.fmovies.co/movies/">Movies</a>
+                    <li class="nav-item"><a class="nav-link px-3" href="{{ route('frontend.movie') }}">Movies</a>
                     </li>
                     <li class="nav-item"><a class="nav-link px-3"
-                            href="https://ww4.fmovies.co/tv-series/">TV-Series</a></li>
+                            href="{{ route('frontend.tv_serie') }}">TV-Series</a></li>
                     <li class="nav-item"><a class="nav-link px-3" href="https://ww4.fmovies.co/top-imdb/">Top
                             IMDb</a></li>
                 </ul>
