@@ -1,0 +1,209 @@
+/* Soft UI Dashboard CSS */
+
+/* General Styles */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Sidebar Styles */
+.sidenav {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+}
+
+.sidenav-header {
+  padding: 1.5rem 1rem;
+}
+
+.navbar-brand-img {
+  height: 2rem;
+}
+
+.nav-link {
+  color: #67748e;
+  padding: 0.675rem 1rem;
+  font-weight: 500;
+}
+
+.nav-link.active {
+  color: #344767;
+  background-color: #fff;
+}
+
+.nav-link-text {
+  font-size: 0.875rem;
+}
+
+/* Card Styles */
+.card {
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  border: 0;
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 0;
+  padding: 1.5rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top: 0;
+  padding: 1.5rem;
+}
+
+/* Button Styles */
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+}
+
+.bg-gradient-info {
+  background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);
+  color: #fff;
+}
+
+.bg-gradient-primary {
+  background-image: linear-gradient(310deg, #7928ca 0%, #ff0080 100%);
+  color: #fff;
+}
+
+/* Form Styles */
+.form-control {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d2d6da;
+}
+
+.form-control:focus {
+  border-color: #e293d3;
+  box-shadow: 0 0 0 2px rgba(226, 147, 211, 0.25);
+}
+
+/* Text Styles */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.text-info.text-gradient {
+  background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);
+}
+
+/* Icon Styles */
+.icon-shape {
+  width: 32px;
+  height: 32px;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+/* Navbar Styles */
+.navbar-main {
+  backdrop-filter: saturate(200%) blur(30px);
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-radius: 1rem;
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Utility Classes */
+.min-vh-75 {
+  min-height: 75vh !important;
+}
+
+.opacity-5 {
+  opacity: 0.5 !important;
+}
+
+.opacity-10 {
+  opacity: 1 !important;
+}
+
+.border-radius-md {
+  border-radius: 0.5rem !important;
+}
+
+.border-radius-lg {
+  border-radius: 1rem !important;
+}
+
+.shadow {
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Dashboard specific styles */
+.main-content-bg {
+  background-image: url('../image/curved14.jpg');
+  background-position: top;
+  background-size: cover;
+}
+
+.oblique {
+  transform: skewX(-10deg);
+  overflow: hidden;
+  width: 60%;
+  right: -10rem;
+  height: 100%;
+}
+
+.oblique-image {
+  transform: skewX(10deg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .oblique {
+    display: none;
+  }
+}
+
+/* Nucleo Icons */
+.ni {
+  font-family: NucleoIcons, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ni-tv-2:before {
+  content: "\ea97";
+}
+
+.ni-single-02:before {
+  content: "\ea51";
+}
+
+.ni-collection:before {
+  content: "\ea0c";
+}
+
+.ni-money-coins:before {
+  content: "\ea3f";
+}
+
+.ni-world:before {
+  content: "\ea63";
+}
+
+.ni-paper-diploma:before {
+  content: "\ea3a";
+}
+
+.ni-cart:before {
+  content: "\ea1b";
+}
