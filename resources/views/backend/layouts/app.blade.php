@@ -15,8 +15,6 @@
   <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/jqvmap/jqvmap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('AdminLTE') }}/dist/css/adminlte.min.css">
   <!-- overlayScrollbars -->
@@ -76,11 +74,6 @@
 <script src="{{ asset('AdminLTE') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- ChartJS -->
 <script src="{{ asset('AdminLTE') }}/plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline -->
-<script src="{{ asset('AdminLTE') }}/plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="{{ asset('AdminLTE') }}/plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="{{ asset('AdminLTE') }}/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
 <!-- jQuery Knob Chart -->
 <script src="{{ asset('AdminLTE') }}/plugins/jquery-knob/jquery.knob.min.js"></script>
 <!-- daterangepicker -->
@@ -96,8 +89,6 @@
 <script src="{{ asset('AdminLTE') }}/dist/js/adminlte.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('AdminLTE') }}/dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="{{ asset('AdminLTE') }}/dist/js/pages/dashboard.js"></script>
 <!-- DataTables  & Plugins -->
 <script src="{{ asset('AdminLTE') }}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{ asset('AdminLTE') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -197,6 +188,9 @@
     @endif
   });
 </script>
+
+<!-- Page specific scripts -->
+@yield('footer_scripts')
 
 </body>
 </html>
