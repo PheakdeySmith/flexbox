@@ -33,8 +33,7 @@
                     </div>
                     <ul class="navbar-nav  justify-content-end">
                         <li class="nav-item d-flex align-items-center">
-                            <a href="{{ route('backend.login')}}"
-                                class="nav-link text-body font-weight-bold px-0">
+                            <a href="{{ route('backend.login') }}" class="nav-link text-body font-weight-bold px-0">
                                 <i class="fa fa-user me-sm-1"></i>
                                 <span class="d-sm-inline d-none">Sign In</span>
                             </a>
@@ -138,8 +137,8 @@
                             </ul>
                             <div class="ms-md-auto p-3 mb-1">
                                 <div class="form-check form-switch ps-0 d-xl-block d-none">
-                                    <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)"
-                                        data-sharkid="__3">
+                                    <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version"
+                                        onclick="darkMode(this)" data-sharkid="__3">
                                 </div>
                             </div>
                             Dark Mode
