@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\Backend\GenreController;
 use App\Http\Controllers\Backend\ProfileController;
-
+use App\Http\Controllers\Backend\ActorController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\MovieController;
 use App\Http\Controllers\Backend\AuthController;
 use Illuminate\Support\Facades\Route;
 
+// Redirect root to login
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // Custom Authentication Routes
@@ -23,6 +24,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Redirect /dashboard to backend/dashboard
+    Route::get('/dashboard', function() {
+        return redirect()->route('backend.dashboard');
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -32,16 +38,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
         Route::resource('genre', GenreController::class);
         Route::resource('movie', MovieController::class);
+        Route::resource('actor', ActorController::class);
     });
 });
-
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
-Route::resource('genre', GenreController::class);
-
-Route::resource('actor', ActorController::class);
-
-Route::get('/movie', [MovieController::class, 'index'])->name('backend.movie');
-
-
-require __DIR__.'/auth.php';

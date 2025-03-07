@@ -9,12 +9,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 
-/**
- * This controller is now deprecated.
- *
- * Authentication is handled by Laravel's built-in controllers.
- * See routes/auth.php and App\Http\Controllers\Auth namespace.
- */
 class AuthController extends Controller
 {
     /**
@@ -43,6 +37,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Always redirect to backend dashboard
             return redirect()->route('backend.dashboard');
         }
 
