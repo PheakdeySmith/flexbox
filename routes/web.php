@@ -6,6 +6,8 @@ use App\Http\Controllers\Backend\ActorController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\MovieController;
 use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Backend\DirectorController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root to login
@@ -39,5 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('genre', GenreController::class);
         Route::resource('movie', MovieController::class);
         Route::resource('actor', ActorController::class);
+        Route::resource('director', DirectorController::class);
+        Route::resource('user', UserController::class);
     });
 });
