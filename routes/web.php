@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Backend\GenreController;
 use App\Http\Controllers\Backend\ProfileController;
-
+use App\Http\Controllers\Backend\ActorController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\MovieController;
 use App\Http\Controllers\Backend\AuthController;
