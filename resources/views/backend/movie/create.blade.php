@@ -92,7 +92,7 @@
                                                     </button>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="tmdb-search-input">
                                                         <i class="fas fa-search mr-1"></i> Search for a Movie
                                                     </label>
@@ -137,7 +137,7 @@
                                     <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="title">
                                                         <i class="fas fa-heading mr-1"></i> Title
                                                         <span class="text-danger">*</span>
@@ -146,12 +146,12 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-film"></i></span>
                                                         </div>
-                                                        <input type="text" class="form-control" id="title" name="title"
-                                                            value="{{ old('title') }}" placeholder="Enter movie title" required>
-                                                    </div>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                value="{{ old('title') }}" placeholder="Enter movie title" required>
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="type">
                                                         <i class="fas fa-photo-video mr-1"></i> Type
                                                         <span class="text-danger">*</span>
@@ -160,12 +160,12 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                                         </div>
-                                                        <select class="form-control" id="type" name="type" required>
+                                            <select class="form-control" id="type" name="type" required>
                                                             <option value="">-- Select Type --</option>
-                                                            <option value="movie" {{ old('type') == 'movie' ? 'selected' : '' }}>Movie</option>
-                                                            <option value="tv_series" {{ old('type') == 'tv_series' ? 'selected' : '' }}>TV Series</option>
-                                                        </select>
-                                                    </div>
+                                                <option value="movie" {{ old('type') == 'movie' ? 'selected' : '' }}>Movie</option>
+                                                <option value="tv_series" {{ old('type') == 'tv_series' ? 'selected' : '' }}>TV Series</option>
+                                            </select>
+                                        </div>
                                                 </div>
 
                                                 <div class="form-group">
@@ -179,7 +179,7 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="release_date">
                                                         <i class="fas fa-calendar-alt mr-1"></i> Release Date
                                                     </label>
@@ -187,12 +187,12 @@
                                                         <div class="input-group-prepend" data-target="#releaseDatePicker" data-toggle="datetimepicker">
                                                             <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                                         </div>
-                                                        <input type="date" class="form-control" id="release_date" name="release_date"
-                                                            value="{{ old('release_date') }}">
-                                                    </div>
+                                            <input type="date" class="form-control" id="release_date" name="release_date"
+                                                value="{{ old('release_date') }}">
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="duration">
                                                         <i class="fas fa-clock mr-1"></i> Duration (minutes)
                                                     </label>
@@ -200,12 +200,12 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
                                                         </div>
-                                                        <input type="number" class="form-control" id="duration" name="duration"
-                                                            value="{{ old('duration') }}" placeholder="Enter duration in minutes">
-                                                    </div>
+                                            <input type="number" class="form-control" id="duration" name="duration"
+                                                value="{{ old('duration') }}" placeholder="Enter duration in minutes">
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="tmdb_id">
                                                         <i class="fas fa-database mr-1"></i> TMDB ID
                                                     </label>
@@ -222,9 +222,9 @@
                                                         </div>
                                                     </div>
                                                     <small class="form-text text-muted">Enter TMDB ID to auto-fill movie information</small>
-                                                </div>
+                                        </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="imdb_rating">
                                                         <i class="fas fa-star mr-1"></i> IMDb Rating
                                                     </label>
@@ -232,8 +232,8 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-star-half-alt"></i></span>
                                                         </div>
-                                                        <input type="number" step="0.1" min="0" max="10" class="form-control" id="imdb_rating"
-                                                            name="imdb_rating" value="{{ old('imdb_rating') }}" placeholder="Enter IMDb rating">
+                                            <input type="number" step="0.1" min="0" max="10" class="form-control" id="imdb_rating"
+                                                name="imdb_rating" value="{{ old('imdb_rating') }}" placeholder="Enter IMDb rating">
                                                     </div>
                                                 </div>
                                             </div>
@@ -243,8 +243,8 @@
                                     <!-- Media & Links Tab -->
                                     <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
                                                     <label for="poster_url">
                                                         <i class="fas fa-image mr-1"></i> Poster URL
                                                     </label>
@@ -252,9 +252,9 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-link"></i></span>
                                                         </div>
-                                                        <input type="url" class="form-control" id="poster_url" name="poster_url"
-                                                            value="{{ old('poster_url') }}" placeholder="Enter poster URL">
-                                                    </div>
+                                            <input type="url" class="form-control" id="poster_url" name="poster_url"
+                                                value="{{ old('poster_url') }}" placeholder="Enter poster URL">
+                                        </div>
                                                     <div class="mt-2 poster-preview d-none">
                                                         <div class="card">
                                                             <div class="card-body text-center p-2">
@@ -266,7 +266,7 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="backdrop_url">
                                                         <i class="fas fa-image mr-1"></i> Backdrop URL
                                                     </label>
@@ -274,9 +274,9 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-link"></i></span>
                                                         </div>
-                                                        <input type="url" class="form-control" id="backdrop_url" name="backdrop_url"
-                                                            value="{{ old('backdrop_url') }}" placeholder="Enter backdrop URL">
-                                                    </div>
+                                            <input type="url" class="form-control" id="backdrop_url" name="backdrop_url"
+                                                value="{{ old('backdrop_url') }}" placeholder="Enter backdrop URL">
+                                        </div>
                                                     <div class="mt-2 backdrop-preview d-none">
                                                         <div class="card">
                                                             <div class="card-body text-center p-2">
@@ -288,7 +288,7 @@
                                             </div>
 
                                             <div class="col-md-12">
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="trailer_url">
                                                         <i class="fas fa-video mr-1"></i> Trailer URL
                                                     </label>
@@ -296,7 +296,7 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fab fa-youtube"></i></span>
                                                         </div>
-                                                        <input type="url" class="form-control" id="trailer_url" name="trailer_url"
+                                            <input type="url" class="form-control" id="trailer_url" name="trailer_url"
                                                             value="{{ old('trailer_url') }}" placeholder="Enter trailer URL (YouTube, Vimeo, etc.)">
                                                     </div>
                                                 </div>
@@ -321,7 +321,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="country">
                                                         <i class="fas fa-globe mr-1"></i> Country
                                                     </label>
@@ -329,12 +329,12 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-flag"></i></span>
                                                         </div>
-                                                        <input type="text" class="form-control" id="country" name="country"
-                                                            value="{{ old('country') }}" placeholder="Enter country">
-                                                    </div>
+                                            <input type="text" class="form-control" id="country" name="country"
+                                                value="{{ old('country') }}" placeholder="Enter country">
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="language">
                                                         <i class="fas fa-language mr-1"></i> Language
                                                     </label>
@@ -342,14 +342,14 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-comments"></i></span>
                                                         </div>
-                                                        <input type="text" class="form-control" id="language" name="language"
-                                                            value="{{ old('language') }}" placeholder="Enter language">
-                                                    </div>
+                                            <input type="text" class="form-control" id="language" name="language"
+                                                value="{{ old('language') }}" placeholder="Enter language">
+                                        </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="maturity_rating">
                                                         <i class="fas fa-user-shield mr-1"></i> Maturity Rating
                                                     </label>
@@ -357,18 +357,18 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-exclamation-triangle"></i></span>
                                                         </div>
-                                                        <select class="form-control" id="maturity_rating" name="maturity_rating">
+                                            <select class="form-control" id="maturity_rating" name="maturity_rating">
                                                             <option value="">-- Select Rating --</option>
                                                             <option value="G" {{ old('maturity_rating') == 'G' ? 'selected' : '' }}>G (General Audiences)</option>
                                                             <option value="PG" {{ old('maturity_rating') == 'PG' ? 'selected' : '' }}>PG (Parental Guidance Suggested)</option>
                                                             <option value="PG-13" {{ old('maturity_rating') == 'PG-13' ? 'selected' : '' }}>PG-13 (Parents Strongly Cautioned)</option>
                                                             <option value="R" {{ old('maturity_rating') == 'R' ? 'selected' : '' }}>R (Restricted)</option>
                                                             <option value="NC-17" {{ old('maturity_rating') == 'NC-17' ? 'selected' : '' }}>NC-17 (Adults Only)</option>
-                                                        </select>
-                                                    </div>
+                                            </select>
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <label for="status">
                                                         <i class="fas fa-toggle-on mr-1"></i> Status
                                                         <span class="text-danger">*</span>
@@ -377,20 +377,20 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
                                                         </div>
-                                                        <select class="form-control" id="status" name="status" required>
+                                            <select class="form-control" id="status" name="status" required>
                                                             <option value="">-- Select Status --</option>
-                                                            <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
-                                                            <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                                        </select>
-                                                    </div>
+                                                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                                <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                        </div>
                                                 </div>
 
-                                                <div class="form-group">
+                                        <div class="form-group">
                                                     <div class="card">
                                                         <div class="card-body">
-                                                            <div class="custom-control custom-switch">
-                                                                <input type="checkbox" class="custom-control-input" id="is_free" name="is_free" value="1"
-                                                                    {{ old('is_free') ? 'checked' : '' }}>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="is_free" name="is_free" value="1"
+                                                    {{ old('is_free') ? 'checked' : '' }}>
                                                                 <label class="custom-control-label" for="is_free">
                                                                     <i class="fas fa-gift mr-1"></i> Free to Watch
                                                                 </label>
@@ -421,7 +421,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                </div>
                                 </div>
                             </form>
                         </div>

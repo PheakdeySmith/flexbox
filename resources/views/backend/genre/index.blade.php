@@ -114,36 +114,8 @@
   </div>
 
 
-
   @include('backend.genre.create')
   @include('backend.genre.edit')
-
-  <!-- Test buttons for SweetAlert2 -->
-  <div class="card mt-4">
-    <div class="card-header">
-      <h3 class="card-title">SweetAlert2 Examples</h3>
-    </div>
-    <div class="card-body">
-      <h5>Toast Notifications</h5>
-      <div class="mb-3">
-        <button type="button" class="btn btn-success" id="successToastBtn">Show Success Toast</button>
-        <button type="button" class="btn btn-danger" id="errorToastBtn">Show Error Toast</button>
-        <button type="button" class="btn btn-warning" id="warningToastBtn">Show Warning Toast</button>
-        <button type="button" class="btn btn-info" id="infoToastBtn">Show Info Toast</button>
-      </div>
-
-      <h5>Confirmation Dialogs</h5>
-      <div class="mb-3">
-        <button type="button" class="btn btn-secondary" id="confirmDialogBtn">Show Confirm Dialog</button>
-        <button type="button" class="btn btn-danger delete-test-btn">Test Delete Dialog</button>
-      </div>
-
-      <p class="text-muted">
-        Note: These examples show how the SweetAlert2 library works.
-        The delete buttons in the table also use SweetAlert2 for confirmation.
-      </p>
-    </div>
-  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
