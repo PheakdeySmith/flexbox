@@ -1,40 +1,32 @@
 <div class="modal fade" id="editModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Edit Actor</h4>
+                <h4 class="modal-title">Edit Director</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editActorForm" action="" method="POST" enctype="multipart/form-data">
+            <form id="editDirectorForm" action="{{ route('director.update', ':id') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <input type="hidden" id="edit_id" name="actor_id">
+                <input type="hidden" id="edit_id" name="director_id">
                 <div class="modal-body">
-                    <!-- Actor Name -->
                     <div class="form-group">
                         <label for="edit_name">Name</label>
                         <input type="text" class="form-control" id="edit_name" name="name"
-                            placeholder="Enter actor name" required>
+                            placeholder="Enter director's name" required>
                     </div>
-                    <!-- Biography -->
                     <div class="form-group">
                         <label for="edit_biography">Biography</label>
-                        <textarea class="form-control" id="edit_biography" name="biography" rows="4" placeholder="Enter actor biography"
-                            required></textarea>
+                        <textarea class="form-control" id="edit_biography" name="biography" placeholder="Enter director's biography"></textarea>
                     </div>
-                    <!-- Profile Photo -->
                     <div class="form-group">
                         <label for="edit_profile_photo">Profile Photo</label>
                         <input type="file" class="form-control-file" id="edit_profile_photo" name="profile_photo">
                         <br>
-                        <img id="current_photo" src="" width="100" class="rounded mt-2" alt="Actor Profile">
-                    </div>
-                    <!-- Date of Birth -->
-                    <div class="form-group">
-                        <label for="edit_dob">Date of Birth</label>
-                        <input type="date" class="form-control" id="edit_dob" name="birth_date" required>
+                        <img id="current_photo" src="" width="100" class="rounded mt-2" alt="Director Profile">
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -46,35 +38,38 @@
     </div>
 </div>
 
-
-<!-- Edit Modal Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         $('#editModal').on('show.bs.modal', function(event) {
             const button = $(event.relatedTarget);
-            const id = button.data('id');
-            const name = button.data('name');
-            const biography = button.data('biography');
-            const profilePhoto = button.data('profile-photo');
-            const dob = button.data('birth_date'); // Use 'dob' to store the birth date
+            const { id, name, biography, profilePhoto } = button.data();
 
             const modal = $(this);
 
-            // Update form action URL
-            modal.find('#editActorForm').attr('action', `/backend/actor/${id}`);
-
-            // Set form values
+            // Update the form action URL
+            modal.find('#editDirectorForm').attr('action', `/backend/director/${id}`);
             modal.find('#edit_id').val(id);
             modal.find('#edit_name').val(name);
             modal.find('#edit_biography').val(biography);
-            console.log(dob);
-            modal.find('#edit_dob').val(dob);
 
             // Set profile photo preview
-            if (profilePhoto) {
-                modal.find('#current_photo').attr('src', `/uploads/actors/${profilePhoto}`);
+            const preview = modal.find('#current_photo');
+            preview.attr('src', profilePhoto ? `/storage/${profilePhoto}` : 'https://via.placeholder.com/100');
+        });
+
+        // Preview selected profile photo
+        document.getElementById('edit_profile_photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById('current_photo').src = e.target.result;
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
             } else {
-                modal.find('#current_photo').attr('src', 'https://via.placeholder.com/100');
+                document.getElementById('current_photo').src = 'https://via.placeholder.com/100';
             }
         });
     });

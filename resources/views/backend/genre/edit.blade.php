@@ -60,7 +60,7 @@
       const modal = $(this);
 
       // Update form action URL
-      modal.find('#editGenreForm').attr('action', `/genre/${id}`);
+      modal.find('#editGenreForm').attr('action', `/backend/genre/${id}`);
 
       // Set form values
       modal.find('#edit_id').val(id);

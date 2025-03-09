@@ -45,4 +45,9 @@ class Movie extends Model
         'imdb_rating' => 'decimal:1',
         'is_free' => 'boolean',
     ];
+
+    public function directors()
+    {
+        return $this->hasMany(Director::class, 'movie_director');
+    }
 }
