@@ -558,14 +558,6 @@
                       <label class="mb-2">First name&nbsp; <span class="text-danger">*</span></label>
                       <input type="text" name="first-name" value="John" class="form-control" required="required">
                     </div>
-                    <div class="form-group mb-5">
-                      <label class="mb-2">Last name&nbsp; <span class="text-danger">*</span></label>
-                      <input type="text" name="last-name" value="deo" class="form-control" required="required">
-                    </div>
-                    <div class="form-group mb-5">
-                      <label class="mb-2">Display name&nbsp; <span class="text-danger">*</span></label>
-                      <input type="text" name="display-name" value="John" class="form-control" required="required">
-                    </div>
                     <em class="d-block mb-5">This will be how your name will be displayed in the account
                       section and in reviews</em>
                     <div class="form-group mb-5">
