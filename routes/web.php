@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail', [FrontendController::class, 'detail'])->name('frontend.detail');
-Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
-Route::get('/account', [UserC::class, 'front_edit'])->name('frontend.account');
-Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
+
 Route::get('/frontend/login', function () {
     return redirect()->route('login');
 })->name('frontend.login');
@@ -47,8 +45,10 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
+
     Route::get('/account', [UserController::class, 'front_edit'])->name('frontend.account');
+    Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
+    Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
 
     // Redirect /dashboard to backend/dashboard
     Route::get('/dashboard', function () {

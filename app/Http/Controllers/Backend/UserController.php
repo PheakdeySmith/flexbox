@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -103,7 +104,6 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
-                'role' => 'required|in:user,admin,moderator',
                 'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
             ]);
 
@@ -139,16 +139,15 @@ class UserController extends Controller
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
-                'role' => $request->role,
             ]);
 
             // Redirect after successful update
             $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
 
-            return Redirect::route($redirectRoute)->with('status', 'User updated successfully.');
+            return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             // Log the exception for better debugging
-            \Log::error('Error updating user: ' . $e->getMessage());
+            Log::error('Error updating user: ' . $e->getMessage());
 
             // Return with an error message
             return redirect()->back()->with('error', 'An error occurred while updating the user. Please try again.');

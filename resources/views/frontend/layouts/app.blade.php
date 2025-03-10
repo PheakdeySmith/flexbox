@@ -26,8 +26,7 @@
     <!-- Animate css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/animate.min.css">
 
-    <!-- Sweetlaert2 css -->
-    <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/sweetalert2.min.css">
+
 
     <!-- SwiperSlider css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/swiper.min.css">
@@ -50,6 +49,7 @@
     <link href="{{ asset('frontend/assets') }}/css/css2" rel="stylesheet">
 
     <script src="{{ asset('AdminLTE') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/sweetalert2.min.css">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
@@ -187,6 +187,7 @@
                 showInfoToast("{{ session('info') }}");
             @endif
         });
+        
     </script>
 
 </body>

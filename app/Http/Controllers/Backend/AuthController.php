@@ -38,7 +38,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Always redirect to backend dashboard
-            return redirect()->route('backend.dashboard');
+            return redirect()->route('frontend.home');
         }
 
         return back()->withErrors([
