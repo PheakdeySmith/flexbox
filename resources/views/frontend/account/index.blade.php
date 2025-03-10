@@ -55,10 +55,14 @@
                                             class="ms-2">Account details</span></button>
                                 </li>
                                 <li class="pt-3 nav-item" role="presentation">
-                                    <button class="nav-link p-0 bg-transparent" data-bs-toggle="tab"
-                                        data-bs-target="#logout" type="button" role="tab" aria-selected="false"
-                                        tabindex="-1"><i class="fas fa-sign-out-alt"></i><span
-                                            class="ms-2">Logout</span></button>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="nav-link p-0 bg-transparent" data-bs-toggle="tab"
+                                            data-bs-target="#logout" type="submit" role="tab" aria-selected="false"
+                                            tabindex="-1"><i class="fas fa-sign-out-alt"></i><span
+                                                class="ms-2">Logout</span>
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
@@ -68,7 +72,14 @@
                     <div class="tab-content" id="product-menu-content">
                         <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
                             <div class="myaccount-content text-body p-4">
-                                <p>Hello Jenny (not Jenny? <a href="{{ route('frontend.login') }}">Log out</a>)</p>
+                                <p>Hello Jenny (not Jenny?
+                                    <a href="#" onclick="document.getElementById('logout-form').submit();">Log out</a>
+                                    )
+                                </p>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                                 <p>From your account dashboard you can view your <a href="javascript:void(1)">recent
                                         orders</a>,
                                     manage your <a href="javascript:void(3)">shipping and billing addresses</a>, and <a
@@ -641,7 +652,8 @@
                         </div>
                         <div class="tab-pane fade" id="account-details" role="tabpanel">
                             <div class="p-4 text-body">
-                                <form action="{{ route('user.update', $user->id) }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                                <form action="{{ route('user.update', $user->id) }}" method="POST"
+                                    class="form-horizontal" enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
 
@@ -650,16 +662,22 @@
 
                                     <div class="form-group mb-5">
                                         <label class="mb-2">Name&nbsp; <span class="text-danger">*</span></label>
-                                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" required="required">
+                                        <input type="text" name="name" value="{{ $user->name }}"
+                                            class="form-control" required="required">
                                     </div>
-                                    <em class="d-block mb-5">This will be how your name will be displayed in the account section and in reviews</em>
+                                    <em class="d-block mb-5">This will be how your name will be displayed in the account
+                                        section and in reviews</em>
 
                                     <div class="form-group mb-5">
-                                        <label class="mb-2">Email address&nbsp; <span class="text-danger">*</span></label>
-                                        <input type="email" name="email" value="{{ $user->email }}" class="form-control" required="required">
+                                        <label class="mb-2">Email address&nbsp; <span
+                                                class="text-danger">*</span></label>
+                                        <input type="email" name="email" value="{{ $user->email }}"
+                                            class="form-control" required="required">
                                     </div>
-
-                                    <h4 class="fw-normal mb-5">Password change</h4>
+                                    <div id="profile-edit">
+                                        <h2>Password Change</h2>
+                                        <!-- Your profile edit form here -->
+                                    </div>
 
                                     <div class="form-group mb-5">
                                         <label class="mb-2">Current password (leave blank to leave unchanged)</label>
@@ -687,79 +705,19 @@
                                 </form>
                             </div>
                         </div>
+                        {{-- <div class="tab-pane fade" id="logout" role="tabpanel">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
+                        </div> --}}
 
-                        <div class="tab-pane fade" id="logout" role="tabpanel">
-                            <div class="p-4">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h4 class="mb-5 text-primary">Login</h4>
-                                        <form method="post">
-                                            <div class="mb-4">
-                                                <input type="text" name="user-name" class="form-control"
-                                                    placeholder="Username or email address *" required="">
-                                            </div>
-                                            <div class="mb-4">
-                                                <input type="password" name="pwd" class="form-control"
-                                                    placeholder="Password" required="">
-                                            </div>
-                                            <label class="custom-form-field mb-5">
-                                                <input type="checkbox" required="required" class="mr-2">
-                                                <span class="checkmark"></span>
-                                                <span>Remember me</span>
-                                            </label>
-                                            <div class="iq-button">
-                                                <a href="javascript:void(0)" class="btn text-uppercase position-relative">
-                                                    <span class="button-text">Login</span>
-                                                    <i class="fa-solid fa-play"></i>
-                                                </a>
-                                            </div>
-                                        </form>
-                                        <div class="mt-3">
-                                            <div class="iq-button link-button">
-                                                <a href="javascript:void(0)"
-                                                    class="btn text-capitalize position-relative">
-                                                    <span class="button-text">Lost your password?</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="mb-5 mt-5 mt-lg-0 mt-md-0 text-primary">Register</h4>
-                                        <form method="post">
-                                            <div class="mb-4">
-                                                <input type="text" name="user-name" placeholder="Username *"
-                                                    class="form-control" required="">
-                                            </div>
-                                            <div class="mb-4">
-                                                <input type="email" name="email-address" placeholder="Email address *"
-                                                    class="form-control" required="">
-                                            </div>
-                                            <div class="mb-4">
-                                                <input type="password" name="password" placeholder="Password *"
-                                                    class="form-control" required="">
-                                            </div>
-                                            <p class="mb-5"> Your personal data will be used to support your experience
-                                                throughout this
-                                                website, to manage access to your account, and for other purposes described
-                                                in
-                                                our <a
-                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/privacy-policy.html">
-                                                    privacy policy</a>.
-                                            </p>
-                                            <div class="iq-button">
-                                                <a href="javascript:void(0)" class="btn text-uppercase position-relative">
-                                                    <span class="button-text">register</span>
-                                                    <i class="fa-solid fa-play"></i>
-                                                </a>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+
+
