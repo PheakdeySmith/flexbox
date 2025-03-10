@@ -4,12 +4,32 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Movie;
 
 class FrontendController extends Controller
 {
     public function index()
     {
-        return view('frontend.home.index');
+        $recommendedMovies = Movie::where('is_free', true)
+            ->orWhere('imdb_rating', '>=', 7)
+            ->take(10)
+            ->get();
+
+        $latestMovies = Movie::orderBy('release_date', 'desc')->take(10)->get();
+
+        $popularMovies = Movie::where('is_featured', true)
+            ->orderBy('imdb_rating', 'desc')
+            ->take(10)
+            ->get();
+
+        $specials = Movie::where('is_free', true)->take(10)->get();
+
+        $sliderMovies = Movie::where('is_featured', true)
+            ->orderBy('release_date', 'desc')
+            ->take(3)
+            ->get();
+
+        return view('frontend.home.index', compact('recommendedMovies', 'latestMovies', 'popularMovies', 'specials', 'sliderMovies'));
     }
 
     public function detail()
@@ -22,10 +42,6 @@ class FrontendController extends Controller
         return view('frontend.watchlist.index');
     }
 
-    public function account()
-    {
-        return view('frontend.account.index');
-    }
 
     public function subscription()
     {

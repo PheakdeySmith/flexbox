@@ -21,8 +21,6 @@ class UserController extends Controller
         return view('backend.user.index', compact('users'));
     }
 
-
-
     /**
      * Show the form for creating a new user.
      */
@@ -89,8 +87,6 @@ class UserController extends Controller
         return view('frontend.account.index', compact('user'));
     }
 
-
-
     /**
      * Update the specified user in the database.
      */
@@ -135,7 +131,7 @@ class UserController extends Controller
                 $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
             }
 
-            // Update user details (name, email, role)
+            // Update user details (name, email)
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -143,19 +139,18 @@ class UserController extends Controller
 
             // Redirect after successful update
             $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
+            return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
 
             return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             // Log the exception for better debugging
+            Log::error('Error updating user: ' . $e->getMessage());
             Log::error('Error updating user: ' . $e->getMessage());
 
             // Return with an error message
             return redirect()->back()->with('error', 'An error occurred while updating the user. Please try again.');
         }
     }
-
-
-
 
     /**
      * Remove the specified user from storage.

@@ -26,4 +26,6 @@
 
     @include('frontend.partials.top-pics-block')
 
+
+
 @endsection
