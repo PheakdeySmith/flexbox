@@ -59,7 +59,7 @@
         /**
          * Show the form for editing a user.
          */
-        public function edit(User $user)
+        public function edit($id)
         {
             $user = User::findOrFail($id);
             return view('backend.user.edit', compact('user'));
@@ -113,6 +113,15 @@
             $user->delete();
 
             return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+        }
+
+        /**
+         * Display the specified user.
+         */
+        public function show($id)
+        {
+            $user = User::findOrFail($id);
+            return view('backend.user.show', compact('user'));
         }
 
     }

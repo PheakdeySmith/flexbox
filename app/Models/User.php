@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'user_profile',
+        'role',
     ];
 
     /**
@@ -45,5 +46,69 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the watchlist items for the user.
+     */
+    public function watchlist()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Get the reviews written by the user.
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get the subscriptions for the user.
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Get the payments made by the user.
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Get the active subscription for the user.
+     */
+    public function activeSubscription()
+    {
+        return $this->subscriptions()->active()->latest()->first();
+    }
+
+    /**
+     * Check if the user has an active subscription.
+     */
+    public function hasActiveSubscription()
+    {
+        return $this->activeSubscription() !== null;
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user is a moderator.
+     */
+    public function isModerator()
+    {
+        return $this->role === 'moderator';
     }
 }

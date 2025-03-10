@@ -60,8 +60,8 @@ class GenreController extends Controller
      */
     public function show($id)
     {
-        // This method is not needed in this context
-        return redirect()->route('genre.index');
+        $genre = Genre::with('movies')->findOrFail($id);
+        return view('backend.genre.show', compact('genre'));
     }
 
     /**

@@ -7,8 +7,13 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\MovieController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DirectorController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\Backend\WatchlistController;
+use App\Http\Controllers\Backend\ReviewController;
+use App\Http\Controllers\Backend\SubscriptionPlanController;
+use App\Http\Controllers\Backend\SubscriptionController;
+use App\Http\Controllers\Backend\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
@@ -16,7 +21,9 @@ Route::get('/detail', [FrontendController::class, 'detail'])->name('frontend.det
 Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
 Route::get('/account', [FrontendController::class, 'account'])->name('frontend.account');
 Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
-Route::get('/frontend/login', [FrontendController::class, 'login'])->name('frontend.login');
+Route::get('/frontend/login', function() {
+    return redirect()->route('login');
+})->name('frontend.login');
 Route::get('/frontend/register', [FrontendController::class, 'register'])->name('frontend.register');
 Route::get('/restrict-detail', [FrontendController::class, 'restrictDetail'])->name('frontend.restrictDetail');
 Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre');
@@ -56,6 +63,29 @@ Route::middleware('auth')->group(function () {
         Route::resource('actor', ActorController::class);
         Route::resource('director', DirectorController::class);
         Route::resource('user', UserController::class);
+
+        // Watchlist routes
+        Route::resource('watchlist', WatchlistController::class);
+        Route::post('watchlist/toggle/{movie}', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');
+
+        // Review routes
+        Route::resource('review', ReviewController::class);
+        Route::post('review/toggle-approval/{review}', [ReviewController::class, 'toggleApproval'])->name('review.toggle-approval');
+        Route::post('review/submit/{movie}', [ReviewController::class, 'submitReview'])->name('review.submit');
+
+        // Subscription Plan routes
+        Route::resource('subscription-plan', SubscriptionPlanController::class);
+        Route::post('subscription-plan/toggle-active/{subscriptionPlan}', [SubscriptionPlanController::class, 'toggleActive'])->name('subscription-plan.toggle-active');
+
+        // Subscription routes
+        Route::resource('subscription', SubscriptionController::class);
+        Route::post('subscription/cancel/{subscription}', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+        Route::post('subscription/extend/{subscription}', [SubscriptionController::class, 'extend'])->name('subscription.extend');
+
+        // Payment routes
+        Route::resource('payment', PaymentController::class);
+        Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
+        Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
     });
 
 });

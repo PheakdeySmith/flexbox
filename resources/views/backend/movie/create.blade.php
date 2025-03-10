@@ -76,6 +76,21 @@
                                                     <i class="fas fa-cogs mr-1"></i> Additional Details
                                                 </a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="actors-tab" data-toggle="tab" href="#actors" role="tab" aria-controls="actors" aria-selected="false">
+                                                    <i class="fas fa-users mr-1"></i> Actors
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="genres-tab" data-toggle="tab" href="#genres" role="tab" aria-controls="genres" aria-selected="false">
+                                                    <i class="fas fa-tags mr-1"></i> Genres
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="directors-tab" data-toggle="tab" href="#directors" role="tab" aria-controls="directors" aria-selected="false">
+                                                    <i class="fas fa-user-tie mr-1"></i> Directors
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -402,6 +417,147 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Actors Tab -->
+                                    <div class="tab-pane fade" id="actors" role="tabpanel" aria-labelledby="actors-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Actors from the selected movie will be displayed here. Select the ones you want to include.
+                                                </div>
+
+                                                <div id="no-movie-selected" class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> No movie selected yet. Please go to the <a href="#" onclick="$('#tmdb-search-tab').tab('show'); return false;" class="alert-link">TMDB Search tab</a> to select a movie first.
+                                                </div>
+
+                                                <!-- Movie Actors Section -->
+                                                <div id="movie-actors-container" class="mt-4 d-none">
+                                                    <h4 class="mb-3">Actors in <span id="selected-movie-title"></span></h4>
+                                                    <div id="movie-actors" class="row">
+                                                        <!-- Actor results will be displayed here -->
+                                                    </div>
+                                                    <div id="no-movie-actors-message" class="alert alert-info d-none">
+                                                        <i class="fas fa-info-circle mr-1"></i> No actors found for this movie.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Actors Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Selected Actors</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="selected-actors-container">
+                                                            <div id="no-selected-actors" class="alert alert-info">
+                                                                <i class="fas fa-info-circle mr-1"></i> No actors selected yet. Select actors from above.
+                                                            </div>
+                                                            <div id="selected-actors-list" class="row">
+                                                                <!-- Selected actors will be displayed here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Genres Tab -->
+                                    <div class="tab-pane fade" id="genres" role="tabpanel" aria-labelledby="genres-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Genres from the selected movie will be displayed here. Select the ones you want to include.
+                                                </div>
+
+                                                <div id="no-movie-selected-genres" class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> No movie selected yet. Please go to the <a href="#" onclick="$('#tmdb-search-tab').tab('show'); return false;" class="alert-link">TMDB Search tab</a> to select a movie first.
+                                                </div>
+
+                                                <!-- Movie Genres Section -->
+                                                <div id="movie-genres-container" class="mt-4 d-none">
+                                                    <h4 class="mb-3">Genres for <span id="selected-movie-title-genres"></span></h4>
+                                                    <div id="movie-genres" class="row">
+                                                        <!-- Genre results will be displayed here -->
+                                                    </div>
+                                                    <div id="no-movie-genres-message" class="alert alert-info d-none">
+                                                        <i class="fas fa-info-circle mr-1"></i> No genres found for this movie.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Genres Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Selected Genres</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="selected-genres-container">
+                                                            <div id="no-selected-genres" class="alert alert-info">
+                                                                <i class="fas fa-info-circle mr-1"></i> No genres selected yet. Select genres from above.
+                                                            </div>
+                                                            <div id="selected-genres-list" class="row">
+                                                                <!-- Selected genres will be displayed here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Directors Tab -->
+                                    <div class="tab-pane fade" id="directors" role="tabpanel" aria-labelledby="directors-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Directors and crew from the selected movie will be displayed here. Select the ones you want to include.
+                                                </div>
+
+                                                <div id="no-movie-selected-directors" class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> No movie selected yet. Please go to the <a href="#" onclick="$('#tmdb-search-tab').tab('show'); return false;" class="alert-link">TMDB Search tab</a> to select a movie first.
+                                                </div>
+
+                                                <!-- Movie Directors Section -->
+                                                <div id="movie-directors-container" class="mt-4 d-none">
+                                                    <h4 class="mb-3">Directors & Crew for <span id="selected-movie-title-directors"></span></h4>
+                                                    <div id="movie-directors" class="row">
+                                                        <!-- Director results will be displayed here -->
+                                                    </div>
+                                                    <div id="no-movie-directors-message" class="alert alert-info d-none">
+                                                        <i class="fas fa-info-circle mr-1"></i> No directors found for this movie.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Directors Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Selected Directors & Crew</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="selected-directors-container">
+                                                            <div id="no-selected-directors" class="alert alert-info">
+                                                                <i class="fas fa-info-circle mr-1"></i> No directors selected yet. Select directors from above.
+                                                            </div>
+                                                            <div id="selected-directors-list" class="row">
+                                                                <!-- Selected directors will be displayed here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row mt-4">
@@ -554,7 +710,7 @@
         });
     }
 
-    // Function to fetch and populate movie details
+    // Update the fetchMovie function to include country and language data
     function fetchMovie(id) {
         $.ajax({
             url: 'https://api.themoviedb.org/3/movie/' + id,
@@ -568,76 +724,624 @@
                 'Content-Type': 'application/json'
             },
             success: function(movie) {
-                console.log('Movie details', movie);
+                console.log('Movie details:', movie);
 
-                // Fill in the form fields
+                // Fill form fields with movie data
                 $('#tmdb_id').val(movie.id);
                 $('#title').val(movie.title);
-                $('#release_date').val(movie.release_date || '');
-                $('#duration').val(movie.runtime || '');
+                $('#description').val(movie.overview);
 
-                // Format IMDb rating to one decimal place with proper rounding
-                if (movie.vote_average) {
-                    // Convert to number, round to 1 decimal place
-                    var rating = parseFloat(movie.vote_average).toFixed(1);
-                    $('#imdb_rating').val(rating);
-                }
-
-                // Set type based on what we're fetching (this is from the movie endpoint, so it's a movie)
+                // Set type to 'movie' by default (required field)
                 $('#type').val('movie');
 
-                // Set status to active by default
+                // Set status to 'active' by default (required field)
                 $('#status').val('active');
 
-                // Handle poster
+                if (movie.release_date) {
+                    $('#release_date').val(movie.release_date);
+                }
+
                 if (movie.poster_path) {
-                    var posterUrl = 'https://image.tmdb.org/t/p/original' + movie.poster_path;
-                    $('#poster_url').val(posterUrl);
-                    $('#poster_preview').attr('src', posterUrl);
-                    $('.poster-preview').removeClass('d-none');
+                    $('#poster_url').val('https://image.tmdb.org/t/p/w500' + movie.poster_path);
                 }
 
-                // Handle backdrop
                 if (movie.backdrop_path) {
-                    var backdropUrl = 'https://image.tmdb.org/t/p/original' + movie.backdrop_path;
-                    $('#backdrop_url').val(backdropUrl);
-                    $('#backdrop_preview').attr('src', backdropUrl);
-                    $('.backdrop-preview').removeClass('d-none');
+                    $('#backdrop_url').val('https://image.tmdb.org/t/p/original' + movie.backdrop_path);
                 }
 
-                // Description
-                $('#description').val(movie.overview || '');
+                if (movie.runtime) {
+                    $('#duration').val(movie.runtime);
+                }
 
-                // Find trailer if available
+                if (movie.vote_average) {
+                    // Format to one decimal place
+                    const rating = parseFloat(movie.vote_average).toFixed(1);
+                    $('#imdb_rating').val(rating);
+                } else {
+                    // Set a default value for imdb_rating to avoid validation error
+                    $('#imdb_rating').val('0.0');
+                }
+
+                // Set country from production_countries
+                if (movie.production_countries && movie.production_countries.length > 0) {
+                    $('#country').val(movie.production_countries[0].name);
+                }
+
+                // Set language from spoken_languages
+                if (movie.spoken_languages && movie.spoken_languages.length > 0) {
+                    // Try to get English name first, fall back to name if not available
+                    const language = movie.spoken_languages[0].english_name || movie.spoken_languages[0].name;
+                    $('#language').val(language);
+                }
+
+                // Handle trailer
                 if (movie.videos && movie.videos.results && movie.videos.results.length > 0) {
-                    var trailer = movie.videos.results.find(function(video) {
-                        return video.type === 'Trailer' && video.site === 'YouTube';
-                    });
-
+                    const trailer = movie.videos.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
                     if (trailer) {
                         $('#trailer_url').val('https://www.youtube.com/watch?v=' + trailer.key);
                     }
                 }
 
-                // Additional info
-                if (movie.production_countries && movie.production_countries.length > 0) {
-                    $('#country').val(movie.production_countries[0].name);
+                // Handle actors
+                if (movie.credits && movie.credits.cast && movie.credits.cast.length > 0) {
+                    // Store the cast for use in the Actors tab
+                    window.movieCast = movie.credits.cast;
+
+                    // Update the Actors tab with the cast
+                    updateActorsTab(movie.credits.cast, movie.title);
+
+                    // Automatically select all actors
+                    selectAllActors(movie.credits.cast);
+
+                    // Show a notification that actors are available
+                    const actorCount = movie.credits.cast.length;
+                    const actorNotification = `<div class="alert alert-success mt-3">
+                        <i class="fas fa-info-circle mr-1"></i> ${actorCount} actors found and automatically selected for this movie.
+                        <a href="#" onclick="$('#actors-tab').tab('show'); return false;" class="alert-link">
+                            Go to Actors tab to review them.
+                        </a>
+                    </div>`;
+                    $('#tmdb-search-results').after(actorNotification);
                 }
 
-                if (movie.spoken_languages && movie.spoken_languages.length > 0) {
-                    $('#language').val(movie.spoken_languages[0].english_name || movie.spoken_languages[0].name);
+                // Handle directors and crew
+                if (movie.credits && movie.credits.crew && movie.credits.crew.length > 0) {
+                    // Store the crew for use in the Directors tab
+                    window.movieCrew = movie.credits.crew;
+
+                    // Update the Directors tab with the crew
+                    updateDirectorsTab(movie.credits.crew, movie.title);
+
+                    // Automatically select directors and important crew
+                    selectImportantCrew(movie.credits.crew);
+
+                    // Show a notification that directors are available
+                    const directorCount = movie.credits.crew.filter(person =>
+                        person.job === 'Director' || person.job === 'Producer' || person.job === 'Executive Producer'
+                    ).length;
+
+                    if (directorCount > 0) {
+                        const directorNotification = `<div class="alert alert-success mt-3">
+                            <i class="fas fa-info-circle mr-1"></i> ${directorCount} directors and crew members found and automatically selected for this movie.
+                            <a href="#" onclick="$('#directors-tab').tab('show'); return false;" class="alert-link">
+                                Go to Directors tab to review them.
+                            </a>
+                        </div>`;
+                        $('#tmdb-search-results').after(directorNotification);
+                    }
+                }
+
+                // Handle genres
+                if (movie.genres && movie.genres.length > 0) {
+                    // Store the genres for use in the Genres tab
+                    window.movieGenres = movie.genres;
+
+                    // Update the Genres tab with the genres
+                    updateGenresTab(movie.genres, movie.title);
+
+                    // Automatically select all genres
+                    selectAllGenres(movie.genres);
+
+                    // Show a notification that genres are available
+                    const genreCount = movie.genres.length;
+                    const genreNotification = `<div class="alert alert-success mt-3">
+                        <i class="fas fa-info-circle mr-1"></i> ${genreCount} genres found and automatically selected for this movie.
+                        <a href="#" onclick="$('#genres-tab').tab('show'); return false;" class="alert-link">
+                            Go to Genres tab to review them.
+                        </a>
+                    </div>`;
+                    $('#tmdb-search-results').after(genreNotification);
                 }
 
                 // Switch to basic tab
                 $('#basic-tab').tab('show');
-
-                // Show success message using the SweetAlert toast
-                window.showSuccessToast('Movie data loaded successfully!');
             },
             error: function(xhr, status, error) {
-                console.error('Failed to fetch movie details', error);
+                console.error('Failed to fetch movie details:', error);
                 window.showErrorToast('Failed to fetch movie details: ' + error);
             }
+        });
+    }
+
+    // Update the selectAllActors function to include birth date and biography data
+    function selectAllActors(cast) {
+        // Clear any previously selected actors
+        window.selectedActors = [];
+
+        // Add all actors from the cast to the selected actors
+        cast.slice(0, 12).forEach(function(actor) {
+            // Fetch additional actor details to get biography and birth date
+            fetchActorDetails(actor.id, function(actorDetails) {
+                addSelectedActor({
+                    id: actor.id,
+                    name: actor.name,
+                    profile_photo: actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : '',
+                    character: actor.character || '',
+                    birth_date: actorDetails.birthday || '',
+                    biography: actorDetails.biography || ''
+                });
+            });
+        });
+    }
+
+    // Add a function to fetch actor details from TMDB
+    function fetchActorDetails(actorId, callback) {
+        $.ajax({
+            url: 'https://api.themoviedb.org/3/person/' + actorId,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
+                'Content-Type': 'application/json'
+            },
+            success: function(data) {
+                callback(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to fetch actor details:', error);
+                // Call the callback with empty data
+                callback({});
+            }
+        });
+    }
+
+    // Update the updateActorsTab function to show all actors as selected by default
+    function updateActorsTab(cast, movieTitle) {
+        // Hide the no movie selected message
+        $('#no-movie-selected').addClass('d-none');
+
+        // Show the movie actors container
+        $('#movie-actors-container').removeClass('d-none');
+
+        // Set the movie title
+        $('#selected-movie-title').text(movieTitle);
+
+        // Clear the movie actors container
+        $('#movie-actors').empty();
+
+        // If no cast, show the no actors message
+        if (!cast || cast.length === 0) {
+            $('#no-movie-actors-message').removeClass('d-none');
+            return;
+        }
+
+        // Hide the no actors message
+        $('#no-movie-actors-message').addClass('d-none');
+
+        // Limit to top 12 actors
+        const topCast = cast.slice(0, 12);
+
+        // Add each actor to the container
+        $.each(topCast, function(index, actor) {
+            var profileUrl = actor.profile_path
+                ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path
+                : '{{ asset('backend/assets/image/no-profile.png') }}';
+
+            // All actors are selected by default
+            var buttonClass = 'btn-secondary';
+            var buttonText = '<i class="fas fa-check"></i> Selected';
+            var buttonDisabled = 'disabled';
+
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="height: 250px; object-fit: cover;">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + actor.name + '</h5>' +
+                '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character : '') + '</p>' +
+                '<button type="button" class="btn btn-sm ' + buttonClass + ' w-100 select-actor" ' + buttonDisabled + ' ' +
+                'data-id="' + actor.id + '" ' +
+                'data-name="' + actor.name + '" ' +
+                'data-profile="' + (actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : '') + '" ' +
+                'data-character="' + (actor.character || '') + '">' +
+                buttonText +
+                '</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            $('#movie-actors').append(html);
+        });
+    }
+
+    // Initialize the selectedActors array at the beginning of the document ready function
+    $(document).ready(function() {
+        // Store selected actors
+        window.selectedActors = [];
+        // Store selected directors
+        window.selectedDirectors = [];
+        // Store selected genres
+        window.selectedGenres = [];
+
+        // ... existing code ...
+    });
+
+    // Add these functions for actor management
+    function addSelectedActor(actor) {
+        // Check if actor is already selected
+        var existingIndex = window.selectedActors.findIndex(function(selectedActor) {
+            return selectedActor.id === actor.id;
+        });
+
+        if (existingIndex === -1) {
+            window.selectedActors.push(actor);
+            updateSelectedActorsList();
+        }
+    }
+
+    function removeSelectedActor(actorId) {
+        window.selectedActors = window.selectedActors.filter(function(actor) {
+            return actor.id !== actorId;
+        });
+
+        updateSelectedActorsList();
+
+        // Re-enable the select button in the movie actors list if it exists
+        $('.select-actor[data-id="' + actorId + '"]').removeClass('btn-secondary').addClass('btn-primary')
+            .html('<i class="fas fa-plus"></i> Select')
+            .prop('disabled', false);
+    }
+
+    function updateSelectedActorsList() {
+        var container = $('#selected-actors-list');
+        container.empty();
+
+        if (window.selectedActors.length === 0) {
+            $('#no-selected-actors').removeClass('d-none');
+            return;
+        }
+
+        $('#no-selected-actors').addClass('d-none');
+
+        $.each(window.selectedActors, function(index, actor) {
+            var profileUrl = actor.profile_photo || '{{ asset('backend/assets/image/no-profile.png') }}';
+
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="height: 200px; object-fit: cover;">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + actor.name + '</h5>' +
+                '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character : '') + '</p>' +
+                '<button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="' + actor.id + '">' +
+                '<i class="fas fa-trash"></i> Remove' +
+                '</button>' +
+                // Hidden inputs to include actor data in form submission
+                '<input type="hidden" name="actors[' + index + '][id]" value="' + actor.id + '">' +
+                '<input type="hidden" name="actors[' + index + '][name]" value="' + actor.name + '">' +
+                '<input type="hidden" name="actors[' + index + '][profile_photo]" value="' + (actor.profile_photo || '') + '">' +
+                '<input type="hidden" name="actors[' + index + '][character]" value="' + (actor.character || '') + '">' +
+                '<input type="hidden" name="actors[' + index + '][birth_date]" value="' + (actor.birth_date || '') + '">' +
+                '<input type="hidden" name="actors[' + index + '][biography]" value="' + (actor.biography || '') + '">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            container.append(html);
+        });
+
+        // Add click event for remove actor buttons
+        $('.remove-actor').on('click', function() {
+            var actorId = $(this).data('id');
+            removeSelectedActor(actorId);
+        });
+    }
+
+    // Add these functions for director management
+    function updateDirectorsTab(crew, movieTitle) {
+        // Hide the no movie selected message
+        $('#no-movie-selected-directors').addClass('d-none');
+
+        // Show the movie directors container
+        $('#movie-directors-container').removeClass('d-none');
+
+        // Set the movie title
+        $('#selected-movie-title-directors').text(movieTitle);
+
+        // Clear the movie directors container
+        $('#movie-directors').empty();
+
+        // Filter for directors, producers, and other important crew
+        const importantCrew = crew.filter(person =>
+            person.job === 'Director' ||
+            person.job === 'Producer' ||
+            person.job === 'Executive Producer' ||
+            person.job === 'Screenplay' ||
+            person.job === 'Writer'
+        );
+
+        // If no important crew, show the no directors message
+        if (importantCrew.length === 0) {
+            $('#no-movie-directors-message').removeClass('d-none');
+            return;
+        }
+
+        // Hide the no directors message
+        $('#no-movie-directors-message').addClass('d-none');
+
+        // Add each crew member to the container
+        $.each(importantCrew, function(index, person) {
+            var profileUrl = person.profile_path
+                ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
+                : '{{ asset('backend/assets/image/no-profile.png') }}';
+
+            // All directors are selected by default
+            var buttonClass = 'btn-secondary';
+            var buttonText = '<i class="fas fa-check"></i> Selected';
+            var buttonDisabled = 'disabled';
+
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<img src="' + profileUrl + '" class="card-img-top" alt="' + person.name + '" style="height: 250px; object-fit: cover;">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + person.name + '</h5>' +
+                '<p class="card-text text-muted">' + person.job + '</p>' +
+                '<button type="button" class="btn btn-sm ' + buttonClass + ' w-100 select-director" ' + buttonDisabled + ' ' +
+                'data-id="' + person.id + '" ' +
+                'data-name="' + person.name + '" ' +
+                'data-profile="' + (person.profile_path ? 'https://image.tmdb.org/t/p/w185' + person.profile_path : '') + '" ' +
+                'data-job="' + person.job + '">' +
+                buttonText +
+                '</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            $('#movie-directors').append(html);
+        });
+    }
+
+    function selectImportantCrew(crew) {
+        // Clear any previously selected directors
+        window.selectedDirectors = [];
+
+        // Filter for directors, producers, and other important crew
+        const importantCrew = crew.filter(person =>
+            person.job === 'Director' ||
+            person.job === 'Producer' ||
+            person.job === 'Executive Producer' ||
+            person.job === 'Screenplay' ||
+            person.job === 'Writer'
+        );
+
+        // Add important crew members to the selected directors
+        importantCrew.forEach(function(person) {
+            // Fetch additional director details
+            fetchPersonDetails(person.id, function(personDetails) {
+                addSelectedDirector({
+                    id: person.id,
+                    name: person.name,
+                    profile_photo: person.profile_path ? 'https://image.tmdb.org/t/p/w185' + person.profile_path : '',
+                    job: person.job,
+                    biography: personDetails.biography || ''
+                });
+            });
+        });
+    }
+
+    function fetchPersonDetails(personId, callback) {
+        $.ajax({
+            url: 'https://api.themoviedb.org/3/person/' + personId,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
+                'Content-Type': 'application/json'
+            },
+            success: function(data) {
+                callback(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to fetch person details:', error);
+                // Call the callback with empty data
+                callback({});
+            }
+        });
+    }
+
+    function addSelectedDirector(director) {
+        // Check if director is already selected
+        var existingIndex = window.selectedDirectors.findIndex(function(selectedDirector) {
+            return selectedDirector.id === director.id && selectedDirector.job === director.job;
+        });
+
+        if (existingIndex === -1) {
+            window.selectedDirectors.push(director);
+            updateSelectedDirectorsList();
+        }
+    }
+
+    function removeSelectedDirector(directorId, job) {
+        window.selectedDirectors = window.selectedDirectors.filter(function(director) {
+            return !(director.id === directorId && director.job === job);
+        });
+
+        updateSelectedDirectorsList();
+
+        // Re-enable the select button in the movie directors list if it exists
+        $('.select-director[data-id="' + directorId + '"][data-job="' + job + '"]').removeClass('btn-secondary').addClass('btn-primary')
+            .html('<i class="fas fa-plus"></i> Select')
+            .prop('disabled', false);
+    }
+
+    function updateSelectedDirectorsList() {
+        var container = $('#selected-directors-list');
+        container.empty();
+
+        if (window.selectedDirectors.length === 0) {
+            $('#no-selected-directors').removeClass('d-none');
+            return;
+        }
+
+        $('#no-selected-directors').addClass('d-none');
+
+        $.each(window.selectedDirectors, function(index, director) {
+            var profileUrl = director.profile_photo || '{{ asset('backend/assets/image/no-profile.png') }}';
+
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<img src="' + profileUrl + '" class="card-img-top" alt="' + director.name + '" style="height: 200px; object-fit: cover;">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + director.name + '</h5>' +
+                '<p class="card-text text-muted">' + director.job + '</p>' +
+                '<button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="' + director.id + '" data-job="' + director.job + '">' +
+                '<i class="fas fa-trash"></i> Remove' +
+                '</button>' +
+                // Hidden inputs to include director data in form submission
+                '<input type="hidden" name="directors[' + index + '][id]" value="' + director.id + '">' +
+                '<input type="hidden" name="directors[' + index + '][name]" value="' + director.name + '">' +
+                '<input type="hidden" name="directors[' + index + '][profile_photo]" value="' + (director.profile_photo || '') + '">' +
+                '<input type="hidden" name="directors[' + index + '][job]" value="' + director.job + '">' +
+                '<input type="hidden" name="directors[' + index + '][biography]" value="' + (director.biography || '') + '">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            container.append(html);
+        });
+
+        // Add click event for remove director buttons
+        $('.remove-director').on('click', function() {
+            var directorId = $(this).data('id');
+            var job = $(this).data('job');
+            removeSelectedDirector(directorId, job);
+        });
+    }
+
+    // Add these functions for genre management
+    function updateGenresTab(genres, movieTitle) {
+        // Hide the no movie selected message
+        $('#no-movie-selected-genres').addClass('d-none');
+
+        // Show the movie genres container
+        $('#movie-genres-container').removeClass('d-none');
+
+        // Set the movie title
+        $('#selected-movie-title-genres').text(movieTitle);
+
+        // Clear the movie genres container
+        $('#movie-genres').empty();
+
+        // If no genres, show the no genres message
+        if (!genres || genres.length === 0) {
+            $('#no-movie-genres-message').removeClass('d-none');
+            return;
+        }
+
+        // Hide the no genres message
+        $('#no-movie-genres-message').addClass('d-none');
+
+        // Add each genre to the container
+        $.each(genres, function(index, genre) {
+            // All genres are selected by default
+            var buttonClass = 'btn-secondary';
+            var buttonText = '<i class="fas fa-check"></i> Selected';
+            var buttonDisabled = 'disabled';
+
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + genre.name + '</h5>' +
+                '<button type="button" class="btn btn-sm ' + buttonClass + ' w-100 select-genre" ' + buttonDisabled + ' ' +
+                'data-id="' + genre.id + '" ' +
+                'data-name="' + genre.name + '">' +
+                buttonText +
+                '</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            $('#movie-genres').append(html);
+        });
+    }
+
+    function selectAllGenres(genres) {
+        // Clear any previously selected genres
+        window.selectedGenres = [];
+
+        // Add all genres to the selected genres
+        genres.forEach(function(genre) {
+            addSelectedGenre({
+                id: genre.id,
+                name: genre.name
+            });
+        });
+    }
+
+    function addSelectedGenre(genre) {
+        // Check if genre is already selected
+        var existingIndex = window.selectedGenres.findIndex(function(selectedGenre) {
+            return selectedGenre.id === genre.id;
+        });
+
+        if (existingIndex === -1) {
+            window.selectedGenres.push(genre);
+            updateSelectedGenresList();
+        }
+    }
+
+    function removeSelectedGenre(genreId) {
+        window.selectedGenres = window.selectedGenres.filter(function(genre) {
+            return genre.id !== genreId;
+        });
+
+        updateSelectedGenresList();
+
+        // Re-enable the select button in the movie genres list if it exists
+        $('.select-genre[data-id="' + genreId + '"]').removeClass('btn-secondary').addClass('btn-primary')
+            .html('<i class="fas fa-plus"></i> Select')
+            .prop('disabled', false);
+    }
+
+    function updateSelectedGenresList() {
+        var container = $('#selected-genres-list');
+        container.empty();
+
+        if (window.selectedGenres.length === 0) {
+            $('#no-selected-genres').removeClass('d-none');
+            return;
+        }
+
+        $('#no-selected-genres').addClass('d-none');
+
+        $.each(window.selectedGenres, function(index, genre) {
+            var html = '<div class="col-md-3 mb-4">' +
+                '<div class="card h-100">' +
+                '<div class="card-body">' +
+                '<h5 class="card-title">' + genre.name + '</h5>' +
+                '<button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="' + genre.id + '">' +
+                '<i class="fas fa-trash"></i> Remove' +
+                '</button>' +
+                // Hidden inputs to include genre data in form submission
+                '<input type="hidden" name="genres[' + index + '][id]" value="' + genre.id + '">' +
+                '<input type="hidden" name="genres[' + index + '][name]" value="' + genre.name + '">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            container.append(html);
+        });
+
+        // Add click event for remove genre buttons
+        $('.remove-genre').on('click', function() {
+            var genreId = $(this).data('id');
+            removeSelectedGenre(genreId);
         });
     }
 </script>

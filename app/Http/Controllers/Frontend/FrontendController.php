@@ -34,7 +34,7 @@ class FrontendController extends Controller
 
     public function login()
     {
-        return view('authetication.login.index');
+        return redirect()->route('login');
     }
 
     public function register()

@@ -72,6 +72,11 @@
                                                     <i class="fas fa-cogs mr-1"></i> Additional Details
                                                 </a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="actors-tab" data-toggle="tab" href="#actors" role="tab" aria-controls="actors" aria-selected="false">
+                                                    <i class="fas fa-users mr-1"></i> Actors
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -353,6 +358,71 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Actors Tab -->
+                                    <div class="tab-pane fade" id="actors" role="tabpanel" aria-labelledby="actors-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Actors from the selected movie will be displayed here. Select the ones you want to include.
+                                                </div>
+
+                                                <div id="no-movie-selected" class="alert alert-warning {{ $movie->actors->count() > 0 ? 'd-none' : '' }}">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> No movie selected yet from TMDB. You can either go to the <a href="#" onclick="$('#tmdb-search-tab').tab('show'); return false;" class="alert-link">TMDB Search tab</a> to select a movie or manage the existing actors below.
+                                                </div>
+
+                                                <!-- Movie Actors Section -->
+                                                <div id="movie-actors-container" class="mt-4 d-none">
+                                                    <h4 class="mb-3">Actors in <span id="selected-movie-title"></span></h4>
+                                                    <div id="movie-actors" class="row">
+                                                        <!-- Actor results will be displayed here -->
+                                                    </div>
+                                                    <div id="no-movie-actors-message" class="alert alert-info d-none">
+                                                        <i class="fas fa-info-circle mr-1"></i> No actors found for this movie.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Actors Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">Selected Actors</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="selected-actors-container">
+                                                            <div id="no-selected-actors" class="alert alert-info {{ $movie->actors->count() > 0 ? 'd-none' : '' }}">
+                                                                <i class="fas fa-info-circle mr-1"></i> No actors selected yet. Select actors from above or search for a movie.
+                                                            </div>
+                                                            <div id="selected-actors-list" class="row">
+                                                                <!-- Selected actors will be displayed here -->
+                                                                @foreach($movie->actors as $index => $actor)
+                                                                <div class="col-md-3 mb-4">
+                                                                    <div class="card h-100">
+                                                                        <img src="{{ $actor->profile_photo ?: asset('backend/assets/image/no-profile.png') }}" class="card-img-top" alt="{{ $actor->name }}" style="height: 200px; object-fit: cover;">
+                                                                        <div class="card-body">
+                                                                            <h5 class="card-title">{{ $actor->name }}</h5>
+                                                                            <p class="card-text text-muted">{{ $actor->pivot->character ? 'as ' . $actor->pivot->character : '' }}</p>
+                                                                            <button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="{{ $actor->tmdb_id ?: $actor->id }}">
+                                                                                <i class="fas fa-trash"></i> Remove
+                                                                            </button>
+                                                                            <input type="hidden" name="actors[{{ $index }}][id]" value="{{ $actor->tmdb_id ?: $actor->id }}">
+                                                                            <input type="hidden" name="actors[{{ $index }}][name]" value="{{ $actor->name }}">
+                                                                            <input type="hidden" name="actors[{{ $index }}][profile_photo]" value="{{ $actor->profile_photo ?: '' }}">
+                                                                            <input type="hidden" name="actors[{{ $index }}][character]" value="{{ $actor->pivot->character ?: '' }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row mt-4">
@@ -537,6 +607,306 @@
                 });
             }
         });
+
+        // Actor search functionality
+        $(document).ready(function() {
+            // Store selected actors
+            window.selectedActors = [];
+
+            // Initialize selectedActors with existing actors
+            @foreach($movie->actors as $actor)
+            selectedActors.push({
+                id: {{ $actor->tmdb_id ?: $actor->id }},
+                name: "{{ $actor->name }}",
+                profile_photo: "{{ $actor->profile_photo ?: '' }}",
+                character: "{{ $actor->pivot->character ?: '' }}"
+            });
+            @endforeach
+
+            // ... existing code ...
+        });
+
+        // Update the fetchMovie function to include country and language data
+        function fetchMovie(id) {
+            $.ajax({
+                url: 'https://api.themoviedb.org/3/movie/' + id,
+                type: 'GET',
+                data: {
+                    append_to_response: 'videos,credits',
+                    language: 'en-US'
+                },
+                headers: {
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
+                    'Content-Type': 'application/json'
+                },
+                success: function(movie) {
+                    console.log('Movie details:', movie);
+
+                    // Fill form fields with movie data
+                    $('#tmdb_id').val(movie.id);
+                    $('#title').val(movie.title);
+                    $('#description').val(movie.overview);
+
+                    // Set type to 'movie' by default (required field)
+                    $('#type').val('movie');
+
+                    // Set status to 'active' by default (required field)
+                    $('#status').val('active');
+
+                    if (movie.release_date) {
+                        $('#release_date').val(movie.release_date);
+                    }
+
+                    if (movie.poster_path) {
+                        $('#poster_url').val('https://image.tmdb.org/t/p/w500' + movie.poster_path);
+                    }
+
+                    if (movie.backdrop_path) {
+                        $('#backdrop_url').val('https://image.tmdb.org/t/p/original' + movie.backdrop_path);
+                    }
+
+                    if (movie.runtime) {
+                        $('#duration').val(movie.runtime);
+                    }
+
+                    if (movie.vote_average) {
+                        // Format to one decimal place
+                        const rating = parseFloat(movie.vote_average).toFixed(1);
+                        $('#imdb_rating').val(rating);
+                    } else {
+                        // Set a default value for imdb_rating to avoid validation error
+                        $('#imdb_rating').val('0.0');
+                    }
+
+                    // Set country from production_countries
+                    if (movie.production_countries && movie.production_countries.length > 0) {
+                        $('#country').val(movie.production_countries[0].name);
+                    }
+
+                    // Set language from spoken_languages
+                    if (movie.spoken_languages && movie.spoken_languages.length > 0) {
+                        // Try to get English name first, fall back to name if not available
+                        const language = movie.spoken_languages[0].english_name || movie.spoken_languages[0].name;
+                        $('#language').val(language);
+                    }
+
+                    // Handle trailer
+                    if (movie.videos && movie.videos.results && movie.videos.results.length > 0) {
+                        const trailer = movie.videos.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                        if (trailer) {
+                            $('#trailer_url').val('https://www.youtube.com/watch?v=' + trailer.key);
+                        }
+                    }
+
+                    // Handle actors
+                    if (movie.credits && movie.credits.cast && movie.credits.cast.length > 0) {
+                        // Store the cast for use in the Actors tab
+                        window.movieCast = movie.credits.cast;
+
+                        // Update the Actors tab with the cast
+                        updateActorsTab(movie.credits.cast, movie.title);
+
+                        // Automatically select all actors
+                        selectAllActors(movie.credits.cast);
+
+                        // Show a notification that actors are available
+                        const actorCount = movie.credits.cast.length;
+                        const actorNotification = `<div class="alert alert-success mt-3">
+                            <i class="fas fa-info-circle mr-1"></i> ${actorCount} actors found and automatically selected for this movie.
+                            <a href="#" onclick="$('#actors-tab').tab('show'); return false;" class="alert-link">
+                                Go to Actors tab to review them.
+                            </a>
+                        </div>`;
+                        $('#tmdb-search-results').after(actorNotification);
+                    }
+
+                    // Switch to basic tab
+                    $('#basic-tab').tab('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch movie details:', error);
+                    window.showErrorToast('Failed to fetch movie details: ' + error);
+                }
+            });
+        }
+
+        // Update the selectAllActors function to include birth date and biography data
+        function selectAllActors(cast) {
+            // Clear any previously selected actors
+            window.selectedActors = [];
+
+            // Add all actors from the cast to the selected actors
+            cast.slice(0, 12).forEach(function(actor) {
+                // Fetch additional actor details to get biography and birth date
+                fetchActorDetails(actor.id, function(actorDetails) {
+                    addSelectedActor({
+                        id: actor.id,
+                        name: actor.name,
+                        profile_photo: actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : '',
+                        character: actor.character || '',
+                        birth_date: actorDetails.birthday || '',
+                        biography: actorDetails.biography || ''
+                    });
+                });
+            });
+        }
+
+        // Add a function to fetch actor details from TMDB
+        function fetchActorDetails(actorId, callback) {
+            $.ajax({
+                url: 'https://api.themoviedb.org/3/person/' + actorId,
+                type: 'GET',
+                headers: {
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
+                    'Content-Type': 'application/json'
+                },
+                success: function(data) {
+                    callback(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to fetch actor details:', error);
+                    // Call the callback with empty data
+                    callback({});
+                }
+            });
+        }
+
+        // Update the updateSelectedActorsList function to include birth date and biography fields
+        function updateSelectedActorsList() {
+            var container = $('#selected-actors-list');
+            container.empty();
+
+            if (window.selectedActors.length === 0) {
+                $('#no-selected-actors').removeClass('d-none');
+                return;
+            }
+
+            $('#no-selected-actors').addClass('d-none');
+
+            $.each(window.selectedActors, function(index, actor) {
+                var profileUrl = actor.profile_photo || '{{ asset('backend/assets/image/no-profile.png') }}';
+
+                var html = '<div class="col-md-3 mb-4">' +
+                    '<div class="card h-100">' +
+                    '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="height: 200px; object-fit: cover;">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + actor.name + '</h5>' +
+                    '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character : '') + '</p>' +
+                    '<button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="' + actor.id + '">' +
+                    '<i class="fas fa-trash"></i> Remove' +
+                    '</button>' +
+                    // Hidden inputs to include actor data in form submission
+                    '<input type="hidden" name="actors[' + index + '][id]" value="' + actor.id + '">' +
+                    '<input type="hidden" name="actors[' + index + '][name]" value="' + actor.name + '">' +
+                    '<input type="hidden" name="actors[' + index + '][profile_photo]" value="' + (actor.profile_photo || '') + '">' +
+                    '<input type="hidden" name="actors[' + index + '][character]" value="' + (actor.character || '') + '">' +
+                    '<input type="hidden" name="actors[' + index + '][birth_date]" value="' + (actor.birth_date || '') + '">' +
+                    '<input type="hidden" name="actors[' + index + '][biography]" value="' + (actor.biography || '') + '">' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                container.append(html);
+            });
+
+            // Add click event for remove actor buttons
+            $('.remove-actor').on('click', function() {
+                var actorId = $(this).data('id');
+                removeSelectedActor(actorId);
+            });
+        }
+
+        // Add these functions for actor management
+        function addSelectedActor(actor) {
+            // Check if actor is already selected
+            var existingIndex = window.selectedActors.findIndex(function(selectedActor) {
+                return selectedActor.id === actor.id;
+            });
+
+            if (existingIndex === -1) {
+                window.selectedActors.push(actor);
+                updateSelectedActorsList();
+            }
+        }
+
+        function removeSelectedActor(actorId) {
+            window.selectedActors = window.selectedActors.filter(function(actor) {
+                return actor.id !== actorId;
+            });
+
+            updateSelectedActorsList();
+
+            // Re-enable the select button in the movie actors list if it exists
+            $('.select-actor[data-id="' + actorId + '"]').removeClass('btn-secondary').addClass('btn-primary')
+                .html('<i class="fas fa-plus"></i> Select')
+                .prop('disabled', false);
+        }
+
+        // Initialize remove buttons for existing actors
+        $(document).ready(function() {
+            $('.remove-actor').on('click', function() {
+                var actorId = $(this).data('id');
+                removeSelectedActor(actorId);
+            });
+        });
+
+        // Add back the updateActorsTab function
+        function updateActorsTab(cast, movieTitle) {
+            // Hide the no movie selected message
+            $('#no-movie-selected').addClass('d-none');
+
+            // Show the movie actors container
+            $('#movie-actors-container').removeClass('d-none');
+
+            // Set the movie title
+            $('#selected-movie-title').text(movieTitle);
+
+            // Clear the movie actors container
+            $('#movie-actors').empty();
+
+            // If no cast, show the no actors message
+            if (!cast || cast.length === 0) {
+                $('#no-movie-actors-message').removeClass('d-none');
+                return;
+            }
+
+            // Hide the no actors message
+            $('#no-movie-actors-message').addClass('d-none');
+
+            // Limit to top 12 actors
+            const topCast = cast.slice(0, 12);
+
+            // Add each actor to the container
+            $.each(topCast, function(index, actor) {
+                var profileUrl = actor.profile_path
+                    ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path
+                    : '{{ asset('backend/assets/image/no-profile.png') }}';
+
+                // All actors are selected by default
+                var buttonClass = 'btn-secondary';
+                var buttonText = '<i class="fas fa-check"></i> Selected';
+                var buttonDisabled = 'disabled';
+
+                var html = '<div class="col-md-3 mb-4">' +
+                    '<div class="card h-100">' +
+                    '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="height: 250px; object-fit: cover;">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + actor.name + '</h5>' +
+                    '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character : '') + '</p>' +
+                    '<button type="button" class="btn btn-sm ' + buttonClass + ' w-100 select-actor" ' + buttonDisabled + ' ' +
+                    'data-id="' + actor.id + '" ' +
+                    'data-name="' + actor.name + '" ' +
+                    'data-profile="' + (actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path : '') + '" ' +
+                    'data-character="' + (actor.character || '') + '">' +
+                    buttonText +
+                    '</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                $('#movie-actors').append(html);
+            });
+        }
     });
 </script>
 @endpush

@@ -1,102 +1,99 @@
 <?php
-
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\Actor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ActorController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $actors = Actor::all();
+        $query = Actor::query();
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where('name', 'LIKE', "%{$searchTerm}%");
+        }
+
+        $actors = $query->latest()->get();
+
+        // If it's an AJAX request, return JSON
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($actors);
+        }
+
         return view('backend.actor.index', compact('actors'));
     }
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        $actor = new Actor();
-        return view('backend.actor.create', compact('actor'));
+        return view('backend.actor.create');
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        // Log the incoming request data
-        Log::info('Actor store request received:', $request->all());
-
-        // Validate request
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
-            'profile_photo' => 'nullable',
-            'birth_date' => 'required|date',
+            'birth_date' => 'nullable|date',
+            'profile_photo' => 'nullable|string|max:255',
         ]);
 
-        // Check if the file is uploaded
-        if ($request->hasFile('profile_photo')) {
-            $file = $request->file('profile_photo'); // Get the uploaded file
-            Log::info('File uploaded:', [
-                'original_name' => $file->getClientOriginalName(),
-                'extension' => $file->getClientOriginalExtension(),
-                'path' => $file->getPathname(),
-                'mime_type' => $file->getMimeType(),
-            ]);
-
-            $filename = time() . '.' . $file->getClientOriginalExtension(); // Generate unique file name
-            $file->move(public_path('uploads/actors'), $filename); // Move file to public/uploads/actors
-
-            Log::info('File successfully moved to uploads/actors directory.', [
-                'filename' => $filename
-            ]);
-        } else {
-            $filename = 'default.jpg'; // If no file is uploaded, use default image
-            Log::info('No file uploaded, using default image.');
+        if ($validator->fails()) {
+            return redirect()->route('actor.create')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'There were errors in your submission.');
         }
 
-        // Store actor in database
-        Actor::create([
-            'name' => $request->name,
-            'biography' => $request->biography,
-            'profile_photo' => $filename, // Save file name in DB
-            'birth_date' => $request->birth_date,
-        ]);
+        // Handle file uploads if present (for future implementation)
 
-        // Log successful creation
-        Log::info('Actor created successfully:', [
-            'name' => $request->name,
-            'biography' => $request->biography,
-            'profile_photo' => $filename,
-            'birth_date' => $request->birth_date,
-        ]);
+        Actor::create($request->all());
 
-        return redirect()->route('actor.index')->with('success', 'Actor added successfully!');
+        return redirect()->route('actor.index')
+            ->with('success', 'Actor created successfully.');
     }
-
 
     /**
      * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $actor = Actor::findOrFail($id);
+        return view('backend.actor.show', compact('actor'));
     }
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $actor = Actor::findOrFail($id);
         return view('backend.actor.edit', compact('actor'));
@@ -104,61 +101,49 @@ class ActorController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        // Validate the incoming request data
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'biography' => 'nullable|string',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        // Retrieve the actor by ID
         $actor = Actor::findOrFail($id);
 
-        // Update the actor's data
-        $actor->name = $validated['name'];
-        $actor->biography = $validated['biography'];
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'biography' => 'nullable|string',
+            'birth_date' => 'nullable|date',
+            'profile_photo' => 'nullable|string|max:255',
+        ]);
 
-        // Handle file upload if there is a new profile photo
-        if ($request->hasFile('profile_photo')) {
-            // Delete the old image if it exists
-            if ($actor->profile_photo) {
-                Storage::delete($actor->profile_photo);
-            }
-
-            // Store the new image and save the path
-            $path = $request->file('profile_photo')->store('actors');
-            $actor->profile_photo = $path;
+        if ($validator->fails()) {
+            return redirect()->route('actor.edit', $id)
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'There were errors in your submission.');
         }
 
-        // Save the updated actor
-        $actor->save();
+        // Handle file uploads if present (for future implementation)
 
-        // Redirect to the actor list or show a success message
-        return redirect()->route('actor.index')->with('success', 'Actor updated successfully!');
+        $actor->update($request->all());
+
+        return redirect()->route('actor.index')
+            ->with('success', 'Actor updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        // Retrieve the actor by ID
         $actor = Actor::findOrFail($id);
-
-        // Delete the actor's profile photo if it exists
-        if ($actor->profile_photo) {
-            Storage::delete($actor->profile_photo);
-        }
-
-        // Delete the actor from the database
         $actor->delete();
 
-        // Redirect to the actor list or show a success message
-        return redirect()->route('actor.index')->with('success', 'Actor deleted successfully!');
+        return redirect()->route('actor.index')
+            ->with('success', 'Actor deleted successfully.');
     }
-
-
 }

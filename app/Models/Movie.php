@@ -48,6 +48,89 @@ class Movie extends Model
 
     public function directors()
     {
-        return $this->hasMany(Director::class, 'movie_director');
+        return $this->belongsToMany(Director::class, 'movie_director')
+                    ->withPivot('job')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the actors that feature in this movie.
+     */
+    public function actors()
+    {
+        return $this->belongsToMany(Actor::class, 'movie_actor');
+    }
+
+    /**
+     * Get the genres associated with this movie.
+     */
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'movie_genre')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the watchlist entries for this movie.
+     */
+    public function watchlistEntries()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Get the reviews for this movie.
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get the average rating for this movie.
+     */
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->approved()->avg('rating') ?: 0;
+    }
+
+    /**
+     * Get the review count for this movie.
+     */
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->approved()->count();
+    }
+
+    /**
+     * Scope a query to only include active movies.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope a query to only include free movies.
+     */
+    public function scopeFree($query)
+    {
+        return $query->where('is_free', true);
+    }
+
+    /**
+     * Scope a query to only include movies (not TV series).
+     */
+    public function scopeMoviesOnly($query)
+    {
+        return $query->where('type', 'movie');
+    }
+
+    /**
+     * Scope a query to only include TV series.
+     */
+    public function scopeTvSeries($query)
+    {
+        return $query->where('type', 'tv_series');
     }
 }

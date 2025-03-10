@@ -151,6 +151,108 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <!-- Actors Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Cast</h5>
+                                    @if($movie->actors->count() > 0)
+                                        <div class="row">
+                                            @foreach($movie->actors as $actor)
+                                                <div class="col-md-2 col-sm-4 mb-3">
+                                                    <div class="card h-100">
+                                                        <div class="position-relative">
+                                                            @if($actor->profile_photo)
+                                                                <img src="{{ $actor->profile_photo }}" class="card-img-top" alt="{{ $actor->name }}" style="height: 180px; object-fit: cover;">
+                                                            @else
+                                                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 180px;">
+                                                                    <i class="fas fa-user fa-3x text-white"></i>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="card-body p-2 text-center">
+                                                            <h6 class="card-title mb-0">{{ $actor->name }}</h6>
+                                                            @if($actor->pivot->character)
+                                                                <small class="text-muted">as {{ $actor->pivot->character }}</small>
+                                                            @endif
+                                                            <div class="mt-2">
+                                                                <a href="{{ route('actor.show', $actor->id) }}" class="btn btn-sm btn-info">
+                                                                    <i class="fas fa-eye"></i> View
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i> No actors have been added to this movie yet.
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Directors Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Directors & Crew</h5>
+                                    @if($movie->directors->count() > 0)
+                                        <div class="row">
+                                            @foreach($movie->directors as $director)
+                                                <div class="col-md-2 col-sm-4 mb-3">
+                                                    <div class="card h-100">
+                                                        <div class="position-relative">
+                                                            @if($director->profile_photo)
+                                                                <img src="{{ $director->profile_photo }}" class="card-img-top" alt="{{ $director->name }}" style="height: 180px; object-fit: cover;">
+                                                            @else
+                                                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 180px;">
+                                                                    <i class="fas fa-user-tie fa-3x text-white"></i>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="card-body p-2 text-center">
+                                                            <h6 class="card-title mb-0">{{ $director->name }}</h6>
+                                                            @if($director->pivot->job)
+                                                                <small class="text-muted">{{ $director->pivot->job }}</small>
+                                                            @else
+                                                                <small class="text-muted">Director</small>
+                                                            @endif
+                                                            <div class="mt-2">
+                                                                <a href="{{ route('director.show', $director->id) }}" class="btn btn-sm btn-info">
+                                                                    <i class="fas fa-eye"></i> View
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i> No directors have been added to this movie yet.
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Genres Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5>Genres</h5>
+                                    @if($movie->genres->count() > 0)
+                                        <div class="d-flex flex-wrap">
+                                            @foreach($movie->genres as $genre)
+                                                <span class="badge badge-primary p-2 m-1">{{ $genre->name }}</span>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-2"></i> No genres have been added to this movie yet.
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <small class="text-muted">Created: {{ $movie->created_at->format('M d, Y H:i') }} | Last Updated: {{ $movie->updated_at->format('M d, Y H:i') }}</small>

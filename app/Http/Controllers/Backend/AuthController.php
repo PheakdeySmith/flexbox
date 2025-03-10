@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('backend.auth.login.index');
+        return view('authetication.login.index');
     }
 
     /**

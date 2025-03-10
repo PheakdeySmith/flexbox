@@ -58,7 +58,8 @@ class DirectorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $director = Director::with('movies')->findOrFail($id);
+        return view('backend.director.show', compact('director'));
     }
 
     /**

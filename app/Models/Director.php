@@ -9,10 +9,12 @@ class Director extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'biography', 'profile_photo'];
+    protected $fillable = ['name', 'biography', 'profile_photo', 'tmdb_id'];
 
-    public function movie()
+    public function movies()
     {
-        return $this->hasMany(Movie::class, 'movie_director');
+        return $this->belongsToMany(Movie::class, 'movie_director')
+                    ->withPivot('job')
+                    ->withTimestamps();
     }
 }

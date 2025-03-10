@@ -17,5 +17,15 @@ class Genre extends Model
     protected $fillable = [
         'name',
         'slug',
+        'tmdb_id',
     ];
+
+    /**
+     * Get the movies associated with this genre.
+     */
+    public function movies()
+    {
+        return $this->belongsToMany(Movie::class, 'movie_genre')
+                    ->withTimestamps();
+    }
 }
