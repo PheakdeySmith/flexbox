@@ -367,6 +367,7 @@
                                             <h6 class="mb-0 font-size-14 fw-normal">Subscription</h6>
                                         </a>
                                     </li>
+                                    @role('admin')
                                     <li>
                                         <a href="{{ route('backend.dashboard') }}"
                                             class="iq-sub-card d-flex align-items-center gap-3">
@@ -374,6 +375,7 @@
                                             <h6 class="mb-0 font-size-14 fw-normal">Dashboard</h6>
                                         </a>
                                     </li>
+                                    @endrole
 
                                     <li>
                                         @if (Auth::check())
