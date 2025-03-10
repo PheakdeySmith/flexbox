@@ -49,6 +49,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
     <link href="{{ asset('frontend/assets') }}/css/css2" rel="stylesheet">
 
+    <script src="{{ asset('AdminLTE') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
+
     @stack('styles')
 </head>
 
@@ -102,7 +107,8 @@
     <script src="{{ asset('frontend/assets') }}/js/swiper.js" defer=""></script>
 
     <!-- Library Bundle Script -->
-    <script type="text/javascript" id="www-widgetapi-script" src="{{ asset('frontend/assets') }}/js/www-widgetapi.js" async=""></script>
+    <script type="text/javascript" id="www-widgetapi-script" src="{{ asset('frontend/assets') }}/js/www-widgetapi.js"
+        async=""></script>
     {{-- <script src="{{ asset('frontend/assets') }}/js/iframe_api"></script> --}}
     <!-- Plugin Scripts -->
 
@@ -114,7 +120,74 @@
     <script src="{{ asset('frontend/assets') }}/js/sweetalert2.min.js" async=""></script>
     <script src="{{ asset('frontend/assets') }}/js/sweet-alert.js" defer=""></script>
 
+    <script>
+        $(function() {
+            // Initialize SweetAlert2 Toast
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
 
+            // Success Toast
+            window.showSuccessToast = function(message) {
+                Toast.fire({
+                    icon: 'success',
+                    title: message || 'Operation completed successfully!'
+                });
+            };
+
+            // Error Toast
+            window.showErrorToast = function(message) {
+                Toast.fire({
+                    icon: 'error',
+                    title: message || 'An error occurred!'
+                });
+            };
+
+            // Warning Toast
+            window.showWarningToast = function(message) {
+                Toast.fire({
+                    icon: 'warning',
+                    title: message || 'Warning!'
+                });
+            };
+
+            // Info Toast
+            window.showInfoToast = function(message) {
+                Toast.fire({
+                    icon: 'info',
+                    title: message || 'Information!'
+                });
+            };
+
+            // Question Toast
+            window.showQuestionToast = function(message) {
+                Toast.fire({
+                    icon: 'question',
+                    title: message || 'Question?'
+                });
+            };
+
+            // Process Flash Messages from Laravel
+            @if (session('success'))
+                showSuccessToast("{{ session('success') }}");
+            @endif
+
+            @if (session('error'))
+                showErrorToast("{{ session('error') }}");
+            @endif
+
+            @if (session('warning'))
+                showWarningToast("{{ session('warning') }}");
+            @endif
+
+            @if (session('info'))
+                showInfoToast("{{ session('info') }}");
+            @endif
+        });
+    </script>
 
 </body>
 

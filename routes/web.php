@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail', [FrontendController::class, 'detail'])->name('frontend.detail');
 Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
-Route::get('/account', [FrontendController::class, 'account'])->name('frontend.account');
+Route::get('/account', [UserC::class, 'front_edit'])->name('frontend.account');
 Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
-Route::get('/frontend/login', function() {
+Route::get('/frontend/login', function () {
     return redirect()->route('login');
 })->name('frontend.login');
-Route::get('/frontend/register', function() {
+Route::get('/frontend/register', function () {
     return redirect()->route('register');
 })->name('frontend.register');
 Route::get('/restrict-detail', [FrontendController::class, 'restrictDetail'])->name('frontend.restrictDetail');
@@ -47,9 +47,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    Route::get('/account', [UserController::class, 'front_edit'])->name('frontend.account');
 
     // Redirect /dashboard to backend/dashboard
-    Route::get('/dashboard', function() {
+    Route::get('/dashboard', function () {
         return redirect()->route('backend.dashboard');
     });
 
@@ -64,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
 
     // Backend routes
-    Route::prefix('backend')->group(function() {
+    Route::prefix('backend')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
         Route::resource('genre', GenreController::class);
         Route::resource('movie', MovieController::class);
@@ -94,6 +96,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('payment', PaymentController::class);
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
         Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
-    });
 
+
+
+        // View the authenticated user's profile
+        Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+        // Update the authenticated user's profile
+        Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+    });
 });
