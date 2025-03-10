@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -18,6 +19,8 @@ class UserController extends Controller
         $users = User::all();
         return view('backend.user.index', compact('users'));
     }
+
+
 
     /**
      * Show the form for creating a new user.
@@ -76,40 +79,84 @@ class UserController extends Controller
         return view('backend.user.edit', compact('user'));
     }
 
+    public function front_edit(Request $request)
+    {
+        // Get the currently authenticated user
+        $user = $request->user();
+
+        // Pass the user details to the frontend view
+        return view('frontend.account.index', compact('user'));
+    }
+
+
+
     /**
      * Update the specified user in the database.
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        try {
+            // Find the user or fail
+            $user = User::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6',
-            'role' => 'required|in:user,admin,moderator',
-            'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
-        ]);
+            // Validate the input data
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'role' => 'required|in:user,admin,moderator',
+                'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            ]);
 
-        // Handle file upload
-        if ($request->hasFile('user_profile')) {
-            // Delete old image if exists
-            if ($user->user_profile) {
-                Storage::disk('public')->delete($user->user_profile);
+            // Check if a new password is provided
+            if ($request->has('new_password') && $request->new_password) {
+                // Validate the current password
+                if (!Hash::check($request->password, $user->password)) {
+                    return redirect()->back()->with('error', 'The current password is incorrect.');
+                }
+
+                // Validate the new password and confirmation
+                $request->validate([
+                    'new_password' => 'required|min:6',
+                    'new_password_confirmation' => 'required|same:new_password',
+                ]);
+
+                // Update the password if the new one is provided
+                $user->password = Hash::make($request->new_password);
             }
-            $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
+
+            // Handle the profile image upload if a new file is provided
+            if ($request->hasFile('user_profile')) {
+                // Delete the old profile image if it exists
+                if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
+                    Storage::disk('public')->delete($user->user_profile);
+                }
+
+                // Store the new profile image
+                $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
+            }
+
+            // Update user details (name, email, role)
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+            ]);
+
+            // Redirect after successful update
+            $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
+
+            return Redirect::route($redirectRoute)->with('status', 'User updated successfully.');
+        } catch (\Exception $e) {
+            // Log the exception for better debugging
+            \Log::error('Error updating user: ' . $e->getMessage());
+
+            // Return with an error message
+            return redirect()->back()->with('error', 'An error occurred while updating the user. Please try again.');
         }
-
-        // Update User
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-        ]);
-
-        return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
+
+
+
 
     /**
      * Remove the specified user from storage.
