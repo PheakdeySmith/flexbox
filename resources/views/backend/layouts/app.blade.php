@@ -134,8 +134,7 @@
     <script src="{{ asset('AdminLTE') }}/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('AdminLTE') }}/dist/js/adminlte.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset('AdminLTE') }}/dist/js/demo.js"></script>
+
     <!-- DataTables  & Plugins -->
     <script src="{{ asset('AdminLTE') }}/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="{{ asset('AdminLTE') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
