@@ -116,51 +116,38 @@ class UserController extends Controller
                     'new_password_confirmation' => 'required|same:new_password',
                 ]);
 
-                // Update the password if the new one is provided
                 $user->password = Hash::make($request->new_password);
             }
 
-            // Handle the profile image upload if a new file is provided
             if ($request->hasFile('user_profile')) {
-                // Delete the old profile image if it exists
                 if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
                     Storage::disk('public')->delete($user->user_profile);
                 }
 
-                // Store the new profile image
                 $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
             }
 
-            // Update user details (name, email)
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
             ]);
 
-            // Redirect after successful update
             $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
             return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
 
             return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
-            // Log the exception for better debugging
             Log::error('Error updating user: ' . $e->getMessage());
             Log::error('Error updating user: ' . $e->getMessage());
 
-            // Return with an error message
             return redirect()->back()->with('error', 'An error occurred while updating the user. Please try again.');
         }
     }
 
-    /**
-     * Remove the specified user from storage.
-     */
     public function destroy($id)
     {
-        // Find the user by ID
         $user = User::findOrFail($id);
 
-        // Delete the profile photo if it exists
         if ($user->user_profile) {
             Storage::disk('public')->delete($user->user_profile);
         }

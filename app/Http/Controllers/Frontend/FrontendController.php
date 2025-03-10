@@ -29,7 +29,9 @@ class FrontendController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.home.index', compact('recommendedMovies', 'latestMovies', 'popularMovies', 'specials', 'sliderMovies'));
+        $topTenMovies = Movie::orderBy('imdb_rating', 'desc')->take(10)->get();
+
+        return view('frontend.home.index', compact('recommendedMovies', 'latestMovies', 'popularMovies', 'specials', 'sliderMovies', 'topTenMovies'));
     }
 
     public function detail()
