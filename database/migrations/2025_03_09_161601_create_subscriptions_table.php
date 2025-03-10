@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('restrict');
             $table->string('status')->default('active'); // active, canceled, expired
             $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('end_date')->nullable();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->boolean('auto_renew')->default(true);

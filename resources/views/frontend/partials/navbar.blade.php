@@ -306,16 +306,19 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-user border-0 p-0 m-0"
                                     aria-labelledby="navbarDropdown">
-                                    @if(Auth::check())
-                                    <li class="user-info d-flex align-items-center gap-3 mb-3">
-                                        <img src="{{ asset('frontend/assets') }}/images/user1.webp" class="img-fluid"
-                                            alt="" loading="lazy">
-                                        <span class="font-size-14 fw-500 text-capitalize text-white">Jenny</span>
-                                    </li>
+                                    @if (Auth::check())
+                                        <li class="user-info d-flex align-items-center gap-3 mb-3">
+                                            <!-- Display user profile image if available, otherwise a default image -->
+                                            <img src="{{ Auth::user()->user_profile ? asset(Auth::user()->user_profile) : asset('frontend/assets/images/default-profile.png') }}"
+                                                class="img-fluid" alt="User Profile" loading="lazy">
+
+                                            <!-- Display the logged-in user's name -->
+                                            <span class="font-size-14 fw-500 text-capitalize text-white">
+                                                {{ Auth::user()->name }}
+                                            </span>
+                                        </li>
                                     @endif
 
-
-                                           
                                     <li>
                                         <a href="{{ route('frontend.account') }}"
                                             class="iq-sub-card d-flex align-items-center gap-3">
@@ -365,23 +368,40 @@
                                         </a>
                                     </li>
                                     <li>
-                                        @if(Auth::check())
+                                        <a href="{{ route('backend.dashboard') }}"
+                                            class="iq-sub-card d-flex align-items-center gap-3">
+                                            <i class="fas fa-tachometer-alt"></i> <!-- Font Awesome Dashboard Icon -->
+                                            <h6 class="mb-0 font-size-14 fw-normal">Dashboard</h6>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        @if (Auth::check())
                                             <!-- Show logout link when the user is logged in -->
-                                            <a href="{{ route('logout') }}" class="iq-sub-card iq-logout-2 mt-1 d-flex justify-content-center gap-2"
-                                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z" fill="currentColor"></path>
+                                            <a href="{{ route('logout') }}"
+                                                class="iq-sub-card iq-logout-2 mt-1 d-flex justify-content-center gap-2"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 16 16" fill="none">
+                                                    <path
+                                                        d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z"
+                                                        fill="currentColor"></path>
                                                 </svg>
                                                 <h6 class="mb-0 font-size-14 fw-normal">Logout</h6>
                                             </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
                                                 @csrf
                                             </form>
                                         @else
                                             <!-- Show login link when the user is not logged in -->
-                                            <a href="{{ route('frontend.login') }}" class="iq-sub-card iq-logout-2 mt-1 d-flex justify-content-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                                    <path d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z" fill="currentColor"></path>
+                                            <a href="{{ route('frontend.login') }}"
+                                                class="iq-sub-card iq-logout-2 mt-1 d-flex justify-content-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 16 16" fill="none">
+                                                    <path
+                                                        d="M1.82209 15.9999C1.46654 15.9999 1.16283 15.874 0.910981 15.6221C0.659129 15.3703 0.533203 15.0666 0.533203 14.711V1.73322C0.533203 1.37767 0.659129 1.07397 0.910981 0.822114C1.16283 0.570262 1.46654 0.444336 1.82209 0.444336H7.95543V1.44434H1.82209C1.74802 1.44434 1.68135 1.47397 1.62209 1.53322C1.56283 1.59248 1.5332 1.65915 1.5332 1.73322V14.711C1.5332 14.7851 1.56283 14.8517 1.62209 14.911C1.68135 14.9703 1.74802 14.9999 1.82209 14.9999H7.95543V15.9999H1.82209ZM12.0888 11.5999L11.3554 10.8888L13.5332 8.73322H5.68876V7.711H13.511L11.3332 5.55545L12.0665 4.82211L15.4665 8.24434L12.0888 11.5999Z"
+                                                        fill="currentColor"></path>
                                                 </svg>
                                                 <h6 class="mb-0 font-size-14 fw-normal">Login</h6>
                                             </a>

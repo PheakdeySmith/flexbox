@@ -435,6 +435,8 @@
                       Feb 2017
                     </span>
                   </div>
+
+
                   <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
                       <li class="share">
@@ -462,7 +464,10 @@
                             href="https://templates.iqonic.design/streamit-dist/frontend/html/assets/images/video/trailer.mp4"
                             download=""><i class="fa-solid fa-download"></i></a></span></li>
                     </ul>
-                    <div class="movie-detail-select">
+
+                    <button>Add to Cart</button>
+
+                    {{-- <div class="movie-detail-select">
                       <select name="movieselect"
                         class="form-control movie-select select2-basic-single js-states select2-hidden-accessible"
                         data-select2-id="select2-data-1-8vud" tabindex="-1" aria-hidden="true" data-sharkid="__0">
@@ -471,8 +476,11 @@
                         <option value="3">Sand Dust</option>
                         <option value="4">Jumbo Queen</option>
                       </select>
-                    </div>
+                    </div> --}}
                   </div>
+
+
+
                   <ul class="iq-blogtag list-unstyled d-flex flex-wrap align-items-center gap-3 p-0">
                     <li class="iq-tag-title text-primary mb-0">
                       <i class="fa fa-tags" aria-hidden="true"></i>

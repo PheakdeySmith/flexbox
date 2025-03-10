@@ -5,7 +5,8 @@
 
     use App\Models\User;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
     use Illuminate\Support\Facades\Storage;
 
     class UserController extends Controller
@@ -84,6 +85,7 @@
                     Storage::disk('public')->delete($user->user_profile);
                 }
                 $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
+
             }
 
             // Update User

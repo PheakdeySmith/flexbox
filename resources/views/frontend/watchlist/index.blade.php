@@ -8,12 +8,12 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
                         <div class="d-flex align-items-center gap-3">
                             <div class="account-logo d-flex align-items-center position-relative">
-                                <img src="{{ asset('frontend/assets') }}/images/profile.webp"
-                                    class="img-fluid object-cover rounded-3" alt="profile" />
+                                <img src="{{ Auth::user()->user_profile ? asset(Auth::user()->user_profile) : asset('frontend/assets/images/default-profile.png') }}"
+                                    class="img-fluid" alt="User Profile" loading="lazy">
                                 {{-- <i class="fa-regular fa-pen-to-square"></i> --}}
                             </div>
                             <div>
-                                <a href="{{ route('frontend.account') }}" class="text-white">
+                                <a href="{{ route('frontend.account') }}" class="text-white" >
                                     <h6 class="font-size-18 text-capitalize text-white fw-500">
                                         {{ Auth::user()->name }} <!-- This will display the user's name -->
                                     </h6>
