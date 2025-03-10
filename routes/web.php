@@ -86,6 +86,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('payment', PaymentController::class);
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
         Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
+
+       
     });
 
 });
