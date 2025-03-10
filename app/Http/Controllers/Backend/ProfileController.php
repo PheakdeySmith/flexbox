@@ -51,8 +51,12 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Delete old profile photo if exists
-        if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
-            Storage::disk('public')->delete($user->user_profile);
+        if ($user->user_profile) {
+            // Convert URL path to relative storage path
+            $oldPath = str_replace('/storage/', '', $user->user_profile);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         // Store new profile photo
@@ -71,8 +75,12 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Delete profile photo if exists
-        if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
-            Storage::disk('public')->delete($user->user_profile);
+        if ($user->user_profile) {
+            // Convert URL path to relative storage path
+            $oldPath = str_replace('/storage/', '', $user->user_profile);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         $user->user_profile = null;
@@ -93,8 +101,12 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Delete profile photo if exists
-        if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
-            Storage::disk('public')->delete($user->user_profile);
+        if ($user->user_profile) {
+            // Convert URL path to relative storage path
+            $oldPath = str_replace('/storage/', '', $user->user_profile);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
         }
 
         Auth::logout();
