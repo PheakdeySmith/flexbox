@@ -199,6 +199,7 @@ class MovieController extends Controller
         if ($request->has('directors') && is_array($request->directors)) {
             $directorCount = 0;
             $newDirectorCount = 0;
+            $directorsToSync = [];
 
             foreach ($request->directors as $directorData) {
                 $directorCount++;
@@ -248,9 +249,12 @@ class MovieController extends Controller
                     $pivotData['job'] = $directorData['job'];
                 }
 
-                // Attach director to movie
-                $movie->directors()->attach($director->id, $pivotData);
+                // Add to the array of directors to sync
+                $directorsToSync[$director->id] = $pivotData;
             }
+
+            // Sync all directors at once
+            $movie->directors()->sync($directorsToSync);
 
             $message = "Movie created successfully with {$directorCount} directors";
             if ($newDirectorCount > 0) {
@@ -452,11 +456,11 @@ class MovieController extends Controller
 
         // Handle directors if provided
         if ($request->has('directors') && is_array($request->directors)) {
-            // Remove existing director relationships
-            $movie->directors()->detach();
-
+            // Instead of detaching all directors and then reattaching them,
+            // we'll collect all directors and use sync at the end
             $directorCount = 0;
             $newDirectorCount = 0;
+            $directorsToSync = [];
 
             foreach ($request->directors as $directorData) {
                 $directorCount++;
@@ -506,9 +510,12 @@ class MovieController extends Controller
                     $pivotData['job'] = $directorData['job'];
                 }
 
-                // Attach director to movie
-                $movie->directors()->attach($director->id, $pivotData);
+                // Add to the array of directors to sync
+                $directorsToSync[$director->id] = $pivotData;
             }
+
+            // Sync all directors at once
+            $movie->directors()->sync($directorsToSync);
         }
 
         return redirect()->route('movie.index')

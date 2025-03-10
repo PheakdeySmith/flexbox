@@ -24,7 +24,9 @@ Route::get('/subscription', [FrontendController::class, 'subscription'])->name('
 Route::get('/frontend/login', function() {
     return redirect()->route('login');
 })->name('frontend.login');
-Route::get('/frontend/register', [FrontendController::class, 'register'])->name('frontend.register');
+Route::get('/frontend/register', function() {
+    return redirect()->route('register');
+})->name('frontend.register');
 Route::get('/restrict-detail', [FrontendController::class, 'restrictDetail'])->name('frontend.restrictDetail');
 Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre');
 Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor');
@@ -51,9 +53,15 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('backend.dashboard');
     });
 
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    Route::get('/profile/photo/remove', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove');
+
+    // Password routes
+    Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
 
     // Backend routes
     Route::prefix('backend')->group(function() {

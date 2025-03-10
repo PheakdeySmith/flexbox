@@ -53,7 +53,7 @@ class AuthController extends Controller
      */
     public function showRegisterForm()
     {
-        return view('backend.auth.register.index');
+        return view('authetication.register.index');
     }
 
     /**

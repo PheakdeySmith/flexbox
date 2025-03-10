@@ -10,7 +10,7 @@
               <h2 class="title">My Account</h2>
               <ol class="breadcrumb justify-content-center">
                 <li class="breadcrumb-item"><a
-                    href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html">Home</a></li>
+                    href="">Home</a></li>
                 <li class="breadcrumb-item active">My Account</li>
               </ol>
             </nav>
@@ -68,7 +68,7 @@
                       href="{{ route('frontend.login') }}">Log out</a>)</p>
                   <p>From your account dashboard you can view your <a href="javascript:void(1)">recent orders</a>,
                     manage your <a href="javascript:void(3)">shipping and billing addresses</a>, and <a
-                      href="javascript:void(4)" id="account-details">edit your password and account details</a>.
+                      href="javascript:void(4)">edit your password and account details</a>.
                   </p>
                 </div>
               </div>

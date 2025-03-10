@@ -77,6 +77,16 @@
                                                     <i class="fas fa-users mr-1"></i> Actors
                                                 </a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="genres-tab" data-toggle="tab" href="#genres" role="tab" aria-controls="genres" aria-selected="false">
+                                                    <i class="fas fa-tags mr-1"></i> Genres
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="directors-tab" data-toggle="tab" href="#directors" role="tab" aria-controls="directors" aria-selected="false">
+                                                    <i class="fas fa-user-tie mr-1"></i> Directors
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -423,6 +433,169 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Add the Genres Tab -->
+                                    <div class="tab-pane fade" id="genres" role="tabpanel" aria-labelledby="genres-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Select the genres for this movie.
+                                                </div>
+
+                                                <!-- Selected Genres Section -->
+                                                <div class="row mt-4">
+                                                    <div class="col-md-12">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h3 class="card-title">Selected Genres</h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div id="selected-genres-container">
+                                                                    <div id="no-selected-genres" class="alert alert-info {{ $movie->genres->count() > 0 ? 'd-none' : '' }}">
+                                                                        <i class="fas fa-info-circle mr-1"></i> No genres selected yet. Add genres below.
+                                                                    </div>
+                                                                    <div id="selected-genres-list" class="row">
+                                                                        @foreach($movie->genres as $index => $genre)
+                                                                        <div class="col-md-3 mb-4 genre-item" data-id="{{ $genre->id }}">
+                                                                            <div class="card h-100">
+                                                                                <div class="card-body">
+                                                                                    <h5 class="card-title">{{ $genre->name }}</h5>
+                                                                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="{{ $genre->id }}">
+                                                                                        <i class="fas fa-trash"></i> Remove
+                                                                                    </button>
+                                                                                    <input type="hidden" name="genres[{{ $index }}][id]" value="{{ $genre->id }}">
+                                                                                    <input type="hidden" name="genres[{{ $index }}][name]" value="{{ $genre->name }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Add New Genre Section -->
+                                                <div class="row mt-4">
+                                                    <div class="col-md-12">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h3 class="card-title">Add New Genre</h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="form-group">
+                                                                    <label for="new-genre-name">Genre Name</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" id="new-genre-name" placeholder="Enter genre name">
+                                                                        <div class="input-group-append">
+                                                                            <button type="button" class="btn btn-primary" id="add-new-genre">
+                                                                                <i class="fas fa-plus"></i> Add Genre
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add the Directors Tab -->
+                                    <div class="tab-pane fade" id="directors" role="tabpanel" aria-labelledby="directors-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle mr-1"></i> Select the directors and crew for this movie.
+                                                </div>
+
+                                                <!-- Selected Directors Section -->
+                                                <div class="row mt-4">
+                                                    <div class="col-md-12">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h3 class="card-title">Selected Directors & Crew</h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div id="selected-directors-container">
+                                                                    <div id="no-selected-directors" class="alert alert-info {{ $movie->directors->count() > 0 ? 'd-none' : '' }}">
+                                                                        <i class="fas fa-info-circle mr-1"></i> No directors selected yet. Add directors below.
+                                                                    </div>
+                                                                    <div id="selected-directors-list" class="row">
+                                                                        @foreach($movie->directors as $index => $director)
+                                                                        <div class="col-md-3 mb-4 director-item" data-id="{{ $director->id }}" data-job="{{ $director->pivot->job }}">
+                                                                            <div class="card h-100">
+                                                                                <img src="{{ $director->profile_photo ?: asset('backend/assets/image/no-profile.png') }}" class="card-img-top" alt="{{ $director->name }}" style="height: 200px; object-fit: cover;">
+                                                                                <div class="card-body">
+                                                                                    <h5 class="card-title">{{ $director->name }}</h5>
+                                                                                    <p class="card-text text-muted">{{ $director->pivot->job }}</p>
+                                                                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="{{ $director->id }}" data-job="{{ $director->pivot->job }}">
+                                                                                        <i class="fas fa-trash"></i> Remove
+                                                                                    </button>
+                                                                                    <input type="hidden" name="directors[{{ $index }}][id]" value="{{ $director->id }}">
+                                                                                    <input type="hidden" name="directors[{{ $index }}][name]" value="{{ $director->name }}">
+                                                                                    <input type="hidden" name="directors[{{ $index }}][profile_photo]" value="{{ $director->profile_photo }}">
+                                                                                    <input type="hidden" name="directors[{{ $index }}][job]" value="{{ $director->pivot->job }}">
+                                                                                    <input type="hidden" name="directors[{{ $index }}][biography]" value="{{ $director->biography }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Add New Director Section -->
+                                                <div class="row mt-4">
+                                                    <div class="col-md-12">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h3 class="card-title">Add New Director</h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="new-director-name">Director Name</label>
+                                                                            <input type="text" class="form-control" id="new-director-name" placeholder="Enter director name">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="form-group">
+                                                                            <label for="new-director-job">Job</label>
+                                                                            <select class="form-control" id="new-director-job">
+                                                                                <option value="Director">Director</option>
+                                                                                <option value="Producer">Producer</option>
+                                                                                <option value="Executive Producer">Executive Producer</option>
+                                                                                <option value="Screenplay">Screenplay</option>
+                                                                                <option value="Writer">Writer</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <label for="new-director-profile">Profile Photo URL</label>
+                                                                            <input type="url" class="form-control" id="new-director-profile" placeholder="Enter profile photo URL (optional)">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-12">
+                                                                        <button type="button" class="btn btn-primary" id="add-new-director">
+                                                                            <i class="fas fa-plus"></i> Add Director
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row mt-4">
@@ -608,22 +781,110 @@
             }
         });
 
-        // Actor search functionality
-        $(document).ready(function() {
-            // Store selected actors
-            window.selectedActors = [];
+        // Store selected actors
+        window.selectedActors = [];
+        // Store selected directors
+        window.selectedDirectors = [];
+        // Store selected genres
+        window.selectedGenres = [];
 
-            // Initialize selectedActors with existing actors
-            @foreach($movie->actors as $actor)
-            selectedActors.push({
-                id: {{ $actor->tmdb_id ?: $actor->id }},
-                name: "{{ $actor->name }}",
-                profile_photo: "{{ $actor->profile_photo ?: '' }}",
-                character: "{{ $actor->pivot->character ?: '' }}"
+        // Initialize selectedActors with existing actors
+        @foreach($movie->actors as $actor)
+        selectedActors.push({
+            id: {{ $actor->tmdb_id ?: $actor->id }},
+            name: "{{ $actor->name }}",
+            profile_photo: "{{ $actor->profile_photo ?: '' }}",
+            character: "{{ $actor->pivot->character ?: '' }}"
+        });
+        @endforeach
+
+        // Initialize existing genres
+        $('.genre-item').each(function() {
+            var genreId = $(this).data('id');
+            var genreName = $(this).find('.card-title').text();
+
+            window.selectedGenres.push({
+                id: genreId,
+                name: genreName
             });
-            @endforeach
+        });
 
-            // ... existing code ...
+        // Initialize existing directors
+        $('.director-item').each(function() {
+            var directorId = $(this).data('id');
+            var directorName = $(this).find('.card-title').text();
+            var directorJob = $(this).data('job');
+            var directorProfile = $(this).find('img').attr('src');
+            var directorBiography = '';
+
+            window.selectedDirectors.push({
+                id: directorId,
+                name: directorName,
+                job: directorJob,
+                profile_photo: directorProfile !== '{{ asset('backend/assets/image/no-profile.png') }}' ? directorProfile : '',
+                biography: directorBiography
+            });
+        });
+
+        // Handle remove genre button clicks
+        $(document).on('click', '.remove-genre', function() {
+            var genreId = $(this).data('id');
+            removeSelectedGenre(genreId);
+        });
+
+        // Handle remove director button clicks
+        $(document).on('click', '.remove-director', function() {
+            var directorId = $(this).data('id');
+            var job = $(this).data('job');
+            removeSelectedDirector(directorId, job);
+        });
+
+        // Handle add new genre button click
+        $('#add-new-genre').on('click', function() {
+            var genreName = $('#new-genre-name').val().trim();
+
+            if (genreName.length === 0) {
+                window.showWarningToast('Please enter a genre name');
+                return;
+            }
+
+            // Generate a temporary ID (negative to avoid conflicts with real IDs)
+            var tempId = -Math.floor(Math.random() * 1000000);
+
+            addSelectedGenre({
+                id: tempId,
+                name: genreName
+            });
+
+            // Clear the input field
+            $('#new-genre-name').val('');
+        });
+
+        // Handle add new director button click
+        $('#add-new-director').on('click', function() {
+            var directorName = $('#new-director-name').val().trim();
+            var directorJob = $('#new-director-job').val();
+            var directorProfile = $('#new-director-profile').val().trim();
+
+            if (directorName.length === 0) {
+                window.showWarningToast('Please enter a director name');
+                return;
+            }
+
+            // Generate a temporary ID (negative to avoid conflicts with real IDs)
+            var tempId = -Math.floor(Math.random() * 1000000);
+
+            addSelectedDirector({
+                id: tempId,
+                name: directorName,
+                job: directorJob,
+                profile_photo: directorProfile,
+                biography: ''
+            });
+
+            // Clear the input fields
+            $('#new-director-name').val('');
+            $('#new-director-profile').val('');
         });
 
         // Update the fetchMovie function to include country and language data
@@ -905,6 +1166,115 @@
                     '</div>';
 
                 $('#movie-actors').append(html);
+            });
+        }
+
+        // Functions for genre management
+        function addSelectedGenre(genre) {
+            // Check if genre is already selected
+            var existingIndex = window.selectedGenres.findIndex(function(selectedGenre) {
+                return selectedGenre.id === genre.id;
+            });
+
+            if (existingIndex === -1) {
+                window.selectedGenres.push(genre);
+                updateSelectedGenresList();
+            }
+        }
+
+        function removeSelectedGenre(genreId) {
+            window.selectedGenres = window.selectedGenres.filter(function(genre) {
+                return genre.id !== genreId;
+            });
+
+            updateSelectedGenresList();
+        }
+
+        function updateSelectedGenresList() {
+            var container = $('#selected-genres-list');
+            container.empty();
+
+            if (window.selectedGenres.length === 0) {
+                $('#no-selected-genres').removeClass('d-none');
+                return;
+            }
+
+            $('#no-selected-genres').addClass('d-none');
+
+            $.each(window.selectedGenres, function(index, genre) {
+                var html = '<div class="col-md-3 mb-4 genre-item" data-id="' + genre.id + '">' +
+                    '<div class="card h-100">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + genre.name + '</h5>' +
+                    '<button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="' + genre.id + '">' +
+                    '<i class="fas fa-trash"></i> Remove' +
+                    '</button>' +
+                    // Hidden inputs to include genre data in form submission
+                    '<input type="hidden" name="genres[' + index + '][id]" value="' + genre.id + '">' +
+                    '<input type="hidden" name="genres[' + index + '][name]" value="' + genre.name + '">' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                container.append(html);
+            });
+        }
+
+        // Functions for director management
+        function addSelectedDirector(director) {
+            // Check if director is already selected
+            var existingIndex = window.selectedDirectors.findIndex(function(selectedDirector) {
+                return selectedDirector.id === director.id && selectedDirector.job === director.job;
+            });
+
+            if (existingIndex === -1) {
+                window.selectedDirectors.push(director);
+                updateSelectedDirectorsList();
+            }
+        }
+
+        function removeSelectedDirector(directorId, job) {
+            window.selectedDirectors = window.selectedDirectors.filter(function(director) {
+                return !(director.id === directorId && director.job === job);
+            });
+
+            updateSelectedDirectorsList();
+        }
+
+        function updateSelectedDirectorsList() {
+            var container = $('#selected-directors-list');
+            container.empty();
+
+            if (window.selectedDirectors.length === 0) {
+                $('#no-selected-directors').removeClass('d-none');
+                return;
+            }
+
+            $('#no-selected-directors').addClass('d-none');
+
+            $.each(window.selectedDirectors, function(index, director) {
+                var profileUrl = director.profile_photo || '{{ asset('backend/assets/image/no-profile.png') }}';
+
+                var html = '<div class="col-md-3 mb-4 director-item" data-id="' + director.id + '" data-job="' + director.job + '">' +
+                    '<div class="card h-100">' +
+                    '<img src="' + profileUrl + '" class="card-img-top" alt="' + director.name + '" style="height: 200px; object-fit: cover;">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + director.name + '</h5>' +
+                    '<p class="card-text text-muted">' + director.job + '</p>' +
+                    '<button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="' + director.id + '" data-job="' + director.job + '">' +
+                    '<i class="fas fa-trash"></i> Remove' +
+                    '</button>' +
+                    // Hidden inputs to include director data in form submission
+                    '<input type="hidden" name="directors[' + index + '][id]" value="' + director.id + '">' +
+                    '<input type="hidden" name="directors[' + index + '][name]" value="' + director.name + '">' +
+                    '<input type="hidden" name="directors[' + index + '][profile_photo]" value="' + (director.profile_photo || '') + '">' +
+                    '<input type="hidden" name="directors[' + index + '][job]" value="' + director.job + '">' +
+                    '<input type="hidden" name="directors[' + index + '][biography]" value="' + (director.biography || '') + '">' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                container.append(html);
             });
         }
     });

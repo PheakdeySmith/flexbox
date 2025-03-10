@@ -49,6 +49,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user's profile photo URL.
+     *
+     * @return string|null
+     */
+    public function getProfilePhotoAttribute()
+    {
+        return $this->user_profile;
+    }
+
+    /**
      * Get the watchlist items for the user.
      */
     public function watchlist()

@@ -39,7 +39,7 @@ class FrontendController extends Controller
 
     public function register()
     {
-        return view('authetication.register.index');
+        return redirect()->route('register');
     }
 
     public function restrictDetail()
