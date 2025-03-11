@@ -1,4 +1,4 @@
-<div class="top-ten-block">
+<div class="top-ten-block section-padding-top">
     <div class="container-fluid">
       <section class="overflow-hidden">
         <div class="d-flex align-items-center justify-content-between px-md-3 px-1 mb-4">

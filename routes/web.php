@@ -17,7 +17,7 @@ use App\Http\Controllers\Backend\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
-Route::get('/detail', [FrontendController::class, 'detail'])->name('frontend.detail');
+Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
 Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
 Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
 Route::get('/frontend/login', function () {
@@ -29,6 +29,7 @@ Route::get('/frontend/register', function () {
 Route::get('/restrict-detail', [FrontendController::class, 'restrictDetail'])->name('frontend.restrictDetail');
 Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre');
 Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor');
+Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->name('frontend.actorDetail');
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
 Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
 Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');

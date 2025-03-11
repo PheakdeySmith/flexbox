@@ -12,7 +12,7 @@
               <h2 class="title">Genres</h2>
               <ol class="breadcrumb justify-content-center">
                 <li class="breadcrumb-item"><a
-                    href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html">Home</a></li>
+                    href="{{ route('frontend.home') }}">Home</a></li>
                 <li class="breadcrumb-item active">Genres</li>
               </ol>
             </nav>

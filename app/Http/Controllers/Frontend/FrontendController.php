@@ -5,37 +5,79 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use App\Models\Genre;
+use App\Models\Actor;
 
 class FrontendController extends Controller
 {
     public function index()
     {
-        $recommendedMovies = Movie::where('is_free', true)
-            ->orWhere('imdb_rating', '>=', 7)
+        $recommendedMovies = Movie::where('status', 'active')
+            ->where(function($query) {
+                $query->where('is_free', true)
+                    ->orWhere('imdb_rating', '>=', 7);
+            })
             ->take(10)
             ->get();
 
-        $latestMovies = Movie::orderBy('release_date', 'desc')->take(10)->get();
-
-        $popularMovies = Movie::orderBy('imdb_rating', 'desc')
+        $latestMovies = Movie::where('status', 'active')
+            ->orderBy('release_date', 'desc')
             ->take(10)
             ->get();
 
-        $specials = Movie::where('is_free', true)->take(10)->get();
+        $popularMovies = Movie::where('status', 'active')
+            ->orderBy('release_date', 'desc')
+            ->take(10)
+            ->get();
 
-        $sliderMovies = Movie::where('is_featured', true)
+        $specials = Movie::where('status', 'active')
+            ->where('is_free', true)
+            ->take(10)
+            ->get();
+
+        $sliderMovies = Movie::where('status', 'active')
+            ->where('is_featured', true)
             ->orderBy('release_date', 'desc')
             ->take(3)
             ->get();
 
-        $topTenMovies = Movie::orderBy('imdb_rating', 'desc')->take(10)->get();
+        $topTenMovies = Movie::where('status', 'active')
+            ->orderBy('imdb_rating', 'desc')
+            ->take(10)
+            ->get();
 
-        return view('frontend.home.index', compact('recommendedMovies', 'latestMovies', 'popularMovies', 'specials', 'sliderMovies', 'topTenMovies'));
+        $verticalSliderMovies = Movie::where('status', 'active')
+            ->where('is_featured_vertical', true)
+            ->orderBy('release_date', 'desc')
+            ->take(4)
+            ->get();
+
+        $genres = Genre::orderBy('name')
+            ->get();
+
+        $actors = Actor::orderBy('name')
+            ->get();
+
+        return view('frontend.home.index', compact(
+            'recommendedMovies',
+            'latestMovies',
+            'popularMovies',
+            'specials',
+            'sliderMovies',
+            'verticalSliderMovies',
+            'topTenMovies',
+            'genres',
+            'actors'
+        ));
     }
 
-    public function detail()
+    public function detail($id = null)
     {
-        return view('frontend.detail.index');
+        $movie = null;
+        if ($id) {
+            $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
+        }
+        return view('frontend.detail.index', compact('movie'));
     }
 
     public function watchlist()
@@ -72,6 +114,15 @@ class FrontendController extends Controller
     public function actor()
     {
         return view('frontend.actor.index');
+    }
+
+    public function actorDetail($id = null)
+    {
+        $actor = null;
+        if ($id) {
+            $actor = Actor::findOrFail($id);
+        }
+        return view('frontend.actor.actor-detail', compact('actor'));
     }
 
     public function error404()
