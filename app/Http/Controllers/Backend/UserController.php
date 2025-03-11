@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -17,8 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
+        $roles = Role::all();
         $users = User::all();
-        return view('backend.user.index', compact('users'));
+        return view('backend.user.index', compact('users', 'roles'));
     }
 
     /**
@@ -34,31 +36,37 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate the incoming data
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:user,admin,moderator',
-            'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            'role' => 'required|exists:roles,id',  // Validate role ID exists in the roles table
+            'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',  // Validate image
         ]);
 
-        // Handle file upload
+        // Handle profile image upload if it exists
         $imagePath = null;
         if ($request->hasFile('user_profile')) {
+            // Store the image in the public disk
             $imagePath = $request->file('user_profile')->store('user_profile', 'public');
         }
 
-        // Create User
-        User::create([
+        // Create the user record in the database
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'user_profile' => $imagePath,
+            'user_profile' => $imagePath,  // Store image path if exists
         ]);
 
+        $role = Role::findById($request->role);
+        $user->assignRole($role->name);
+
+        // Redirect back with success message
         return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
+
 
     /**
      * Display the specified user.
