@@ -92,6 +92,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the orders associated with the user.
+     */
+    public function orders()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
      * Get the active subscription for the user.
      */
     public function activeSubscription()

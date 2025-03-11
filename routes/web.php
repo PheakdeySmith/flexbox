@@ -14,7 +14,7 @@ use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Backend\SubscriptionPlanController;
 use App\Http\Controllers\Backend\SubscriptionController;
 use App\Http\Controllers\Backend\PaymentController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Backend\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');

@@ -1,13 +1,13 @@
 <?php
+namespace App\Http\Controllers\Backend;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\OrderItem;
 use App\Models\Movie;
-use Dotenv\Exception\ValidationException;
-use Exception;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -19,18 +19,11 @@ class OrderController extends Controller
      */
     public function index(): View
     {
-        try {
-            $orders = OrderItem::with(['movie' => function ($query) {
-                $query->withTrashed();
-            }])->latest()->get();
+        $orders = OrderItem::with(['movie', 'user'])->latest()->get();
+        $movies = Movie::active()->get();
+        $users = User::all();
 
-            $movies = Movie::active()->get();
-
-            return view('backend.order.index', compact('orders', 'movies'));
-        } catch (\Exception $e) {
-            Log::error('Failed to fetch orders:', ['error' => $e->getMessage()]);
-            return view('backend.order.index')->with('error', 'Failed to load orders. Please try again.');
-        }
+        return view('backend.order.index', compact('orders', 'movies', 'users'));
     }
 
     /**
@@ -40,10 +33,11 @@ class OrderController extends Controller
     {
         try {
             $movies = Movie::active()->get();
-            return view('backend.order.create', compact('movies'));
+            $users = User::all();
+            return view('backend.order.create', compact('movies', 'users'));
         } catch (\Exception $e) {
             Log::error('Failed to load create order form:', ['error' => $e->getMessage()]);
-            return view('backend.order.create')->with('error', 'Failed to load movies. Please try again.');
+            return view('backend.order.create')->with('error', 'Failed to load data. Please try again.');
         }
     }
 
@@ -58,21 +52,20 @@ class OrderController extends Controller
             // Validate input
             $validated = $request->validate([
                 'movie_id' => 'required|exists:movies,id',
-                'price' => 'required|numeric|min:0'
+                'user_id' => 'required|exists:users,id',
+                'price' => 'required|numeric|min:0',
+                'status' => 'required|in:pending,completed,cancelled'
             ]);
 
             // Verify movie exists and get its details
             $movie = Movie::findOrFail($validated['movie_id']);
 
-            // Verify price matches movie price
-            if ($movie->price != $validated['price']) {
-                throw new \Exception('Invalid price for the selected movie');
-            }
-
             // Create order
             $order = OrderItem::create([
                 'movie_id' => $validated['movie_id'],
-                'price' => $validated['price']
+                'user_id' => $validated['user_id'],
+                'price' => $validated['price'],
+                'status' => $validated['status']
             ]);
 
             DB::commit();
@@ -110,7 +103,7 @@ class OrderController extends Controller
         try {
             $order->load(['movie' => function ($query) {
                 $query->withTrashed();
-            }]);
+            }, 'user']);
             return view('backend.order.show', compact('order'));
         } catch (\Exception $e) {
             Log::error('Failed to show order:', ['error' => $e->getMessage(), 'order_id' => $order->id]);
@@ -123,36 +116,67 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-
-public function edit(OrderItem $order): View|RedirectResponse
-{
-    try {
-        $movies = Movie::active()->get();
-        return view('backend.order.edit', compact('order', 'movies'));
-    } catch (\Exception $e) {
-        Log::error('Failed to load edit order form:', ['error' => $e->getMessage(), 'order_id' => $order->id ?? null]);
-        return redirect()->route('order.index')->with('error', 'Failed to load order for editing.');
-    }
-}
-
-public function update(Request $request, $id)
+    public function edit(OrderItem $order): View|RedirectResponse
     {
-        $order = OrderItem::findOrFail($id);
-
-        $request->validate([
-            'movie_id' => 'required|exists:movies,id',
-            'price' => 'required|numeric|min:0'
-        ]);
-
-        $order->update([
-            'movie_id' => $request->movie_id,
-            'price' => $request->price,
-        ]);
-
-        return redirect()->route('order.index')
-            ->with('success', 'Order updated successfully.');
+        try {
+            $movies = Movie::active()->get();
+            $users = User::all();
+            return view('backend.order.edit', compact('order', 'movies', 'users'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load edit order form:', ['error' => $e->getMessage(), 'order_id' => $order->id ?? null]);
+            return redirect()->route('order.index')->with('error', 'Failed to load order for editing.');
+        }
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $order = OrderItem::findOrFail($id);
+
+            $validated = $request->validate([
+                'movie_id' => 'required|exists:movies,id',
+                'user_id' => 'required|exists:users,id',
+                'price' => 'required|numeric|min:0',
+                'status' => 'required|in:pending,completed,cancelled'
+            ]);
+
+            $order->update([
+                'movie_id' => $validated['movie_id'],
+                'user_id' => $validated['user_id'],
+                'price' => $validated['price'],
+                'status' => $validated['status']
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('order.index')
+                ->with('success', 'Order updated successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            Log::warning('Order update validation failed:', ['errors' => $e->errors()]);
+            return redirect()
+                ->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Order update failed:', [
+                'error' => $e->getMessage(),
+                'order_id' => $id,
+                'request_data' => $request->all()
+            ]);
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update order. ' . $e->getMessage());
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

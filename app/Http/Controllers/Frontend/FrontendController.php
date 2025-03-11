@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
-use App\Models\Genre;
 use App\Models\Actor;
 
 class FrontendController extends Controller

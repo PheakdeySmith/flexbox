@@ -21,14 +21,36 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="user_id">User</label>
+                        <select class="form-control" id="user_id" name="user_id" required>
+                            <option value="" disabled selected>Select a user</option>
+                            @foreach ($users ?? [] as $user)
+                                <option value="{{ $user->id }}">
+                                    {{ $user->name }} ({{ $user->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="price">Price</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">$</span>
                             </div>
-                            <input type="text" class="form-control" id="price" name="price" readonly>
+                            <input type="text" class="form-control" id="price" name="price" required>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
