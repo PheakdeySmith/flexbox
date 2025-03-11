@@ -265,7 +265,7 @@
                 </table>
                 <div class="button-primary">
                   <div class="iq-button">
-                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/checkout.html"
+                    <a href="{{route('frontend.checkout')}}"x
                       class="btn text-uppercase position-relative">
                       <span class="button-text">Proceed to checkout</span>
                       <i class="fa-solid fa-play"></i>
