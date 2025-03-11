@@ -150,6 +150,12 @@
     <script src="{{ asset('AdminLTE') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="{{ asset('AdminLTE') }}/plugins/select2/js/select2.full.min.js"></script>
     <script src="{{ asset('AdminLTE') }}/plugins/dropzone/min/dropzone.min.js"></script>
+    <!-- Include jQuery before your script that uses it -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Other scripts that depend on jQuery -->
+    <script src="{{ asset('AdminLTE') }}/plugins/select2/js/select2.full.min.js"></script>
+
 
     <script>
         $(function() {
