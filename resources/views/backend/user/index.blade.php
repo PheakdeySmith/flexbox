@@ -57,6 +57,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Password</th>
+                                            <th>Role</th>
                                             <th>Profile Image</th>
                                             <th>Created At</th>
                                             <th>Actions</th>
@@ -69,6 +70,8 @@
                                                 <td>{{ $user->name }}</td>
                                                 <td>{{ $user->email }}</td>
                                                 <td>{{ Str::limit($user->password, 20) }}</td>
+                                                <td>{{ $user->getRoleNames()->first() ?? 'No Role Assigned' }}</td>
+
                                                 <td>
                                                     @if ($user->user_profile)
                                                         <img src="{{ asset('storage/' . $user->user_profile) }}"
@@ -80,12 +83,11 @@
                                                 <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-primary btn-sm edit-btn"
-                                                    data-toggle="modal" data-target="#editModal"
-                                                    data-id="{{ $user->id }}"
-                                                    data-name="{{ $user->name }}"
-                                                    data-email="{{ $user->email }}"
-                                                    data-profile-photo="{{ $user->user_profile }}"
-                                                    data-action="{{ route('user.update', $user->id) }}">Edit</button>
+                                                        data-toggle="modal" data-target="#editModal"
+                                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                                        data-email="{{ $user->email }}"
+                                                        data-profile-photo="{{ $user->user_profile }}"
+                                                        data-action="{{ route('user.update', $user->id) }}">Edit</button>
 
 
                                                     <button type="button" class="btn btn-danger btn-sm delete-btn"
@@ -108,7 +110,7 @@
 
     @include('backend.user.create')
     @include('backend.user.edit')
-     <!-- Include the create modal form -->
+    <!-- Include the create modal form -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
