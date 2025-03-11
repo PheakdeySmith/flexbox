@@ -30,8 +30,7 @@
                                                 alt="{{ $movie->title }}" loading="lazy">
                                     </div>
                                     <div class="block-description">
-                                        <h6 class="iq-title"><a
-                                                    href="">{{ $movie->title }}</a>
+                                        <h6 class="iq-title"><a href="{{ route('frontend.detail', $movie->id) }}">{{ $movie->title }}</a>
                                         </h6>
                                         <div class="movie-time d-flex align-items-center my-2">
                                                 <span class="text-body">{{ $movie->duration }}</span>
@@ -100,7 +99,7 @@
                                         @endif
                                     </ul>
                                     <h2 class="iq-title mb-3"><a
-                                            href="">{{ $movie->title }}</a></h2>
+                                            href="{{ route('frontend.detail', $movie->id) }}">{{ $movie->title }}</a></h2>
                                     <div class="d-flex align-items-center gap-3 mb-3">
                                         <div class="slider-ratting d-flex align-items-center">
                                             <ul
@@ -115,7 +114,7 @@
                                     </div>
                                     <p class="mt-0 mb-3 line-count-2">{{ $movie->description ?? 'No description available' }}</p>
                                     <div class="iq-button">
-                                        <a href=""
+                                        <a href="{{ route('frontend.detail', $movie->id) }}"
                                             class="btn text-uppercase position-relative">
                                             <span class="button-text">play now</span>
                                             <i class="fa-solid fa-play"></i>

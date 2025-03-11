@@ -55,7 +55,8 @@ class FrontendController extends Controller
         $genres = Genre::orderBy('name')
             ->get();
 
-        $actors = Actor::orderBy('name')
+            $actors = Actor::orderBy('name')
+            ->take(20)
             ->get();
 
         return view('frontend.home.index', compact(
@@ -73,11 +74,24 @@ class FrontendController extends Controller
 
     public function detail($id = null)
     {
+        $recommendedMovies = Movie::where('status', 'active')
+            ->where(function($query) {
+                $query->where('is_free', true)
+                    ->orWhere('imdb_rating', '>=', 7);
+            })
+            ->take(10)
+            ->get();
+
+        $popularMovies = Movie::where('status', 'active')
+            ->orderBy('release_date', 'desc')
+            ->take(10)
+            ->get();
+
         $movie = null;
         if ($id) {
             $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
         }
-        return view('frontend.detail.index', compact('movie'));
+        return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies'));
     }
 
     public function watchlist()

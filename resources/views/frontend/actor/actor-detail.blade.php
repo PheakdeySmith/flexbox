@@ -3,13 +3,13 @@
 @section('content')
 
     <div class="section-padding">
-            <div class="container-fluid">
-                @if($actor)
+        <div class="container-fluid">
+            @if ($actor)
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
                         <div class="cast-box position-relative">
-                            <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-actor.webp') }}" class="img-fluid object-cover w-100"
-                                alt="person" loading="lazy">
+                            <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-actor.webp') }}"
+                                class="img-fluid object-cover w-100" alt="person" loading="lazy">
                             <ul class="p-0 m-0 list-unstyled widget_social_media position-absolute w-100 text-center">
                                 <li>
                                     <a href="https://www.facebook.com/" class="position-relative">
@@ -39,7 +39,7 @@
                         <div class="seperator d-flex align-items-center flex-wrap mb-3">
                             <span>{{ $actor->birth_date }}</span>
                             <span class="circle"></span>
-                            <span>{{ $actor->birth_place }}</span>
+                            <span>Westminster, London, England, UK</span>
                         </div>
                         <h6 class="font-size-18 text-white fw-500">Height :</h6>
                         <p>6′ 1¾″ (1.87 m)</p>
@@ -48,7 +48,7 @@
                                 Hiddleston</span>(Sibling) </p>
                     </div>
                     <div class="col-lg-9 col-md-7 mt-5 mt-md-0">
-                        <h4 class="fw-500">Debbi Bossi</h4>
+                        <h4 class="fw-500">{{ $actor->name }}</h4>
                         <div class="seperator d-flex align-items-center flex-wrap mb-3">
                             <span class="fw-semibold">Director</span>
                             <span class="circle"></span>
@@ -56,16 +56,7 @@
                             <span class="circle"></span>
                             <span class="fw-semibold">Actor</span>
                         </div>
-                        <p>"Many actors have left a lasting impact on the world of entertainment. They bring characters
-                            to life on
-                            screen, captivating audiences with their talent and charisma. From classic Hollywood icons
-                            like Marilyn Monroe
-                            and Humphrey Bogart to contemporary stars like Leonardo DiCaprio and Scarlett Johansson,
-                            actors have played a
-                            vital role in shaping the world of cinema. Each actor has their unique style and
-                            contribution to the art of
-                            <span class="text-primary">storytelling (2001)</span>, making
-                        </p>
+                        <p>{{ $actor->biography }}</p>
                         <div class="awards-box border-bottom">
                             <h5>Awards</h5>
                             <span class="text-white fw-500">56 WINS &amp; 83 NOMINATIONS</span>
@@ -74,426 +65,124 @@
                             <h5 class="main-title text-capitalize mb-4">Most View Movies</h5>
                             <div class="card-style-grid mb-5">
                                 <div class="row row-cols-xl-5 row-cols-sm-2 row-cols-1">
-                                    <div class="col mb-4">
-                                        <div class="iq-card card-hover">
-                                            <div class="block-images position-relative w-100">
-                                                <div class="img-box w-100">
-                                                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                        class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                    <img src="{{ asset('frontend/assets' )}}/images/01(1).webp" alt="movie-card"
-                                                        class="img-fluid object-cover w-100 d-block border-0">
-                                                </div>
-                                                <div class="card-description with-transition">
-                                                    <div class="cart-content">
-                                                        <div class="content-left">
-                                                            <h5 class="iq-title text-capitalize">
-                                                                <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html">CRW</a>
-                                                            </h5>
-                                                            <div class="movie-time d-flex align-items-center my-2">
-                                                                <span class="movie-time-text font-normal">2hr
-                                                                    : 12mins</span>
-                                                            </div>
+                                    @if ($actor->movies->count() > 0)
+                                        @foreach ($actor->movies as $movie)
+                                            <div class="col mb-4">
+                                                <div class="iq-card card-hover">
+                                                    <div class="block-images position-relative w-100">
+                                                        <div class="img-box w-100">
+                                                            <a href="{{ route('frontend.detail', $movie->id) }}"
+                                                                class="position-absolute top-0 bottom-0 start-0 end-0"></a>
+                                                            @if ($movie->poster_url)
+                                                                <img src="{{ $movie->poster_url }}"
+                                                                    alt="{{ $movie->title }}"
+                                                                    class="img-fluid object-cover w-100 d-block border-0">
+                                                            @else
+                                                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                                                                    style="height: 200px;">
+                                                                    <i class="fas fa-film fa-3x text-white"></i>
+                                                                </div>
+                                                            @endif
                                                         </div>
-                                                        <div class="watchlist">
-                                                            <a class="watch-list-not"
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">
-                                                                <svg width="10" height="10"
-                                                                    viewBox="0 0 24 24" fill="none"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    class="icon-10">
-                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                <span class="watchlist-label"> Watchlist </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="block-social-info align-items-center">
-                                                    <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fas fa-share-alt"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-facebook-f"></i>
-                                                                        </a>
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-twitter"></i>
-                                                                        </a>
+                                                        <div class="card-description with-transition">
+                                                            <div class="cart-content">
+                                                                <div class="content-left">
+                                                                    <h5 class="iq-title text-capitalize">
                                                                         <a
-                                                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html#">
-                                                                            <i class="fas fa-link"></i>
+                                                                            href="{{ route('frontend.detail', $movie->id) }}">
+                                                                            {{ Str::limit($movie->title, 30, '...') }}
                                                                         </a>
+                                                                    </h5>
+                                                                    <div class="d-flex align-items-center justify-content-between my-2">
+                                                                        <div class="movie-time">
+                                                                            <span class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
+                                                                        </div>
+                                                                        <div class="watchlist">
+                                                                            <a class="watch-list-not" href="{{ route('frontend.watchlist') }}">
+                                                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-10">
+                                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                </svg>
+                                                                                <span class="watchlist-label"> Watchlist </span>
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </li>
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <span>+51</span>
+                                                        </div>
+                                                        <div class="block-social-info align-items-center">
+                                                            <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
+                                                                <li
+                                                                    class="share position-relative d-flex align-items-center text-center mb-0">
+                                                                    <span class="w-100 h-100 d-inline-block bg-transparent">
+                                                                        <i class="fas fa-share-alt"></i>
+                                                                    </span>
+                                                                    <div class="share-wrapper">
+                                                                        <div class="share-boxs d-inline-block">
+                                                                            <svg width="15" height="40"
+                                                                                class="share-shape" viewBox="0 0 15 40"
+                                                                                fill="none"
+                                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                                <path fill-rule="evenodd"
+                                                                                    clip-rule="evenodd"
+                                                                                    d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
+                                                                                    fill="#191919"></path>
+                                                                            </svg>
+                                                                            <div class=" overflow-hidden">
+                                                                                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
+                                                                                    target="_blank">
+                                                                                    <i class="fab fa-facebook-f"></i>
+                                                                                </a>
+                                                                                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
+                                                                                    target="_blank">
+                                                                                    <i class="fab fa-twitter"></i>
+                                                                                </a>
+                                                                                <a
+                                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html#">
+                                                                                    <i class="fas fa-link"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                </li>
+                                                                <li
+                                                                    class="share position-relative d-flex align-items-center text-center mb-0">
+                                                                    <span
+                                                                        class="w-100 h-100 d-inline-block bg-transparent">
+                                                                        <i class="fa-regular fa-heart"></i>
+                                                                    </span>
+                                                                    <div class="share-wrapper">
+                                                                        <div class="share-boxs d-inline-block">
+                                                                            <svg width="15" height="40"
+                                                                                class="share-shape" viewBox="0 0 15 40"
+                                                                                fill="none"
+                                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                                <path fill-rule="evenodd"
+                                                                                    clip-rule="evenodd"
+                                                                                    d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
+                                                                                    fill="#191919"></path>
+                                                                            </svg>
+                                                                            <div class=" overflow-hidden">
+                                                                                <span>+51</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="iq-button">
+                                                                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
+                                                                    class="btn text-uppercase position-relative rounded-circle">
+                                                                    <i class="fa-solid fa-play ms-0"></i>
+                                                                </a>
                                                             </div>
-                                                        </li>
-                                                    </ul>
-                                                    <div class="iq-button">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                            class="btn text-uppercase position-relative rounded-circle">
-                                                            <i class="fa-solid fa-play ms-0"></i>
-                                                        </a>
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                             </div>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="col mb-4">
-                                        <div class="iq-card card-hover">
-                                            <div class="block-images position-relative w-100">
-                                                <div class="img-box w-100">
-                                                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                        class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                    <img src="{{ asset('frontend/assets' )}}/images/03.webp" alt="movie-card"
-                                                        class="img-fluid object-cover w-100 d-block border-0">
-                                                </div>
-                                                <div class="card-description with-transition">
-                                                    <div class="cart-content">
-                                                        <div class="content-left">
-                                                            <h5 class="iq-title text-capitalize">
-                                                                <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html">Goal</a>
-                                                            </h5>
-                                                            <div class="movie-time d-flex align-items-center my-2">
-                                                                <span class="movie-time-text font-normal">2hr
-                                                                    : 30mins</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="watchlist">
-                                                            <a class="watch-list-not"
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">
-                                                                <svg width="10" height="10"
-                                                                    viewBox="0 0 24 24" fill="none"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    class="icon-10">
-                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                <span class="watchlist-label"> Watchlist </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="block-social-info align-items-center">
-                                                    <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fas fa-share-alt"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-facebook-f"></i>
-                                                                        </a>
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-twitter"></i>
-                                                                        </a>
-                                                                        <a
-                                                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html#">
-                                                                            <i class="fas fa-link"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <span>+51</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    <div class="iq-button">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                            class="btn text-uppercase position-relative rounded-circle">
-                                                            <i class="fa-solid fa-play ms-0"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="col mb-4">
-                                        <div class="iq-card card-hover">
-                                            <div class="block-images position-relative w-100">
-                                                <div class="img-box w-100">
-                                                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                        class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                    <img src="{{ asset('frontend/assets' )}}/images/04.webp" alt="movie-card"
-                                                        class="img-fluid object-cover w-100 d-block border-0">
-                                                </div>
-                                                <div class="card-description with-transition">
-                                                    <div class="cart-content">
-                                                        <div class="content-left">
-                                                            <h5 class="iq-title text-capitalize">
-                                                                <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html">Dandacg</a>
-                                                            </h5>
-                                                            <div class="movie-time d-flex align-items-center my-2">
-                                                                <span class="movie-time-text font-normal">1hr :
-                                                                    30mins</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="watchlist">
-                                                            <a class="watch-list-not"
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">
-                                                                <svg width="10" height="10"
-                                                                    viewBox="0 0 24 24" fill="none"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    class="icon-10">
-                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                <span class="watchlist-label"> Watchlist </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="block-social-info align-items-center">
-                                                    <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fas fa-share-alt"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-facebook-f"></i>
-                                                                        </a>
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-twitter"></i>
-                                                                        </a>
-                                                                        <a
-                                                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html#">
-                                                                            <i class="fas fa-link"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <span>+51</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    <div class="iq-button">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                            class="btn text-uppercase position-relative rounded-circle">
-                                                            <i class="fa-solid fa-play ms-0"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="col mb-4">
-                                        <div class="iq-card card-hover">
-                                            <div class="block-images position-relative w-100">
-                                                <div class="img-box w-100">
-                                                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                        class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                    <img src="{{ asset('frontend/assets' )}}/images/05.webp" alt="movie-card"
-                                                        class="img-fluid object-cover w-100 d-block border-0">
-                                                </div>
-                                                <div class="card-description with-transition">
-                                                    <div class="cart-content">
-                                                        <div class="content-left">
-                                                            <h5 class="iq-title text-capitalize">
-                                                                <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html">Mexcan</a>
-                                                            </h5>
-                                                            <div class="movie-time d-flex align-items-center my-2">
-                                                                <span class="movie-time-text font-normal">1hr :
-                                                                    30mins</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="watchlist">
-                                                            <a class="watch-list-not"
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">
-                                                                <svg width="10" height="10"
-                                                                    viewBox="0 0 24 24" fill="none"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    class="icon-10">
-                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor"
-                                                                        stroke-width="2" stroke-linecap="round"
-                                                                        stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                <span class="watchlist-label"> Watchlist </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="block-social-info align-items-center">
-                                                    <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fas fa-share-alt"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-facebook-f"></i>
-                                                                        </a>
-                                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html"
-                                                                            target="_blank">
-                                                                            <i class="fab fa-twitter"></i>
-                                                                        </a>
-                                                                        <a
-                                                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html#">
-                                                                            <i class="fas fa-link"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                            <div class="share-wrapper">
-                                                                <div class="share-boxs d-inline-block">
-                                                                    <svg width="15" height="40"
-                                                                        class="share-shape" viewBox="0 0 15 40"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                            d="M14.8842 40C6.82983 37.2868 1 29.3582 1 20C1 10.6418 6.82983 2.71323 14.8842 0H0V40H14.8842Z"
-                                                                            fill="#191919"></path>
-                                                                    </svg>
-                                                                    <div class=" overflow-hidden">
-                                                                        <span>+51</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    <div class="iq-button">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
-                                                            class="btn text-uppercase position-relative rounded-circle">
-                                                            <i class="fa-solid fa-play ms-0"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
+                                        @endforeach
+                                    @else
+                                        <p>No movies found for this actor.</p>
+                                    @endif
                                     <div class="col d-xl-block d-none"></div>
                                 </div>
                             </div>
@@ -530,7 +219,8 @@
                                             <table class="table">
                                                 <tbody>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/01(2).webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/01(2).webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -545,7 +235,8 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/02.webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/02.webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -560,7 +251,8 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/03(1).webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/03(1).webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -575,7 +267,8 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/04(1).webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/04(1).webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -600,7 +293,8 @@
                                             <table class="table">
                                                 <tbody>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/04(1).webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/04(1).webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -615,7 +309,8 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="w-15"><img src="{{ asset('frontend/assets' )}}/images/03(1).webp"
+                                                        <td class="w-15"><img
+                                                                src="{{ asset('frontend/assets') }}/images/03(1).webp"
                                                                 alt="image-icon"
                                                                 class="img-fluid person-img object-cover"></td>
                                                         <td class="w-20">
@@ -736,8 +431,8 @@
                         </div>
                     </div>
                 </div>
-                @endif
-            </div>
+            @endif
+        </div>
     </div>
 
 @endsection

@@ -62,7 +62,9 @@
 
     @include('frontend.partials.video-block')
 
-    @include('frontend.partials.upcomimg-block')
+    @include('frontend.partials.popular-movies-block')
+
+    {{-- @include('frontend.partials.upcomimg-block') --}}
 
 @endsection
 

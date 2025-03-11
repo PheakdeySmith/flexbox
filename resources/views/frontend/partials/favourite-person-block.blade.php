@@ -15,7 +15,7 @@
                     @foreach($actors as $actor)
                     <li class="swiper-slide" role="group" aria-label="{{ $loop->iteration }} / {{ count($actors) }}"
                         data-swiper-slide-index="{{ $loop->index }}" style="width: 119.909px;">
-                        <img src="{{ $actor->profile_photo ? asset('storage/' . $actor->profile_photo) : asset('frontend/assets/images/default-actor.webp') }}" alt="{{ $actor->name }}"
+                        <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-actor.webp') }}" alt="{{ $actor->name }}"
                             class="img-fluid object-cover mb-4 rounded">
                         <div class="text-center">
                             <h6 class="mb-0">

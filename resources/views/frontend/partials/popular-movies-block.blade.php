@@ -18,7 +18,7 @@
                                 <div class="iq-card card-hover">
                                     <div class="block-images position-relative w-100">
                                         <div class="img-box w-100">
-                                            <a href=""
+                                            <a href="{{ route('frontend.detail', $movie->id) }}"
                                                 class="position-absolute top-0 bottom-0 start-0 end-0"></a>
                                             <img src="{{ $movie->poster_url }}"
                                                 alt="{{ $movie->title }}"
@@ -28,7 +28,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left w-100">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="">{{ $movie->title }}</a>
+                                                        <a href="{{ route('frontend.detail', $movie->id) }}">{{ Str::limit($movie->title, 30, '...') }}</a>
                                                     </h5>
                                                     <div class="d-flex align-items-center justify-content-between my-2">
                                                         <div class="movie-time">
