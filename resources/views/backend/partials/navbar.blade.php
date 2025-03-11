@@ -153,7 +153,7 @@
           <!-- Menu Footer-->
           <li class="user-footer d-flex justify-content-between">
             <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-flat mr-5 ml-1">Profile</a>
-            <form method="POST" action="w" class="float-right">
+            <form method="POST" action="{{ route('logout') }}" class="float-right">
               @csrf
               <button type="submit" class="btn btn-default btn-flat ml-5">Sign out</button>
             </form>
