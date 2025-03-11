@@ -8,7 +8,7 @@
 
     @include('frontend.partials.top-ten-block')
 
-    @include('frontend.partials.streamit-block')
+    @include('frontend.partials.popular-movies-block')
 
     @include('frontend.partials.streamit-card')
 
@@ -16,7 +16,7 @@
 
     @include('frontend.partials.favourite-person-block')
 
-    @include('frontend.partials.popular-movies-block')
+    @include('frontend.partials.streamit-block')
 
     @include('frontend.partials.tab-slider')
 

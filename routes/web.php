@@ -99,8 +99,6 @@ Route::middleware('auth')->group(function () {
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
         Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
 
-
-
         // View the authenticated user's profile
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile

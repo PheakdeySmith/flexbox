@@ -17,8 +17,7 @@ class FrontendController extends Controller
 
         $latestMovies = Movie::orderBy('release_date', 'desc')->take(10)->get();
 
-        $popularMovies = Movie::where('is_featured', true)
-            ->orderBy('imdb_rating', 'desc')
+        $popularMovies = Movie::orderBy('imdb_rating', 'desc')
             ->take(10)
             ->get();
 
