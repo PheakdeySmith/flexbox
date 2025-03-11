@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Backend\SubscriptionPlanController;
 use App\Http\Controllers\Backend\SubscriptionController;
 use App\Http\Controllers\Backend\PaymentController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
@@ -76,6 +77,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('actor', ActorController::class);
         Route::resource('director', DirectorController::class);
         Route::resource('user', UserController::class);
+        Route::resource('order', OrderController::class);
 
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);

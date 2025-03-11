@@ -238,29 +238,13 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-money-bill"></i>
-                                <p>
-                                    Payments
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('payment.index') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Payments Table</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+
                     </ul>
                 </li>
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-circle"></i>
+                        <i class="nav-icon fas fa-user"></i>
                         <p>
                             User
                             <i class="right fas fa-angle-left"></i>
@@ -269,11 +253,41 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('user.index') }}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-table nav-icon"></i>
+                                <!-- Use an appropriate icon for the user table -->
                                 <p>User Table</p>
                             </a>
                         </li>
                     </ul>
+
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-money-bill"></i>
+                        <p>
+                            Payments
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('payment.index') }}" class="nav-link">
+                                <i class="fas fa-credit-card nav-icon"></i> <!-- Payments table icon -->
+                                <p>Payments Table</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('order.index') }}" class="nav-link">
+                                <i class="fas fa-clipboard-list nav-icon"></i> <!-- Orders table icon -->
+                                <p>Orders Table</p>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
 
                 {{-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>

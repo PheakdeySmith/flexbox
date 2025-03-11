@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
@@ -108,7 +109,8 @@ class FrontendController extends Controller
 
     public function genre()
     {
-        return view('frontend.genre.index');
+        $genres = Genre::all();
+        return view('frontend.genre.index', compact('genres'));
     }
 
     public function actor()
