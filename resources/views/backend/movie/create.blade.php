@@ -315,6 +315,22 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-12">
+                                        <div class="form-group">
+                                                    <label for="video_url">
+                                                        <i class="fas fa-play-circle mr-1"></i> Video URL (for streaming)
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                                                        </div>
+                                            <input type="url" class="form-control" id="video_url" name="video_url"
+                                                value="{{ old('video_url') }}" placeholder="Enter YouTube video URL for streaming">
+                                                    </div>
+                                                    <small class="form-text text-muted">Enter the full YouTube URL for streaming the movie</small>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -51,7 +51,7 @@ class Subscription extends Model
     }
 
     /**
-     * Get the plan that the subscription belongs to.
+     * Get the plan that owns the subscription.
      */
     public function plan()
     {
@@ -67,27 +67,11 @@ class Subscription extends Model
     }
 
     /**
-     * Scope a query to only include active subscriptions.
+     * Get the payment details for the subscription.
      */
-    public function scopeActive($query)
+    public function paymentDetail()
     {
-        return $query->where('status', 'active');
-    }
-
-    /**
-     * Scope a query to only include canceled subscriptions.
-     */
-    public function scopeCanceled($query)
-    {
-        return $query->where('status', 'canceled');
-    }
-
-    /**
-     * Scope a query to only include expired subscriptions.
-     */
-    public function scopeExpired($query)
-    {
-        return $query->where('status', 'expired');
+        return $this->morphOne(PaymentDetail::class, 'payable');
     }
 
     /**
@@ -95,7 +79,8 @@ class Subscription extends Model
      */
     public function isActive()
     {
-        return $this->status === 'active';
+        return $this->status === 'active' &&
+               ($this->end_date === null || $this->end_date->isFuture());
     }
 
     /**
@@ -103,15 +88,7 @@ class Subscription extends Model
      */
     public function isCanceled()
     {
-        return $this->status === 'canceled';
-    }
-
-    /**
-     * Determine if the subscription is expired.
-     */
-    public function isExpired()
-    {
-        return $this->status === 'expired';
+        return $this->canceled_at !== null;
     }
 
     /**
@@ -119,7 +96,37 @@ class Subscription extends Model
      */
     public function onTrial()
     {
-        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+        return $this->trial_ends_at !== null &&
+               $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Scope a query to only include active subscriptions.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active')
+                     ->where(function ($query) {
+                         $query->whereNull('end_date')
+                               ->orWhere('end_date', '>', now());
+                     });
+    }
+
+    /**
+     * Scope a query to only include canceled subscriptions.
+     */
+    public function scopeCanceled($query)
+    {
+        return $query->whereNotNull('canceled_at');
+    }
+
+    /**
+     * Scope a query to only include on trial subscriptions.
+     */
+    public function scopeOnTrial($query)
+    {
+        return $query->whereNotNull('trial_ends_at')
+                     ->where('trial_ends_at', '>', now());
     }
 
     /**

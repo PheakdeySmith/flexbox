@@ -38,7 +38,8 @@ class Actor extends Model
      * Get the movies that feature this actor.
      */
     public function movies()
-    {
-        return $this->belongsToMany(Movie::class, 'movie_actor');
-    }
+{
+    return $this->belongsToMany(Movie::class, 'movie_actor')
+                ->withPivot('character');
+}
 }

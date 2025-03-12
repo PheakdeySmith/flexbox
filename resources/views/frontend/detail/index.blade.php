@@ -54,6 +54,7 @@
 
     @include('frontend.partials.details-part')
 
+
     @include('frontend.partials.cast-tabs')
 
     @include('frontend.partials.recommended-block')
@@ -62,7 +63,9 @@
 
     @include('frontend.partials.video-block')
 
-    @include('frontend.partials.upcomimg-block')
+    @include('frontend.partials.popular-movies-block')
+
+    {{-- @include('frontend.partials.upcomimg-block') --}}
 
 @endsection
 

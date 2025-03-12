@@ -62,18 +62,28 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Duration:</label>
-                                        <p>{{ $subscriptionPlan->duration }} days</p>
+                                        <p>{{ $subscriptionPlan->duration_in_days }} days</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Features:</label>
                                         <ul class="list-group">
-                                            @foreach(explode("\n", $subscriptionPlan->features) as $feature)
-                                                @if(!empty(trim($feature)))
-                                                    <li class="list-group-item">{{ $feature }}</li>
-                                                @endif
-                                            @endforeach
+                                            @if(is_array($subscriptionPlan->features))
+                                                @foreach($subscriptionPlan->features as $feature)
+                                                    @if(!empty(trim($feature)))
+                                                        <li class="list-group-item">{{ $feature }}</li>
+                                                    @endif
+                                                @endforeach
+                                            @elseif(is_string($subscriptionPlan->features))
+                                                @foreach(explode("\n", $subscriptionPlan->features) as $feature)
+                                                    @if(!empty(trim($feature)))
+                                                        <li class="list-group-item">{{ $feature }}</li>
+                                                    @endif
+                                                @endforeach
+                                            @else
+                                                <li class="list-group-item">No features specified</li>
+                                            @endif
                                         </ul>
                                     </div>
                                     <div class="form-group">
@@ -83,7 +93,7 @@
                                     <div class="form-group">
                                         <label>Status:</label>
                                         <p>
-                                            @if($subscriptionPlan->status == 'active')
+                                            @if($subscriptionPlan->is_active)
                                                 <span class="badge badge-success">Active</span>
                                             @else
                                                 <span class="badge badge-danger">Inactive</span>

@@ -10,7 +10,7 @@
               <h2 class="title">Order Tracking</h2>
               <ol class="breadcrumb justify-content-center">
                 <li class="breadcrumb-item"><a
-                    href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html">Home</a></li>
+                    href="{{ route('frontend.home') }}">Home</a></li>
                 <li class="breadcrumb-item active">Order Tracking</li>
               </ol>
             </nav>
@@ -21,6 +21,38 @@
 
     <section class="section-padding">
       <div class="container">
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if(session('info'))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    {{ session('info') }}
+                </div>
+            </div>
+        </div>
+        @endif
+        <!-- End Success/Error Messages -->
+
         <div class="main-cart mb-3 mb-md-5 pb-0 pb-md-5">
           <ul
             class="cart-page-items d-flex justify-content-center list-inline align-items-center gap-3 gap-md-5 flex-wrap">
@@ -67,12 +99,11 @@
         <div class="order">
           <p class="thank">Thank you. Your order has been received.</p>
           <ul class="details list-inline">
-            <li class="detail">ORDER NUMBER:<strong>15823</strong></li>
-            <li class="detail">DATE:<strong>June 22, 2022</strong></li>
-            <li class="detail">EMAIL:<strong>jondoe@gmail.com</strong></li>
-            <li class="detail">TOTAL:<strong>$25.00</strong></li>
-            <li class="detail">PAYMENT METHOD:<strong>Direct bank
-                transfer</strong></li>
+            <li class="detail">ORDER NUMBER:<strong>{{ $order->id }}</strong></li>
+            <li class="detail">DATE:<strong>{{ $order->created_at->format('F d, Y') }}</strong></li>
+            <li class="detail">EMAIL:<strong>{{ $order->user->email }}</strong></li>
+            <li class="detail">TOTAL:<strong>${{ $order->total_amount }}</strong></li>
+            <li class="detail">PAYMENT METHOD:<strong>{{ ucfirst($order->paymentDetail->payment->payment_method ?? 'N/A') }}</strong></li>
           </ul>
         </div>
         <h5 class="order_details">Order Details</h5>
@@ -87,27 +118,29 @@
                   </tr>
                 </thead>
                 <tbody>
+                  @foreach($order->items as $item)
                   <tr class="order_item">
                     <td>
-                      Bag Pack <strong class="product-quantity">×&nbsp;1</strong>
+                      {{ $item->movie->title }} <strong class="product-quantity">×&nbsp;1</strong>
                     </td>
                     <td class="text-end">
-                      <span class="amount"><bdi><span>$</span>25.00</bdi></span>
+                      <span class="amount"><bdi><span>$</span>{{ $item->price }}</bdi></span>
                     </td>
                   </tr>
+                  @endforeach
                 </tbody>
                 <tfoot>
                   <tr class="order_item">
                     <th>Subtotal:</th>
-                    <td class="text-end"><span class="amount text-primary"><span>$</span>25.00</span></td>
+                    <td class="text-end"><span class="amount text-primary"><span>$</span>{{ $order->total_amount }}</span></td>
                   </tr>
                   <tr class="order_item">
                     <th>Payment method:</th>
-                    <td class="text-end">Direct bank transfer</td>
+                    <td class="text-end">{{ ucfirst($order->paymentDetail->payment->payment_method ?? 'N/A') }}</td>
                   </tr>
                   <tr>
                     <th>Total:</th>
-                    <td class="text-end"><span class="amount text-primary"><span>$</span>25.00</span></td>
+                    <td class="text-end"><span class="amount text-primary"><span>$</span>{{ $order->total_amount }}</span></td>
                   </tr>
                 </tfoot>
               </table>
@@ -127,32 +160,22 @@
                       <tr>
                         <td class="label-name">Name</td>
                         <td class="seprator"><span>:</span></td>
-                        <td class="last-name">test</td>
+                        <td class="last-name">{{ $order->user->name }}</td>
                       </tr>
                       <tr>
-                        <td class="label-name">Company</td>
+                        <td class="label-name">Email</td>
                         <td class="seprator"><span>:</span></td>
-                        <td class="last-name">test</td>
+                        <td class="last-name">{{ $order->user->email }}</td>
                       </tr>
                       <tr>
-                        <td class="label-name">Country</td>
+                        <td class="label-name">Order Status</td>
                         <td class="seprator"><span>:</span></td>
-                        <td class="last-name">US</td>
+                        <td class="last-name">{{ ucfirst($order->status) }}</td>
                       </tr>
                       <tr>
-                        <td class="label-name">Address</td>
+                        <td class="label-name">Payment Status</td>
                         <td class="seprator"><span>:</span></td>
-                        <td class="last-name">dccc</td>
-                      </tr>
-                      <tr>
-                        <td class="label-name">E-mail</td>
-                        <td class="seprator"><span>:</span></td>
-                        <td class="last-name">jondoe@gmail.com</td>
-                      </tr>
-                      <tr>
-                        <td class="label-name">Phone</td>
-                        <td class="seprator"><span>:</span></td>
-                        <td class="last-name">96465216515</td>
+                        <td class="last-name">{{ ucfirst($order->paymentDetail->payment->status ?? 'N/A') }}</td>
                       </tr>
                     </tbody>
                   </table>

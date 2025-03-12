@@ -2,28 +2,45 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
+    use HasFactory;
+
     protected $table = 'order_items';
-    protected $fillable = ['movie_id', 'price', 'user_id', 'status'];
+    protected $fillable = [
+        'order_id',
+        'movie_id',
+        'user_id',
+        'price',
+        'status',
+    ];
 
     /**
-     * Get the movie associated with the order item.
+     * Get the order that owns the order item.
      */
-    public function movie(): BelongsTo
+    public function order()
     {
-        return $this->belongsTo(Movie::class, 'movie_id');
+        return $this->belongsTo(Order::class);
     }
 
     /**
-     * Get the user who placed the order.
+     * Get the movie that owns the order item.
      */
-    public function user(): BelongsTo
+    public function movie()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Movie::class);
+    }
+
+    /**
+     * Get the user that owns the order item.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -37,5 +54,13 @@ class OrderItem extends Model
             'cancelled' => 'Cancelled',
             default => 'Unknown'
         };
+    }
+
+    /**
+     * Scope a query to only include order items with a specific status.
+     */
+    public function scopeWithStatus($query, $status)
+    {
+        return $query->where('status', $status);
     }
 }
