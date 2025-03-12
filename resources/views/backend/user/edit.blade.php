@@ -25,6 +25,14 @@
                         <input type="password" id="editPassword" name="password" class="form-control">
                     </div>
                     <div class="form-group">
+                        <label for="editRole">Role</label>
+                        <select id="editRole" name="role" class="form-control">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}" id="editRole">{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="editProfilePhoto">Profile Image</label>
                         <input type="file" id="editProfilePhoto" name="user_profile" class="form-control">
                     </div>
@@ -45,50 +53,54 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    // Edit button event listener
-    const editButtons = document.querySelectorAll('.edit-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Edit button event listener
+        const editButtons = document.querySelectorAll('.edit-btn');
 
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Get the user data from data attributes
-            const userId = this.getAttribute('data-id');
-            const userName = this.getAttribute('data-name');
-            const userEmail = this.getAttribute('data-email');
-            const userProfilePhoto = this.getAttribute('data-profile-photo');
-            const formAction = this.getAttribute('data-action');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the user data from data attributes
+                const userId = this.getAttribute('data-id');
+                const userName = this.getAttribute('data-name');
+                const userEmail = this.getAttribute('data-email');
+                const userProfilePhoto = this.getAttribute('data-profile-photo');
+                const formAction = this.getAttribute('data-action');
+                const userRole = this.getAttribute('data-role');
+                // Set the form action URL
+                document.getElementById('editUserForm').action = formAction;
 
-            // Set the form action URL
-            document.getElementById('editUserForm').action = formAction;
+                // Populate the input fields
+                document.getElementById('editName').value = userName;
+                document.getElementById('editEmail').value = userEmail;
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editRole').value = userRole;
+                // Password can be left blank
+                // Show the current profile image
+                if (userProfilePhoto) {
+                    document.getElementById('editProfileImage').src =
+                        `/storage/${userProfilePhoto}`;
+                } else {
+                    document.getElementById('editProfileImage').src =
+                        '/images/default-avatar.png'; // Placeholder image
+                }
+            });
+        });
 
-            // Populate the input fields
-            document.getElementById('editName').value = userName;
-            document.getElementById('editEmail').value = userEmail;
-            document.getElementById('editPassword').value = ''; // Password can be left blank
-            // Show the current profile image
-            if (userProfilePhoto) {
-                document.getElementById('editProfileImage').src = `/storage/${userProfilePhoto}`;
+        // Profile photo preview
+        document.getElementById('editProfilePhoto').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById('editProfileImage').src = e.target.result;
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
             } else {
-                document.getElementById('editProfileImage').src = '/images/default-avatar.png'; // Placeholder image
+                document.getElementById('editProfileImage').src =
+                    '/images/default-avatar.png'; // Default placeholder
             }
         });
     });
-
-    // Profile photo preview
-    document.getElementById('editProfilePhoto').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            document.getElementById('editProfileImage').src = e.target.result;
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            document.getElementById('editProfileImage').src = '/images/default-avatar.png'; // Default placeholder
-        }
-    });
-});
-
 </script>

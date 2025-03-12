@@ -83,7 +83,10 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('backend.user.edit', compact('user'));
+        $roles = Role::all();
+        // Get the user's current role name to properly show in dropdown
+        $userRole = $user->roles->first();
+        return view('backend.user.edit', compact('user', 'roles', 'userRole'));
     }
 
     public function front_edit(Request $request)
@@ -108,6 +111,7 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
+                'role' => 'required|exists:roles,id',
                 'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
             ]);
 
@@ -135,19 +139,21 @@ class UserController extends Controller
                 $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
             }
 
+            // Update basic user information
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
             ]);
 
-            $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
-            return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
+            // Update role - first remove existing roles then assign new role
+            $user->syncRoles([]);  // Remove all current roles
+            $role = Role::findById($request->role);
+            $user->assignRole($role);
 
-            return Redirect::route($redirectRoute)->with('success', 'User updated successfully.');
+            $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
+            return redirect()->route($redirectRoute)->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             Log::error('Error updating user: ' . $e->getMessage());
-            Log::error('Error updating user: ' . $e->getMessage());
-
             return redirect()->back()->with('error', 'An error occurred while updating the user. Please try again.');
         }
     }
