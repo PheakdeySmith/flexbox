@@ -326,8 +326,29 @@
                                                             </div>
                                                         @endif
                                                     </div>
+
+                                                <div class="form-group">
+                                                    <label for="video_url">
+                                                        <i class="fas fa-film mr-1"></i> Video URL
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                                                        </div>
+                                                            <input type="url" class="form-control" id="video_url" name="video_url"
+                                                            value="{{ old('video_url', $movie->video_url) }}" placeholder="Enter full movie/episode URL (YouTube)">
+                                                    </div>
+                                                    <small class="form-text text-muted">Enter the full YouTube URL for streaming the movie</small>
+                                                    @if($movie->video_url)
+                                                    <div class="mt-2">
+                                                        <button type="button" class="btn btn-sm btn-outline-info" id="previewVideoBtn">
+                                                            <i class="fas fa-play-circle mr-1"></i> Preview Video
+                                                        </button>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
+                                        </div>
                                         </div>
 
                                         <!-- Additional Details Tab -->
@@ -953,32 +974,32 @@
                                 '<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/' +
                                 videoId + '?autoplay=1" allowfullscreen></iframe></div>';
 
-                            Swal.fire({
-                                title: 'Trailer Preview',
-                                html: embedHtml,
-                                width: 800,
-                                showCloseButton: true,
-                                showConfirmButton: false
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Could not extract video ID from the provided URL.',
-                                icon: 'error'
-                            });
-                        }
+                        Swal.fire({
+                            title: 'Trailer Preview',
+                            html: embedHtml,
+                            width: 800,
+                            showCloseButton: true,
+                            showConfirmButton: false
+                        });
                     } else {
-                        // For other video services, just open in new tab
-                        window.open(trailerUrl, '_blank');
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Could not extract video ID from the provided URL.',
+                            icon: 'error'
+                        });
                     }
                 } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'No trailer URL provided.',
-                        icon: 'error'
-                    });
+                    // For other video services, just open in new tab
+                    window.open(trailerUrl, '_blank');
                 }
-            });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'No trailer URL provided.',
+                    icon: 'error'
+                });
+            }
+        });
 
             // Form validation
             $('#movieForm').submit(function(e) {

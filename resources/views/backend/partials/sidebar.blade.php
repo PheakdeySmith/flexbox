@@ -53,14 +53,34 @@
                                 <p>Dashboard v1</p>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
+                        <li class="nav-item">
+                            <a href="{{ route('payment.dashboard') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Dashboard v2</p>
+                                <p>Payments</p>
                             </a>
-                        </li> --}}
+                        </li>
 
                     </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            User
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('user.index') }}" class="nav-link">
+                                <i class="fas fa-table nav-icon"></i>
+                                <!-- Use an appropriate icon for the user table -->
+                                <p>User Table</p>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
 
                 <li class="nav-item">
@@ -259,15 +279,6 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('role.index') }}" class="nav-link">
-                                <i class="fas fa-user-shield nav-icon"></i>
-                                <p>Role Table</p>
-                            </a>
-                        </li>
-                    </ul>
-
 
                 </li>
 
@@ -275,28 +286,24 @@
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-money-bill"></i>
                         <p>
-                            Payments
-                            <i class="right fas fa-angle-left"></i>
+                            Payments & Orders
+                            <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('payment.index') }}" class="nav-link">
-                                <i class="fas fa-credit-card nav-icon"></i> <!-- Payments table icon -->
-                                <p>Payments Table</p>
+                                <i class="fas fa-credit-card nav-icon"></i>
+                                <p>All Payments</p>
                             </a>
                         </li>
-                    </ul>
-
-                    <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link">
-                                <i class="fas fa-clipboard-list nav-icon"></i> <!-- Orders table icon -->
-                                <p>Orders Table</p>
+                                <i class="fas fa-shopping-cart nav-icon"></i>
+                                <p>Orders</p>
                             </a>
                         </li>
                     </ul>
-
                 </li>
 
                 {{-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>

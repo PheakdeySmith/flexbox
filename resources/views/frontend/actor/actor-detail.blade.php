@@ -169,7 +169,7 @@
                                                                 </li>
                                                             </ul>
                                                             <div class="iq-button">
-                                                                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html"
+                                                                <a href="{{ route('frontend.detail', $movie->id) }}"
                                                                     class="btn text-uppercase position-relative rounded-circle">
                                                                     <i class="fa-solid fa-play ms-0"></i>
                                                                 </a>

@@ -63,18 +63,18 @@
                                     <div class="form-group">
                                         <label>Subscription Plan:</label>
                                         <p>
-                                            <a href="{{ route('subscription-plan.show', $subscription->subscriptionPlan->id) }}">
-                                                {{ $subscription->subscriptionPlan->name }}
+                                            <a href="{{ route('subscription-plan.show', $subscription->plan->id) }}">
+                                                {{ $subscription->plan->name }}
                                             </a>
                                         </p>
                                     </div>
                                     <div class="form-group">
                                         <label>Price:</label>
-                                        <p>${{ number_format($subscription->subscriptionPlan->price, 2) }}</p>
+                                        <p>${{ number_format($subscription->plan->price, 2) }}</p>
                                     </div>
                                     <div class="form-group">
                                         <label>Duration:</label>
-                                        <p>{{ $subscription->subscriptionPlan->duration }} days</p>
+                                        <p>{{ $subscription->plan->duration_in_days }} days</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

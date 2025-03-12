@@ -54,6 +54,7 @@
 
     @include('frontend.partials.details-part')
 
+
     @include('frontend.partials.cast-tabs')
 
     @include('frontend.partials.recommended-block')

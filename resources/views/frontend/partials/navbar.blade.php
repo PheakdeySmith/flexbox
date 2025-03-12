@@ -164,7 +164,7 @@
                                 <a class="nav-link" data-bs-toggle="collapse"
                                     href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html#pages"
                                     role="button" aria-expanded="false" aria-controls="homePages">
-                                    <span class="item-name">Pages</span>
+                                    <span class="item-name">Pricing</span>
                                     <span class="menu-icon">
                                         <i class="fa fa-caret-down toggledrop-desktop right-icon"
                                             aria-hidden="true"></i>
@@ -178,9 +178,6 @@
                                     <li class="nav-item">
                                         <a class="nav-link " href="{{ route('frontend.subscription') }}">
                                             Subscription </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.404') }}"> Error Page </a>
                                     </li>
                                 </ul>
                             </li>
@@ -200,20 +197,7 @@
                                 </a>
                                 <ul class="sub-nav collapse  list-unstyled" id="shop">
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.account') }}"> My
-                                            Account Page </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.cart') }}"> Cart Page
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.checkout') }}">
-                                            Checkout Page </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.orderDetail') }}">
-                                            Order Tracking </a>
+                                        <a class="nav-link " href="{{ route('frontend.watchlist') }}"> Watchlist </a>
                                     </li>
                                 </ul>
                             </li>
@@ -338,21 +322,15 @@
                                             <h6 class="mb-0 font-size-14 fw-normal">My Account</h6>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="{{ route('frontend.watchlist') }}"
+                                        <a href="{{ route('frontend.cart') }}"
                                             class="iq-sub-card d-flex align-items-center gap-3">
-                                            <svg width="16" height="16" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path d="m0 0h24v24h-24z" fill="#fff" opacity="0"
-                                                    transform="matrix(-1 0 0 -1 24 24)">
-                                                </path>
-                                                <path
-                                                    d="m19 11h-6v-6a1 1 0 0 0 -2 0v6h-6a1 1 0 0 0 0 2h6v6a1 1 0 0 0 2 0v-6h6a1 1 0 0 0 0-2z"
-                                                    fill="currentColor"></path>
-                                            </svg>
-                                            <h6 class="mb-0 font-size-14 fw-normal">Watchlist</h6>
+                                            <i class="fas fa-cart-plus"></i>
+                                            <h6 class="mb-0 font-size-14 fw-normal">My Cart</h6>
                                         </a>
                                     </li>
+
                                     <li>
                                         <a href="{{ route('frontend.subscription') }}"
                                             class="iq-sub-card d-flex align-items-center gap-3">
@@ -367,11 +345,12 @@
                                             <h6 class="mb-0 font-size-14 fw-normal">Subscription</h6>
                                         </a>
                                     </li>
+
                                     @role('admin')
                                     <li>
                                         <a href="{{ route('backend.dashboard') }}"
                                             class="iq-sub-card d-flex align-items-center gap-3">
-                                            <i class="fas fa-tachometer-alt"></i> <!-- Font Awesome Dashboard Icon -->
+                                            <i class="fas fa-tachometer-alt"></i>
                                             <h6 class="mb-0 font-size-14 fw-normal">Dashboard</h6>
                                         </a>
                                     </li>

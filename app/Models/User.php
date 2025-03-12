@@ -92,9 +92,17 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the orders associated with the user.
+     * Get the orders for the user.
      */
     public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the order items for the user.
+     */
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
@@ -129,5 +137,30 @@ class User extends Authenticatable
     public function isModerator()
     {
         return $this->role === 'moderator';
+    }
+
+    /**
+     * Check if the user can watch a specific movie.
+     */
+    public function canWatchMovie(Movie $movie)
+    {
+        // If the movie is free, anyone can watch it
+        if ($movie->is_free) {
+            return true;
+        }
+
+        // Check if user has an active subscription
+        $activeSubscription = $this->activeSubscription();
+        if ($activeSubscription && $activeSubscription->isActive()) {
+            return true;
+        }
+
+        // Check if user has purchased this movie
+        $hasPurchased = $this->orderItems()
+            ->where('movie_id', $movie->id)
+            ->where('status', 'completed')
+            ->exists();
+
+        return $hasPurchased;
     }
 }

@@ -91,6 +91,7 @@ class FrontendController extends Controller
         if ($id) {
             $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
         }
+
         return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies'));
     }
 

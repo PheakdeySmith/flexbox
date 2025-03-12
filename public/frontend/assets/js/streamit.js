@@ -258,6 +258,8 @@ Index Of Script
   /*------------Popup Action--------------*/
   jQuery(".delete-btn").on("click", function () {
     const __this = $(this);
+    const removeUrl = __this.data('remove-url');
+
     Swal.fire({
       title: "Are you sure?",
       text: "You want to delete this item",
@@ -273,17 +275,23 @@ Index Of Script
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        $(__this).closest('[data-item="list"]').remove();
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your item has been deleted.",
-          icon: "success",
-          background: "var(--bs-gray-900)",
-          customClass: {
-            title: "text-white",
-            content: "text-white",
-          },
-        });
+        if (removeUrl) {
+          // Redirect to the remove URL
+          window.location.href = removeUrl;
+        } else {
+          // Just remove from DOM for demo purposes
+          $(__this).closest('[data-item="list"]').remove();
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your item has been deleted.",
+            icon: "success",
+            background: "var(--bs-gray-900)",
+            customClass: {
+              title: "text-white",
+              content: "text-white",
+            },
+          });
+        }
       }
     });
   });

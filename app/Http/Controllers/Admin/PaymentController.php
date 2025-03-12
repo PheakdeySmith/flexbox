@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class PaymentController extends Controller
 {
@@ -24,27 +23,15 @@ class PaymentController extends Controller
             $query->withStatus($status);
         }
 
-        // Check if payment_type column exists
-        $hasPaymentTypeColumn = Schema::hasColumn('payments', 'payment_type');
-
-        if ($type && $hasPaymentTypeColumn) {
-            if ($type === 'subscription') {
-                $query->subscriptions();
-            } elseif ($type === 'movie_purchase') {
-                $query->moviePurchases();
-            }
-        } elseif ($type) {
-            // Fallback if payment_type column doesn't exist
-            if ($type === 'subscription') {
-                $query->whereNotNull('subscription_id');
-            } elseif ($type === 'movie_purchase') {
-                $query->whereNull('subscription_id');
-            }
+        if ($type === 'subscription') {
+            $query->subscriptions();
+        } elseif ($type === 'movie_purchase') {
+            $query->moviePurchases();
         }
 
         $payments = $query->latest()->paginate(10);
 
-        return view('backend.payments.index', compact('payments'));
+        return view('admin.payments.index', compact('payments'));
     }
 
     /**
@@ -54,7 +41,7 @@ class PaymentController extends Controller
     {
         $payment->load(['user', 'detail.payable']);
 
-        return view('backend.payments.show', compact('payment'));
+        return view('admin.payments.show', compact('payment'));
     }
 
     /**
@@ -101,12 +88,12 @@ class PaymentController extends Controller
 
             DB::commit();
 
-            return redirect()->route('payment.show', $payment)
+            return redirect()->route('admin.payments.show', $payment)
                 ->with('success', 'Payment status updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()->route('payment.show', $payment)
+            return redirect()->route('admin.payments.show', $payment)
                 ->with('error', 'Failed to update payment status: ' . $e->getMessage());
         }
     }
@@ -119,29 +106,15 @@ class PaymentController extends Controller
         // Total revenue
         $totalRevenue = Payment::where('status', 'completed')->sum('amount');
 
-        // Check if payment_type column exists
-        $hasPaymentTypeColumn = Schema::hasColumn('payments', 'payment_type');
-
         // Subscription revenue
-        if ($hasPaymentTypeColumn) {
-            $subscriptionRevenue = Payment::subscriptions()
-                ->where('status', 'completed')
-                ->sum('amount');
+        $subscriptionRevenue = Payment::subscriptions()
+            ->where('status', 'completed')
+            ->sum('amount');
 
-            // Movie purchase revenue
-            $moviePurchaseRevenue = Payment::moviePurchases()
-                ->where('status', 'completed')
-                ->sum('amount');
-        } else {
-            // Fallback if payment_type column doesn't exist
-            $subscriptionRevenue = Payment::where('status', 'completed')
-                ->whereNotNull('subscription_id')
-                ->sum('amount');
-
-            $moviePurchaseRevenue = Payment::where('status', 'completed')
-                ->whereNull('subscription_id')
-                ->sum('amount');
-        }
+        // Movie purchase revenue
+        $moviePurchaseRevenue = Payment::moviePurchases()
+            ->where('status', 'completed')
+            ->sum('amount');
 
         // Recent payments
         $recentPayments = Payment::with(['user', 'detail.payable'])
@@ -168,7 +141,7 @@ class PaymentController extends Controller
             ->groupBy('payment_method')
             ->get();
 
-        return view('backend.payments.dashboard', compact(
+        return view('admin.payments.dashboard', compact(
             'totalRevenue',
             'subscriptionRevenue',
             'moviePurchaseRevenue',
@@ -188,6 +161,6 @@ class PaymentController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('backend.payments.user-history', compact('user', 'payments'));
+        return view('admin.payments.user-history', compact('user', 'payments'));
     }
 }
