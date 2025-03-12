@@ -10,7 +10,7 @@
                         <h2 class="title">Cart</h2>
                         <ol class="breadcrumb justify-content-center">
                             <li class="breadcrumb-item"><a
-                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html">Home</a>
+                                    href="{{ route('frontend.home') }}">Home</a>
                             </li>
                             <li class="breadcrumb-item active">Cart</li>
                         </ol>
@@ -22,6 +22,50 @@
 
     <div class="cart-page  section-padding">
         <div class="container">
+            <!-- Success/Error Messages -->
+            @if(session('success'))
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if(session('info'))
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        {{ session('info') }}
+                    </div>
+                </div>
+            </div>
+            @endif
+            <!-- End Success/Error Messages -->
+
+            <!-- Debug information -->
+            {{-- <div class="row mb-4">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <h5>Debug Information</h5>
+                        <p>Cart Items: {{ isset($movies) ? count($movies) : 0 }}</p>
+                        <p>Session Cart: {{ json_encode(session('cart')) }}</p>
+                    </div>
+                </div>
+            </div> --}}
+            <!-- End debug information -->
+
             <div class="main-cart mb-3 mb-md-5 pb-0 pb-md-5">
                 <ul
                     class="cart-page-items d-flex justify-content-center list-inline align-items-center gap-3 gap-md-5 flex-wrap">
@@ -78,192 +122,49 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-item="list">
-                                    <td>
-                                        <div class="product-thumbnail d-flex align-items-center gap-3">
-                                            <a class="d-block mb-2"
-                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/cart.html">
-                                                <img class="avatar-80" src="{{ asset('frontend/assets') }}/images/08.webp"
-                                                    alt="">
-                                            </a>
-                                            <span class="text-white">Coffee Cup</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$15.00</span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group iq-qty-btn border border-white rounded-0" data-qty="btn"
-                                            role="group">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-minus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="3"
-                                                    viewBox="0 0 6 3" fill="none">
-                                                    <path d="M5.22727 0.886364H0.136364V2.13636H5.22727V0.886364Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                            <input type="text"
-                                                class="btn btn-sm btn-outline-light input-display border-0" data-qty="input"
-                                                pattern="^(0|[1-9][0-9]*)$" minlength="1" maxlength="2" value="2"
-                                                title="Qty" data-sharkid="__0">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-plus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8"
-                                                    viewBox="0 0 9 8" fill="none">
-                                                    <path
-                                                        d="M3.63636 7.70455H4.90909V4.59091H8.02273V3.31818H4.90909V0.204545H3.63636V3.31818H0.522727V4.59091H3.63636V7.70455Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$123.00</span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-icon btn-danger delete-btn text-end  bg-transparent text-body border-0">
-                                            <span class="btn-inner">
-                                                <i class="far fa-trash-alt"></i>
-                                            </span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr data-item="list">
-                                    <td>
-                                        <div class="product-thumbnail d-flex align-items-center gap-3">
-                                            <a class="d-block mb-2"
-                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/cart.html">
-                                                <img class="avatar-80" src="{{ asset('frontend/assets') }}/images/09.webp"
-                                                    alt="">
-                                            </a>
-                                            <span class="text-white">Medical Box</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$92.00</span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group iq-qty-btn border border-white rounded-0" data-qty="btn"
-                                            role="group">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-minus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="3"
-                                                    viewBox="0 0 6 3" fill="none">
-                                                    <path d="M5.22727 0.886364H0.136364V2.13636H5.22727V0.886364Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                            <input type="text"
-                                                class="btn btn-sm btn-outline-light input-display border-0"
-                                                data-qty="input" pattern="^(0|[1-9][0-9]*)$" minlength="1"
-                                                maxlength="2" value="2" title="Qty" data-sharkid="__1">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-plus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8"
-                                                    viewBox="0 0 9 8" fill="none">
-                                                    <path
-                                                        d="M3.63636 7.70455H4.90909V4.59091H8.02273V3.31818H4.90909V0.204545H3.63636V3.31818H0.522727V4.59091H3.63636V7.70455Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$92.00</span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-icon btn-danger delete-btn text-end  bg-transparent text-body border-0">
-                                            <span class="btn-inner">
-                                                <i class="far fa-trash-alt"></i>
-                                            </span>
-                                        </button>
-
-                                    </td>
-                                </tr>
-                                <tr data-item="list">
-                                    <td>
-                                        <div class="product-thumbnail d-flex align-items-center gap-3">
-                                            <a class="d-block mb-2"
-                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/cart.html">
-                                                <img class="avatar-80" src="{{ asset('frontend/assets') }}/images/10.webp"
-                                                    alt="">
-                                            </a>
-                                            <span class="text-white">Hand Sanitizer Bottle</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$90.00</span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group iq-qty-btn border border-white rounded-0" data-qty="btn"
-                                            role="group">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-minus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="3"
-                                                    viewBox="0 0 6 3" fill="none">
-                                                    <path d="M5.22727 0.886364H0.136364V2.13636H5.22727V0.886364Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                            <input type="text"
-                                                class="btn btn-sm btn-outline-light input-display border-0"
-                                                data-qty="input" pattern="^(0|[1-9][0-9]*)$" minlength="1"
-                                                maxlength="2" value="2" title="Qty" data-sharkid="__2">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-light iq-quantity-plus text-white border-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="8"
-                                                    viewBox="0 0 9 8" fill="none">
-                                                    <path
-                                                        d="M3.63636 7.70455H4.90909V4.59091H8.02273V3.31818H4.90909V0.204545H3.63636V3.31818H0.522727V4.59091H3.63636V7.70455Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="fw-500">$90.00</span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-icon btn-danger delete-btn text-end  bg-transparent text-body border-0">
-                                            <span class="btn-inner">
-                                                <i class="far fa-trash-alt"></i>
-                                            </span>
-                                        </button>
-
-                                    </td>
-                                </tr>
+                                @if(isset($movies) && count($movies) > 0)
+                                    @foreach($movies as $movie)
+                                        <tr data-item="list">
+                                            <td>
+                                                <div class="product-thumbnail d-flex align-items-center gap-3">
+                                                    <a class="d-block mb-2" href="{{ route('frontend.detail', $movie['id']) }}">
+                                                        <img class="avatar-80" src="{{ $movie['poster'] }}" alt="{{ $movie['title'] }}">
+                                                    </a>
+                                                    <span class="text-white">{{ $movie['title'] }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-500">${{ $movie['price'] }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group iq-qty-btn border border-white rounded-0" data-qty="btn"
+                                                    role="group">
+                                                    <input type="text"
+                                                        class="btn btn-sm btn-outline-light input-display border-0"
+                                                        data-qty="input" value="1" title="Qty" readonly>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-500">${{ $movie['price'] }}</span>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0);"
+                                                   class="btn btn-icon btn-danger delete-btn text-end bg-transparent text-body border-0"
+                                                   data-remove-url="{{ route('frontend.removeFromCart', $movie['id']) }}">
+                                                    <span class="btn-inner">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="5" class="text-center">Your cart is empty</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
-                    </div>
-                    <div
-                        class="coupon-main d-flex justify-content-between  gap-5 flex-wrap align-items-center pt-4 pb-5 border-bottom">
-                        <div class="wrap-coupon d-flex align-items-center gap-3 flex-wrap">
-                            <label>Coupon :</label>
-                            <input class="form-control d-inline-block w-auto me-2" name="coupon_code" type="text"
-                                placeholder="Coupon code" data-sharkid="__3">
-                            <div class=" d-inline-block">
-                                <div class="iq-button">
-                                    <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/cart.html#"
-                                        class="btn text-uppercase position-relative">
-                                        <span class="button-text">Apply Coupon</span>
-                                        <i class="fa-solid fa-play"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="button-primary">
-                            <div class="iq-button">
-                                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/cart.html#"
-                                    class="btn text-uppercase position-relative">
-                                    <span class="button-text">Update Cart</span>
-                                    <i class="fa-solid fa-play"></i>
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -275,7 +176,7 @@
                                     <tr class="cart-subtotal">
                                         <th class="border-0"><span class="fw-500">Subtotal</span></th>
                                         <td class="border-0">
-                                            <span>$305.00</span>
+                                            <span>${{ isset($total) ? $total : '0.00' }}</span>
                                         </td>
                                     </tr>
                                     <tr class="order-total">
@@ -283,15 +184,15 @@
                                             <span class="fw-500"> Total </span>
                                         </th>
                                         <td class="border-0">
-                                            <span class="fw-500 text-primary">$305.00</span>
+                                            <span class="fw-500 text-primary">${{ isset($total) ? $total : '0.00' }}</span>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="button-primary">
                                 <div class="iq-button">
-                                    <a href="{{ route('frontend.checkout') }}"x
-                                        class="btn text-uppercase position-relative">
+                                    <a href="{{ route('frontend.checkout') }}"
+                                        class="btn text-uppercase position-relative {{ isset($total) && $total > 0 ? '' : 'disabled' }}">
                                         <span class="button-text">Proceed to checkout</span>
                                         <i class="fa-solid fa-play"></i>
                                     </a>

@@ -56,8 +56,14 @@
                                         @foreach($subscriptions as $subscription)
                                             <tr>
                                                 <td>{{ $subscription->id }}</td>
-                                                <td>{{ $subscription->user->name }}</td>
-                                                <td>{{ $subscription->subscriptionPlan->name }}</td>
+                                                <td>{{ $subscription->user->name ?? 'N/A' }}</td>
+                                                <td>
+                                                    @if($subscription->plan)
+                                                        {{ $subscription->plan->name }}
+                                                    @else
+                                                        <span class="text-danger">Missing Plan</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if($subscription->status == 'active')
                                                         <span class="badge badge-success">Active</span>

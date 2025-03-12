@@ -6,18 +6,44 @@ use App\Http\Controllers\Controller;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Models\Payment;
+use App\Models\PaymentDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subscriptions = Subscription::with(['user', 'plan'])->latest()->paginate(10);
-        return view('backend.subscription.index', compact('subscriptions'));
+        $query = Subscription::with(['user', 'plan']);
+
+        // Filter by status if provided
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by user if provided
+        if ($request->has('user_id') && $request->user_id) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Filter by plan if provided
+        if ($request->has('plan_id') && $request->plan_id) {
+            $query->where('subscription_plan_id', $request->plan_id);
+        }
+
+        $subscriptions = $query->latest()->paginate(10);
+
+        // Get data for filters
+        $users = User::orderBy('name')->get(['id', 'name']);
+        $plans = SubscriptionPlan::orderBy('name')->get(['id', 'name']);
+
+        return view('backend.subscription.index', compact('subscriptions', 'users', 'plans'));
     }
 
     /**
@@ -25,8 +51,8 @@ class SubscriptionController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        $subscriptionPlans = SubscriptionPlan::active()->get();
+        $users = User::orderBy('name')->get();
+        $subscriptionPlans = SubscriptionPlan::active()->orderBy('name')->get();
         return view('backend.subscription.create', compact('users', 'subscriptionPlans'));
     }
 
@@ -53,24 +79,64 @@ class SubscriptionController extends Controller
             ->where('status', 'active')
             ->exists();
 
-        if ($hasActiveSubscription) {
-            return redirect()->back()->with('error', 'This user already has an active subscription.');
+        if ($hasActiveSubscription && $request->status === 'active') {
+            return redirect()->back()
+                ->with('error', 'This user already has an active subscription.')
+                ->withInput();
         }
 
-        Subscription::create([
-            'user_id' => $request->user_id,
-            'subscription_plan_id' => $request->subscription_plan_id,
-            'status' => $request->status,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'trial_ends_at' => $request->trial_ends_at,
-            'auto_renew' => $request->auto_renew ?? false,
-            'stripe_id' => $request->stripe_id,
-            'stripe_status' => $request->stripe_status,
-            'stripe_price' => $request->stripe_price,
-        ]);
+        DB::beginTransaction();
 
-        return redirect()->route('subscription.index')->with('success', 'Subscription created successfully.');
+        try {
+            // Create the subscription
+            $subscription = Subscription::create([
+                'user_id' => $request->user_id,
+                'subscription_plan_id' => $request->subscription_plan_id,
+                'status' => $request->status,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'trial_ends_at' => $request->trial_ends_at,
+                'auto_renew' => $request->auto_renew ?? false,
+                'stripe_id' => $request->stripe_id,
+                'stripe_status' => $request->stripe_status,
+                'stripe_price' => $request->stripe_price,
+            ]);
+
+            // Get the subscription plan
+            $plan = SubscriptionPlan::findOrFail($request->subscription_plan_id);
+
+            // Create a payment record if status is active
+            if ($request->status === 'active') {
+                $payment = Payment::create([
+                    'user_id' => $request->user_id,
+                    'subscription_id' => $subscription->id,
+                    'payment_method' => 'admin',
+                    'payment_type' => 'subscription',
+                    'amount' => $plan->price,
+                    'currency' => 'USD',
+                    'status' => 'completed',
+                    'notes' => 'Created by admin',
+                ]);
+
+                // Create payment detail
+                PaymentDetail::create([
+                    'payment_id' => $payment->id,
+                    'payable_id' => $subscription->id,
+                    'payable_type' => Subscription::class,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('subscription.index')
+                ->with('success', 'Subscription created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Failed to create subscription: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -79,7 +145,13 @@ class SubscriptionController extends Controller
     public function show(Subscription $subscription)
     {
         $subscription->load(['user', 'plan', 'payments']);
-        return view('backend.subscription.show', compact('subscription'));
+
+        // Get payment history
+        $payments = Payment::where('subscription_id', $subscription->id)
+            ->latest()
+            ->get();
+
+        return view('backend.subscription.show', compact('subscription', 'payments'));
     }
 
     /**
@@ -87,8 +159,8 @@ class SubscriptionController extends Controller
      */
     public function edit(Subscription $subscription)
     {
-        $users = User::all();
-        $subscriptionPlans = SubscriptionPlan::active()->get();
+        $users = User::orderBy('name')->get();
+        $subscriptionPlans = SubscriptionPlan::orderBy('name')->get();
         return view('backend.subscription.edit', compact('subscription', 'users', 'subscriptionPlans'));
     }
 
@@ -117,7 +189,15 @@ class SubscriptionController extends Controller
             ->exists();
 
         if ($hasActiveSubscription && $request->status === 'active') {
-            return redirect()->back()->with('error', 'This user already has an active subscription.');
+            return redirect()->back()
+                ->with('error', 'This user already has an active subscription.')
+                ->withInput();
+        }
+
+        // Set canceled_at if status changed to canceled
+        $canceled_at = null;
+        if ($request->status === 'canceled' && $subscription->status !== 'canceled') {
+            $canceled_at = now();
         }
 
         $subscription->update([
@@ -128,12 +208,14 @@ class SubscriptionController extends Controller
             'end_date' => $request->end_date,
             'trial_ends_at' => $request->trial_ends_at,
             'auto_renew' => $request->auto_renew ?? false,
+            'canceled_at' => $canceled_at,
             'stripe_id' => $request->stripe_id,
             'stripe_status' => $request->stripe_status,
             'stripe_price' => $request->stripe_price,
         ]);
 
-        return redirect()->route('subscription.index')->with('success', 'Subscription updated successfully.');
+        return redirect()->route('subscription.index')
+            ->with('success', 'Subscription updated successfully.');
     }
 
     /**
@@ -141,8 +223,18 @@ class SubscriptionController extends Controller
      */
     public function destroy(Subscription $subscription)
     {
+        // Check if the subscription has payments
+        $hasPayments = Payment::where('subscription_id', $subscription->id)->exists();
+
+        if ($hasPayments) {
+            return redirect()->back()
+                ->with('error', 'Cannot delete a subscription with payment records. Cancel it instead.');
+        }
+
         $subscription->delete();
-        return redirect()->route('subscription.index')->with('success', 'Subscription deleted successfully.');
+
+        return redirect()->route('subscription.index')
+            ->with('success', 'Subscription deleted successfully.');
     }
 
     /**
@@ -150,8 +242,15 @@ class SubscriptionController extends Controller
      */
     public function cancel(Subscription $subscription)
     {
+        if ($subscription->status === 'canceled') {
+            return redirect()->back()
+                ->with('info', 'Subscription is already canceled.');
+        }
+
         $subscription->cancel();
-        return redirect()->back()->with('success', 'Subscription canceled successfully.');
+
+        return redirect()->back()
+            ->with('success', 'Subscription canceled successfully.');
     }
 
     /**
@@ -163,12 +262,29 @@ class SubscriptionController extends Controller
             'days' => 'required|integer|min:1',
         ]);
 
+        if ($subscription->status !== 'active') {
+            return redirect()->back()
+                ->with('error', 'Only active subscriptions can be extended.');
+        }
+
         $newEndDate = Carbon::parse($subscription->end_date)->addDays($request->days);
 
         $subscription->update([
             'end_date' => $newEndDate,
         ]);
 
-        return redirect()->back()->with('success', "Subscription extended by {$request->days} days.");
+        // Create a note about the extension
+        $note = "Subscription extended by {$request->days} days by admin.";
+
+        // Log this action
+        Log::info('Subscription extended', [
+            'subscription_id' => $subscription->id,
+            'days' => $request->days,
+            'new_end_date' => $newEndDate->format('Y-m-d'),
+            'user_id' => $subscription->user_id
+        ]);
+
+        return redirect()->back()
+            ->with('success', "Subscription extended by {$request->days} days.");
     }
 }

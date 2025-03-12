@@ -53,6 +53,7 @@ class MovieController extends Controller
             'duration' => 'nullable|integer',
             'price' => 'nullable|numeric|min:0',
             'trailer_url' => 'nullable|string|max:255',
+            'video_url' => 'nullable|string|max:255',
             'imdb_rating' => 'nullable|numeric|min:0|max:10',
             'country' => 'nullable|string|max:255',
             'language' => 'nullable|string|max:255',
@@ -92,6 +93,7 @@ class MovieController extends Controller
         if ($request->has('actors') && is_array($request->actors)) {
             $actorCount = 0;
             $newActorCount = 0;
+            $actorsToSync = [];
 
             foreach ($request->actors as $actorData) {
                 $actorCount++;
@@ -146,9 +148,12 @@ class MovieController extends Controller
                     $pivotData['character'] = $actorData['character'];
                 }
 
-                // Attach actor to movie
-                $movie->actors()->attach($actor->id, $pivotData);
+                // Add to the array of actors to sync
+                $actorsToSync[$actor->id] = $pivotData;
             }
+
+            // Sync all actors at once
+            $movie->actors()->sync($actorsToSync);
 
             $message = "Movie created successfully with {$actorCount} actors";
             if ($newActorCount > 0) {
@@ -160,6 +165,7 @@ class MovieController extends Controller
         if ($request->has('genres') && is_array($request->genres)) {
             $genreCount = 0;
             $newGenreCount = 0;
+            $genresToSync = [];
 
             foreach ($request->genres as $genreData) {
                 $genreCount++;
@@ -185,9 +191,12 @@ class MovieController extends Controller
                     $newGenreCount++;
                 }
 
-                // Attach genre to movie
-                $movie->genres()->attach($genre->id);
+                // Add to the array of genres to sync
+                $genresToSync[] = $genre->id;
             }
+
+            // Sync all genres at once
+            $movie->genres()->sync($genresToSync);
 
             $message = "Movie created successfully with {$genreCount} genres";
             if ($newGenreCount > 0) {
@@ -311,6 +320,7 @@ class MovieController extends Controller
             'duration' => 'nullable|integer',
             'price' => 'nullable|numeric|min:0',
             'trailer_url' => 'nullable|string|max:255',
+            'video_url' => 'nullable|string|max:255',
             'imdb_rating' => 'nullable|numeric|min:0|max:10',
             'country' => 'nullable|string|max:255',
             'language' => 'nullable|string|max:255',
@@ -348,11 +358,9 @@ class MovieController extends Controller
 
         // Handle actors if provided
         if ($request->has('actors') && is_array($request->actors)) {
-            // Remove existing actor relationships
-            $movie->actors()->detach();
-
             $actorCount = 0;
             $newActorCount = 0;
+            $actorsToSync = [];
 
             foreach ($request->actors as $actorData) {
                 $actorCount++;
@@ -407,9 +415,12 @@ class MovieController extends Controller
                     $pivotData['character'] = $actorData['character'];
                 }
 
-                // Attach actor to movie
-                $movie->actors()->attach($actor->id, $pivotData);
+                // Add to the array of actors to sync
+                $actorsToSync[$actor->id] = $pivotData;
             }
+
+            // Sync all actors at once
+            $movie->actors()->sync($actorsToSync);
 
             $message = "Movie updated successfully with {$actorCount} actors";
             if ($newActorCount > 0) {
@@ -419,11 +430,9 @@ class MovieController extends Controller
 
         // Handle genres if provided
         if ($request->has('genres') && is_array($request->genres)) {
-            // Remove existing genre relationships
-            $movie->genres()->detach();
-
             $genreCount = 0;
             $newGenreCount = 0;
+            $genresToSync = [];
 
             foreach ($request->genres as $genreData) {
                 $genreCount++;
@@ -449,9 +458,12 @@ class MovieController extends Controller
                     $newGenreCount++;
                 }
 
-                // Attach genre to movie
-                $movie->genres()->attach($genre->id);
+                // Add to the array of genres to sync
+                $genresToSync[] = $genre->id;
             }
+
+            // Sync all genres at once
+            $movie->genres()->sync($genresToSync);
         }
 
         // Handle directors if provided

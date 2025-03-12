@@ -19,13 +19,45 @@
   </div>
 </div> <!--bread-crumb-->
 
-<div class="checkout-page  section-padding">
+<div class="checkout-page section-padding">
   <div class="container">
+    <!-- Success/Error Messages -->
+    @if(session('success'))
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if(session('info'))
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-info">
+                {{ session('info') }}
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- End Success/Error Messages -->
+
     <div class="main-cart mb-3 mb-md-5 pb-0 pb-md-5">
       <ul class="cart-page-items d-flex justify-content-center list-inline align-items-center gap-3 gap-md-5 flex-wrap">
         <li class="cart-page-item">
-          <span class=" cart-pre-number  border-radius rounded-circle me-1"> 1 </span>
-          <span class="cart-page-link ">
+          <span class="cart-pre-number border-radius rounded-circle me-1"> 1 </span>
+          <span class="cart-page-link">
             Shopping Cart </span>
         </li>
         <li class="cart-page-item">
@@ -38,10 +70,10 @@
               stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </li>
-        <li class="cart-page-item  active">
+        <li class="cart-page-item active">
           <span class="cart-pre-heading badge cart-pre-number bg-primary border-radius rounded-circle me-1">
             2 </span>
-          <span class="cart-page-link ">
+          <span class="cart-page-link">
             Checkout </span>
         </li>
         <li class="cart-page-item">
@@ -54,191 +86,82 @@
               stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </li>
-        <li class="cart-page-item ">
-          <span class=" cart-pre-number  border-radius rounded-circle me-1"> 3 </span>
-          <span class="cart-page-link ">
+        <li class="cart-page-item">
+          <span class="cart-pre-number border-radius rounded-circle me-1"> 3 </span>
+          <span class="cart-page-link">
             Order Summary </span>
         </li>
       </ul>
     </div>
-    <div class="mb-5">
-      <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
-        <div class="woocommerce-info">
-          <span class="text-primary"><i class="fa-solid fa-percent"></i></span>
-          <span class="text-body ps-2">Have a coupon?</span>
-          <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/checkout.html#"
-            data-bs-toggle="collapse" data-bs-target="#apply-coupon" class="text-white">Click here
-            to enter your code</a>
-        </div>
-      </div>
-      <div id="apply-coupon" class="collapse mt-5">
-        <form class="checkout-coupon">
-          <p class="mt-0">If you have a coupon code, please apply it below.</p>
-          <div class="iq-checkout-coupon">
-            <input name="coupon-code" type="text" required="required" placeholder="Coupon code" class="form-control">
-            <div class="iq-button">
-              <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/checkout.html#"
-                class="btn text-uppercase position-relative">
-                <span class="button-text">apply coupon</span>
-                <i class="fa-solid fa-play"></i>
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-8 col-md-7">
-        <form action="https://templates.iqonic.design/streamit-dist/frontend/html/shop/order-received.html">
-          <h5 class="mb-4">Billing details</h5>
-          <div class="mb-4">
-            <input name="first-name" type="text" required="required" placeholder="First Name" class="form-control"
-              data-sharkid="__0" data-sharklabel="firstName">
-          </div>
-          <div class="mb-4">
-            <input name="last-name" type="text" required="required" placeholder="Last Name" class="form-control"
-              data-sharkid="__1" data-sharklabel="lastName">
-          </div>
-          <div class="mb-4">
-            <input name="billing-company" type="text" required="required" placeholder="Company" class="form-control"
-              data-sharkid="__2">
-          </div>
-          <div class="mb-4">
-            <select class="select2-basic-single js-states form-control select2-hidden-accessible"
-              aria-label="Default select example" data-select2-id="select2-data-1-4hty" tabindex="-1" aria-hidden="true"
-              data-sharkid="__3">
-              <option selected="" data-select2-id="select2-data-3-qjvf">India</option>
-              <option value="1">United Kingdom</option>
-              <option value="2">United States</option>
-              <option value="3">Australia</option>
-              <option value="1">North Corea</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <input name="billing-address" type="text" required="required" placeholder="House number and street name"
-              class="form-control" data-sharkid="__4" data-sharklabel="address">
-          </div>
-          <div class="mb-4">
-            <input name="billing-address2" type="text" required="required"
-              placeholder="Apartment, suite, unit, etc. (optional)" class="form-control" data-sharkid="__5"
-              data-sharklabel="address2">
-          </div>
-          <div class="mb-4">
-            <input name="city" type="text" required="required" placeholder="Town / City" class="form-control"
-              data-sharkid="__6" data-sharklabel="city">
-          </div>
-          <div class="mb-4">
-            <select class="select2-basic-single js-states form-control select2-hidden-accessible"
-              aria-label="Default select example" data-select2-id="select2-data-4-vz8o" tabindex="-1" aria-hidden="true"
-              data-sharkid="__7">
-              <option selected="" data-select2-id="select2-data-6-yk2h">Colorado</option>
-              <option value="2">Alaska</option>
-              <option value="1">Hawai</option>
-              <option value="3">Texas</option>
-              <option value="1">Washington</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <input name="postcode" type="text" required="required" placeholder="ZIP Code" class="form-control"
-              data-sharkid="__8" data-sharklabel="postalCode">
-          </div>
-          <div class="mb-4">
-            <input name="phone" type="tel" required="required" placeholder="Phone Number*" class="form-control"
-              data-sharkid="__9">
-          </div>
-          <div class="mb-4">
-            <input name="billing-company" type="email" required="required" placeholder="Email address *"
-              class="form-control rounded-0 mb-5" data-sharkid="__10" data-sharklabel="email">
-            <shark-icon-container data-sharkidcontainer="__10"><template shadowrootmode="open"><surfhark-icon
-                  data-sharkidicon="__10"
-                  style="background-image: url(&quot;chrome-extension://ailoabdmgclmfmhdagmlohpjlbpffblp/autofill-action-dark.svg&quot;); background-repeat: no-repeat; background-position: left center; background-size: cover; position: absolute; right: 0px; visibility: visible; display: block; z-index: 1; border: none; cursor: pointer; padding: 0px; transition: none; pointer-events: all; opacity: 1; left: 946.225px; top: 1532.3px; width: 18px; height: 18px; min-width: 18px; min-height: 18px;"></surfhark-icon></template></shark-icon-container>
-          </div>
-          <h5 class="mb-4">Additional Information</h5>
-          <div class="mb-4">
-            <label class="mb-2">Order notes (optional)</label>
-            <textarea name="your-message" placeholder="Notes about your order, e.g. special notes for delivery."
-              class="form-control mb-5" required="" data-sharkid="__11"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="col-lg-4 col-md-5">
-        <div class="order_review-box border p-4">
-          <h5 class="mb-3 mt-0 mt-md-2">Product</h5>
-          <div class="checkout-review-order">
-            <div class="table-responsive">
-              <table class="table w-100">
-                <tbody>
-                  <tr class="cart_item">
-                    <td class="product-name">
-                      <div class="product-image"><img width="300" height="400"
-                          src="{{ asset('frontend/assets')}}/images/01.webp" class="cartimg" alt="image" loading="lazy">
-                      </div>
-                      <div class="text">
-                        <span class="fw-500 text-body">Bag Pack</span><br><strong
-                          class="text-white font-size-12 fw-bold">QTY:&nbsp;1</strong>
-                      </div>
-                    </td>
-                    <td class="product-total">
-                      <span class="Price-amount"><bdi class="fw-500 text-body"><span>$</span>28.00</bdi></span>
-                    </td>
-                  </tr>
-                  <tr class="cart_item">
-                    <td class="product-name">
-                      <div class="product-image"><img width="300" height="400"
-                          src="{{ asset('frontend/assets')}}/images/07.webp" class="cartimg" alt="image" loading="lazy">
-                      </div>
-                      <div class="text">
-                        <span class="fw-500 text-body">Cartoon Character</span><br><strong
-                          class="text-white font-size-12 fw-bold">QTY:&nbsp;1</strong>
-                      </div>
-                    </td>
-                    <td class="product-total">
-                      <span class="Price-amount"><bdi class="fw-500 text-body"><span>$</span>25.00</bdi></span>
-                    </td>
-                  </tr>
-                  <tr class="cart_item">
-                    <td class="product-name">
-                      <div class="product-image"><img width="300" height="400"
-                          src="{{ asset('frontend/assets')}}/images/05.webp" class="cartimg" alt="image" loading="lazy">
-                      </div>
-                      <div class="text">
-                        <span class="fw-500 text-body">Boxing Gloves</span><br><strong
-                          class="text-white font-size-12 fw-bold">QTY:&nbsp;1</strong>
-                      </div>
-                    </td>
-                    <td class="product-total">
-                      <span class="Price-amount"><bdi class="fw-500 text-body"><span>$</span>18.00</bdi></span>
-                    </td>
-                  </tr>
 
-                </tbody>
-                <tfoot>
-                  <tr class="border-bottom">
-                    <td class="ps-0 p-3 fw-500 font-size-18">Subtotal</td>
-                    <td class="pe-0 p-3 fw-500 text-end">
-                      <span class="mb-0 text-body">$71.00</span>
-                    </td>
-                  </tr>
-                  <tr class="border-bottom">
-                    <td class="ps-0 p-3 fw-500 font-size-18">Total</td>
-                    <td class="pe-0 p-3 fw-500 text-end">
-                      <span class="text-primary mb-0">$71.00</span>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-              <div class="checkout-payment mt-4 pt-3 pb-2">
-                <div class="payment-box border-bottom mb-5 pb-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="card bg-dark border">
+          <div class="card-body p-4">
+            <form action="{{ route('frontend.processCheckout') }}" method="POST">
+              @csrf
+              <h5 class="card-title mb-4">Order Summary</h5>
+
+              <div class="checkout-review-order">
+                <div class="table-responsive">
+                  <table class="table w-100">
+                    <tbody>
+                      @if(isset($movies) && count($movies) > 0)
+                        @foreach($movies as $movie)
+                          <tr class="cart_item">
+                            <td class="product-name">
+                              <div class="d-flex align-items-center">
+                                <div class="product-image me-3">
+                                  <img width="80" height="120" src="{{ $movie['poster'] }}" class="cartimg" alt="{{ $movie['title'] }}" loading="lazy">
+                                </div>
+                                <div class="text">
+                                  <span class="fw-500 text-body">{{ $movie['title'] }}</span><br>
+                                  <strong class="text-white font-size-12 fw-bold">QTY:&nbsp;1</strong>
+                                </div>
+                              </div>
+                            </td>
+                            <td class="product-total text-end">
+                              <span class="Price-amount"><bdi class="fw-500 text-body"><span>$</span>{{ $movie['price'] }}</bdi></span>
+                            </td>
+                          </tr>
+                        @endforeach
+                      @else
+                        <tr>
+                          <td colspan="2" class="text-center">Your cart is empty</td>
+                        </tr>
+                      @endif
+                    </tbody>
+                    <tfoot>
+                      <tr class="border-bottom">
+                        <td class="ps-0 p-3 fw-500 font-size-18">Subtotal</td>
+                        <td class="pe-0 p-3 fw-500 text-end">
+                          <span class="mb-0 text-body">${{ isset($total) ? $total : '0.00' }}</span>
+                        </td>
+                      </tr>
+                      <tr class="border-bottom">
+                        <td class="ps-0 p-3 fw-500 font-size-18">Total</td>
+                        <td class="pe-0 p-3 fw-500 text-end">
+                          <span class="text-primary mb-0">${{ isset($total) ? $total : '0.00' }}</span>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3">
+                <h5 class="mb-3">Payment Method</h5>
+                <div class="payment-box border-bottom mb-4 pb-4">
                   <div class="accordion" id="accordionPayment">
                     <div class="accordion-item-payment">
                       <h6 class="accordion-header" id="payment-1">
                         <div class="accordion-button-payment" data-bs-toggle="collapse"
                           data-bs-target="#collapseOnepayment" aria-expanded="true" aria-controls="collapseOnepayment">
                           <span class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                              checked="checked" data-sharkid="__12">
-                            <label class="form-check-label" for="flexRadioDefault1">
-                              Direct bank transfer
+                            <input class="form-check-input" type="radio" name="payment_method" id="payment_credit_card"
+                              value="credit_card" checked="checked">
+                            <label class="form-check-label" for="payment_credit_card">
+                              Credit Card
                             </label>
                           </span>
                         </div>
@@ -246,71 +169,58 @@
                       <div id="collapseOnepayment" class="accordion-collapse collapse show"
                         data-bs-parent="#accordionPayment">
                         <div class="accordion-body">
-                          Make your payment directly into our bank account. Please use your
-                          Order ID as the payment reference. Your order will not be shipped
-                          until the funds have cleared in our account.
+                          Make your payment directly with your credit card. Your order will be processed immediately.
                         </div>
                       </div>
                     </div>
-                    <div class="accordion-item-payment">
+                    <div class="accordion-item-payment mt-3">
                       <h6 class="accordion-header" id="payment-2">
                         <div class="accordion-button-payment collapsed" data-bs-toggle="collapse"
                           data-bs-target="#collapseTwopayment" aria-expanded="false" aria-controls="collapseTwopayment">
                           <span class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
-                              data-sharkid="__13">
-                            <label class="form-check-label" for="flexRadioDefault2">
-                              Check payments
+                            <input class="form-check-input" type="radio" name="payment_method" id="payment_paypal"
+                              value="paypal">
+                            <label class="form-check-label" for="payment_paypal">
+                              PayPal
                             </label>
                           </span>
                         </div>
                       </h6>
-                      <div id="collapseTwopayment" class="accordion-collapse collapse" aria-labelledby="payment-2"
+                      <div id="collapseTwopayment" class="accordion-collapse collapse"
                         data-bs-parent="#accordionPayment">
                         <div class="accordion-body">
-                          Please send a check to Store Name, Store Street, Store Town, Store
-                          State / County, Store Postcode.
-                        </div>
-                      </div>
-                    </div>
-                    <div class="accordion-item-payment">
-                      <h6 class="accordion-header" id="payment-3">
-                        <div class="accordion-button-payment collapsed" data-bs-toggle="collapse"
-                          data-bs-target="#collapseThreepayment" aria-expanded="false"
-                          aria-controls="collapseThreepayment">
-                          <span class="form-check">
-                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3"
-                              data-sharkid="__14">
-                            <label class="form-check-label" for="flexRadioDefault3">
-                              Cash on delivery
-                            </label>
-                          </span>
-                        </div>
-                      </h6>
-                      <div id="collapseThreepayment" class="accordion-collapse collapse" aria-labelledby="payment-3"
-                        data-bs-parent="#accordionPayment">
-                        <div class="accordion-body">
-                          Pay with cash upon delivery.
+                          Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <p class="mt-3 mb-5">
+
+                <div class="form-group mb-4">
+                  <label for="email" class="mb-2">Email address (for receipt)</label>
+                  <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email ?? '' }}" required>
+                </div>
+
+                <div class="form-group mb-4">
+                  <label for="notes" class="mb-2">Order notes (optional)</label>
+                  <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Notes about your order"></textarea>
+                </div>
+
+                <p class="mt-3 mb-4">
                   Your personal data will be used to process your order, support your experience
                   throughout this website, and for other purposes described in our <a
-                    href="https://templates.iqonic.design/streamit-dist/frontend/html/privacy-policy.html">privacy
-                    policy</a>
-                  .</p>
-                <div class="iq-button">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/shop/order-tracking.html"
-                    class="btn text-uppercase position-relative">
+                    href="{{ route('frontend.home') }}">privacy
+                    policy</a>.
+                </p>
+
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary text-uppercase">
                     <span class="button-text">Place Order</span>
-                    <i class="fa-solid fa-play"></i>
-                  </a>
+                    <i class="fa-solid fa-play ms-2"></i>
+                  </button>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

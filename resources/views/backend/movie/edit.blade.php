@@ -266,6 +266,27 @@
                                                     </div>
                                                     @endif
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label for="video_url">
+                                                        <i class="fas fa-film mr-1"></i> Video URL
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                                                        </div>
+                                                        <input type="url" class="form-control" id="video_url" name="video_url"
+                                                            value="{{ old('video_url', $movie->video_url) }}" placeholder="Enter full movie/episode URL (YouTube)">
+                                                    </div>
+                                                    <small class="form-text text-muted">Enter the full YouTube URL for streaming the movie</small>
+                                                    @if($movie->video_url)
+                                                    <div class="mt-2">
+                                                        <button type="button" class="btn btn-sm btn-outline-info" id="previewVideoBtn">
+                                                            <i class="fas fa-play-circle mr-1"></i> Preview Video
+                                                        </button>
+                                                    </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -753,6 +774,42 @@
                     title: 'Error!',
                     text: 'No trailer URL provided.',
                     icon: 'error'
+                });
+            }
+        });
+
+        // Preview video button
+        $('#previewVideoBtn').on('click', function() {
+            var videoUrl = $('#video_url').val();
+            if (videoUrl) {
+                // Convert YouTube URL to embed format if needed
+                if (videoUrl.includes('youtube.com/watch?v=')) {
+                    videoUrl = videoUrl.replace('watch?v=', 'embed/');
+                }
+
+                // Create modal with iframe
+                var modal = $('<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">' +
+                    '<div class="modal-dialog modal-lg">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<h5 class="modal-title">Video Preview</h5>' +
+                    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                    '</button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<div class="embed-responsive embed-responsive-16by9">' +
+                    '<iframe class="embed-responsive-item" src="' + videoUrl + '" allowfullscreen></iframe>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>');
+
+                // Show modal and remove it when hidden
+                modal.modal('show');
+                modal.on('hidden.bs.modal', function() {
+                    $(this).remove();
                 });
             }
         });

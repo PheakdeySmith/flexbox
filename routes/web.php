@@ -16,6 +16,10 @@ use App\Http\Controllers\Backend\SubscriptionController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Backend\OrderController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\SubscriptionController as FrontendSubscriptionController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
@@ -34,9 +38,22 @@ Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->n
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
 Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
 Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');
-Route::get('/cart', [FrontendController::class, 'cart'])->name('frontend.cart');
-Route::get('/checkout', [FrontendController::class, 'checkout'])->name('frontend.checkout');
-Route::get('/order-detail', [FrontendController::class, 'orderDetail'])->name('frontend.orderDetail');
+Route::get('/cart', [CheckoutController::class, 'cart'])->name('frontend.cart');
+Route::get('/add-to-cart/{id}', [CheckoutController::class, 'addToCart'])->name('frontend.addToCart');
+Route::get('/remove-from-cart/{id}', [CheckoutController::class, 'removeFromCart'])->name('frontend.removeFromCart');
+Route::get('/clear-cart', [CheckoutController::class, 'clearCart'])->name('frontend.clearCart');
+Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('frontend.checkout');
+Route::post('/process-checkout', [CheckoutController::class, 'processCheckout'])->name('frontend.processCheckout');
+Route::get('/order-detail/{id}', [CheckoutController::class, 'orderDetail'])->name('frontend.orderDetail');
+Route::get('/purchase-history', [CheckoutController::class, 'purchaseHistory'])->name('frontend.purchaseHistory');
+
+// Frontend Subscription Routes
+// Route::get('/subscription', [FrontendSubscriptionController::class, 'index'])->name('frontend.subscription');
+// Route::get('/subscription/checkout/{id}', [FrontendSubscriptionController::class, 'checkout'])->name('frontend.subscriptionCheckout');
+// Route::post('/subscription/subscribe/{id}', [FrontendSubscriptionController::class, 'subscribe'])->name('frontend.subscribe');
+// Route::get('/subscription/detail/{id}', [FrontendSubscriptionController::class, 'subscriptionDetail'])->name('frontend.subscriptionDetail');
+// Route::post('/subscription/cancel/{id}', [FrontendSubscriptionController::class, 'cancel'])->name('frontend.cancelSubscription');
+// Route::get('/subscription/history', [FrontendSubscriptionController::class, 'history'])->name('frontend.subscriptionHistory');
 
 // Custom Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -101,6 +118,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('payment', PaymentController::class);
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
         Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
+
+        // Additional payment routes
+        Route::get('payments/dashboard', [PaymentController::class, 'dashboard'])->name('payment.dashboard');
+        Route::patch('payments/{payment}/status', [PaymentController::class, 'updateStatus'])->name('payment.update-status');
+        Route::get('users/{user}/payments', [PaymentController::class, 'userHistory'])->name('payment.user-history');
+
+        // Additional order routes
+        Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
 
         // View the authenticated user's profile
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');

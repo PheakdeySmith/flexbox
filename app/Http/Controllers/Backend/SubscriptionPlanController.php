@@ -41,11 +41,20 @@ class SubscriptionPlanController extends Controller
             'has_trial' => 'boolean',
             'trial_days' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
-            'features' => 'nullable|array',
+            'features' => 'nullable|string',
+            'stripe_price' => 'nullable|string|max:255',
         ]);
 
         // Generate slug if not provided
         $slug = $request->slug ?? Str::slug($request->name);
+
+        // Process features from textarea to array
+        $features = null;
+        if ($request->features) {
+            $features = array_filter(explode("\n", $request->features), function($line) {
+                return trim($line) !== '';
+            });
+        }
 
         SubscriptionPlan::create([
             'name' => $request->name,
@@ -55,12 +64,14 @@ class SubscriptionPlanController extends Controller
             'billing_cycle' => $request->billing_cycle,
             'duration_in_days' => $request->duration_in_days,
             'has_trial' => $request->has_trial ?? false,
-            'trial_days' => $request->trial_days ?? 0,
+            'trial_days' => $request->has_trial ? ($request->trial_days ?? 0) : 0,
             'is_active' => $request->is_active ?? true,
-            'features' => $request->features,
+            'features' => $features,
+            'stripe_price' => $request->stripe_price,
         ]);
 
-        return redirect()->route('subscription-plan.index')->with('success', 'Subscription plan created successfully.');
+        return redirect()->route('subscription-plan.index')
+            ->with('success', 'Subscription plan created successfully.');
     }
 
     /**
@@ -68,8 +79,18 @@ class SubscriptionPlanController extends Controller
      */
     public function show(SubscriptionPlan $subscriptionPlan)
     {
-        $subscriptionPlan->load('subscriptions');
-        return view('backend.subscription_plan.show', compact('subscriptionPlan'));
+        $subscriptionPlan->load(['subscriptions' => function($query) {
+            $query->with('user')->latest()->take(10);
+        }]);
+
+        $activeSubscriptionsCount = $subscriptionPlan->subscriptions()->active()->count();
+        $totalSubscriptionsCount = $subscriptionPlan->subscriptions()->count();
+
+        return view('backend.subscription_plan.show', compact(
+            'subscriptionPlan',
+            'activeSubscriptionsCount',
+            'totalSubscriptionsCount'
+        ));
     }
 
     /**
@@ -77,6 +98,13 @@ class SubscriptionPlanController extends Controller
      */
     public function edit(SubscriptionPlan $subscriptionPlan)
     {
+        // Convert features array to string for textarea
+        if (is_array($subscriptionPlan->features)) {
+            $subscriptionPlan->features_text = implode("\n", $subscriptionPlan->features);
+        } else {
+            $subscriptionPlan->features_text = '';
+        }
+
         return view('backend.subscription_plan.edit', compact('subscriptionPlan'));
     }
 
@@ -95,11 +123,20 @@ class SubscriptionPlanController extends Controller
             'has_trial' => 'boolean',
             'trial_days' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
-            'features' => 'nullable|array',
+            'features' => 'nullable|string',
+            'stripe_price' => 'nullable|string|max:255',
         ]);
 
         // Generate slug if not provided
         $slug = $request->slug ?? Str::slug($request->name);
+
+        // Process features from textarea to array
+        $features = null;
+        if ($request->features) {
+            $features = array_filter(explode("\n", $request->features), function($line) {
+                return trim($line) !== '';
+            });
+        }
 
         $subscriptionPlan->update([
             'name' => $request->name,
@@ -109,12 +146,14 @@ class SubscriptionPlanController extends Controller
             'billing_cycle' => $request->billing_cycle,
             'duration_in_days' => $request->duration_in_days,
             'has_trial' => $request->has_trial ?? false,
-            'trial_days' => $request->trial_days ?? 0,
+            'trial_days' => $request->has_trial ? ($request->trial_days ?? 0) : 0,
             'is_active' => $request->is_active ?? true,
-            'features' => $request->features,
+            'features' => $features,
+            'stripe_price' => $request->stripe_price,
         ]);
 
-        return redirect()->route('subscription-plan.index')->with('success', 'Subscription plan updated successfully.');
+        return redirect()->route('subscription-plan.index')
+            ->with('success', 'Subscription plan updated successfully.');
     }
 
     /**
@@ -126,11 +165,14 @@ class SubscriptionPlanController extends Controller
         $hasActiveSubscriptions = $subscriptionPlan->subscriptions()->active()->exists();
 
         if ($hasActiveSubscriptions) {
-            return redirect()->back()->with('error', 'Cannot delete a plan with active subscriptions.');
+            return redirect()->back()
+                ->with('error', 'Cannot delete a plan with active subscriptions.');
         }
 
         $subscriptionPlan->delete();
-        return redirect()->route('subscription-plan.index')->with('success', 'Subscription plan deleted successfully.');
+
+        return redirect()->route('subscription-plan.index')
+            ->with('success', 'Subscription plan deleted successfully.');
     }
 
     /**
@@ -143,6 +185,8 @@ class SubscriptionPlanController extends Controller
         ]);
 
         $status = $subscriptionPlan->is_active ? 'activated' : 'deactivated';
-        return redirect()->back()->with('success', "Subscription plan {$status} successfully.");
+
+        return redirect()->back()
+            ->with('success', "Subscription plan {$status} successfully.");
     }
 }

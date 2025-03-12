@@ -149,6 +149,19 @@
                                         </div>
                                     </div>
                                     @endif
+
+                                    @if($movie->video_url)
+                                    <div class="mt-4">
+                                        <h5>Full Video</h5>
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <iframe class="embed-responsive-item"
+                                                src="{{ str_contains($movie->video_url, 'youtube.com')
+                                                    ? str_replace('watch?v=', 'embed/', $movie->video_url)
+                                                    : $movie->video_url }}"
+                                                allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
 

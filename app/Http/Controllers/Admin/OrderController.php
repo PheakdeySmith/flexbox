@@ -1,18 +1,11 @@
 <?php
-namespace App\Http\Controllers\Backend;
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
-use App\Models\OrderItem;
-use App\Models\Movie;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use App\Models\Order;
 use App\Models\Payment;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -30,7 +23,7 @@ class OrderController extends Controller
 
         $orders = $query->latest()->paginate(10);
 
-        return view('backend.orders.index', compact('orders'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     /**
@@ -40,7 +33,7 @@ class OrderController extends Controller
     {
         $order->load(['user', 'items.movie', 'paymentDetail.payment']);
 
-        return view('backend.orders.show', compact('order'));
+        return view('admin.orders.show', compact('order'));
     }
 
     /**
@@ -71,7 +64,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return redirect()->route('order.show', $order)
+        return redirect()->route('admin.orders.show', $order)
             ->with('success', 'Order status updated successfully.');
     }
 
@@ -82,14 +75,14 @@ class OrderController extends Controller
     {
         // Check if the order has a payment
         if ($order->paymentDetail && $order->paymentDetail->payment) {
-            return redirect()->route('order.show', $order)
+            return redirect()->route('admin.orders.show', $order)
                 ->with('error', 'Cannot delete an order with a payment. Cancel the order instead.');
         }
 
         $order->items()->delete();
         $order->delete();
 
-        return redirect()->route('order.index')
+        return redirect()->route('admin.orders.index')
             ->with('success', 'Order deleted successfully.');
     }
 }

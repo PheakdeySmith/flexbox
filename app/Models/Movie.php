@@ -25,6 +25,7 @@ class Movie extends Model
         'duration',
         'price',
         'trailer_url',
+        'video_url',
         'imdb_rating',
         'country',
         'language',
@@ -46,6 +47,14 @@ class Movie extends Model
         'is_free' => 'boolean',
     ];
 
+    /**
+     * Get the price attribute with a default value.
+     */
+    public function getPriceAttribute($value)
+    {
+        return $value ?? 9.99;
+    }
+
     public function directors()
     {
         return $this->belongsToMany(Director::class, 'movie_director')
@@ -58,7 +67,8 @@ class Movie extends Model
      */
     public function actors()
     {
-        return $this->belongsToMany(Actor::class, 'movie_actor');
+        return $this->belongsToMany(Actor::class, 'movie_actor')
+                    ->withPivot('character');
     }
 
     /**
