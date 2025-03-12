@@ -24,7 +24,6 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
-Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
 Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
 Route::get('/frontend/login', function () {
     return redirect()->route('login');
@@ -37,16 +36,22 @@ Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre
 Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor');
 Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->name('frontend.actorDetail');
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
-Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
-Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');
-Route::get('/cart', [CheckoutController::class, 'cart'])->name('frontend.cart');
-Route::get('/add-to-cart/{id}', [CheckoutController::class, 'addToCart'])->name('frontend.addToCart');
-Route::get('/remove-from-cart/{id}', [CheckoutController::class, 'removeFromCart'])->name('frontend.removeFromCart');
-Route::get('/clear-cart', [CheckoutController::class, 'clearCart'])->name('frontend.clearCart');
-Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('frontend.checkout');
-Route::post('/process-checkout', [CheckoutController::class, 'processCheckout'])->name('frontend.processCheckout');
-Route::get('/order-detail/{id}', [CheckoutController::class, 'orderDetail'])->name('frontend.orderDetail');
-Route::get('/purchase-history', [CheckoutController::class, 'purchaseHistory'])->name('frontend.purchaseHistory');
+
+
+
+Route::middleware(['role:user,member,admin'])->group(function () {
+    Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
+    Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
+    Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');
+    Route::get('/cart', [CheckoutController::class, 'cart'])->name('frontend.cart');
+    Route::get('/add-to-cart/{id}', [CheckoutController::class, 'addToCart'])->name('frontend.addToCart');
+    Route::get('/remove-from-cart/{id}', [CheckoutController::class, 'removeFromCart'])->name('frontend.removeFromCart');
+    Route::get('/clear-cart', [CheckoutController::class, 'clearCart'])->name('frontend.clearCart');
+    Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('frontend.checkout');
+    Route::post('/process-checkout', [CheckoutController::class, 'processCheckout'])->name('frontend.processCheckout');
+    Route::get('/order-detail/{id}', [CheckoutController::class, 'orderDetail'])->name('frontend.orderDetail');
+    Route::get('/purchase-history', [CheckoutController::class, 'purchaseHistory'])->name('frontend.purchaseHistory');
+});
 
 // Frontend Subscription Routes
 // Route::get('/subscription', [FrontendSubscriptionController::class, 'index'])->name('frontend.subscription');
@@ -66,8 +71,6 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
     Route::get('/account', [UserController::class, 'front_edit'])->name('frontend.account');
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
@@ -134,6 +137,5 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
-
     });
 });

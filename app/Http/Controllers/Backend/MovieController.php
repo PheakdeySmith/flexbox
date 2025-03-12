@@ -551,25 +551,25 @@ class MovieController extends Controller
     }
 
 
-    public function updateSlideStatus(Request $request)
-    {
+    // public function updateSlideStatus(Request $request)
+    // {
 
 
-        try {
-            DB::beginTransaction();
+    //     try {
+    //         DB::beginTransaction();
 
-            $movie = Movie::findOrFail($request->id);
-            $movie->is_featured = $movie->is_featured == 1 ? 0 : 1;
-            $movie->save();
+    //         $movie = Movie::findOrFail($request->id);
+    //         $movie->is_featured = $movie->is_featured == 1 ? 0 : 1;
+    //         $movie->save();
 
-            $output = ['status' => 1, 'msg' => __('Status updated')];
+    //         $output = ['status' => 1, 'msg' => __('Status updated')];
 
-            DB::commit();
-        } catch (Exception $e) {
-            $output = ['status' => 0, 'msg' => __('Something went wrong')];
-            DB::rollBack();
-        }
+    //         DB::commit();
+    //     } catch (Exception $e) {
+    //         $output = ['status' => 0, 'msg' => __('Something went wrong')];
+    //         DB::rollBack();
+    //     }
 
-        return response()->json($output);
-    }
+    //     return response()->json($output);
+    // }
 }
