@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\SubscriptionPlanController;
 use App\Http\Controllers\Backend\SubscriptionController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
@@ -73,11 +74,13 @@ Route::middleware('auth')->group(function () {
     Route::prefix('backend')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
         Route::resource('genre', GenreController::class);
+        Route::get('movie/update_status', [MovieController::class, 'updateSlideStatus'])->name('movie.update_status');
         Route::resource('movie', MovieController::class);
         Route::resource('actor', ActorController::class);
         Route::resource('director', DirectorController::class);
         Route::resource('user', UserController::class);
         Route::resource('order', OrderController::class);
+        Route::resource('role', RoleController::class);
 
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);
@@ -106,5 +109,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+
     });
 });

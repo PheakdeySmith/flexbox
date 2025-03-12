@@ -87,6 +87,7 @@
                                                         data-id="{{ $user->id }}" data-name="{{ $user->name }}"
                                                         data-email="{{ $user->email }}"
                                                         data-profile-photo="{{ $user->user_profile }}"
+                                                        data-role="{{ $user->roles->first()->id }}"
                                                         data-action="{{ route('user.update', $user->id) }}">Edit</button>
 
 
