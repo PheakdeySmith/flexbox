@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('backend')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
         Route::resource('genre', GenreController::class);
+        Route::get('movie/update_status', [MovieController::class, 'updateSlideStatus'])->name('movie.update_status');
         Route::resource('movie', MovieController::class);
         Route::resource('actor', ActorController::class);
         Route::resource('director', DirectorController::class);
@@ -108,5 +109,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+
     });
 });
