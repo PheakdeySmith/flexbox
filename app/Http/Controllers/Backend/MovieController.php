@@ -575,45 +575,4 @@ class MovieController extends Controller
     }
 
 
-    public function updateSlideStatus(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            $movie = Movie::findOrFail($request->id);
-            $type = $request->type ?? 'is_featured';
-
-            // Determine which field to update
-            $field = in_array($type, ['is_featured', 'is_featured_vertical']) ? $type : 'is_featured';
-
-            // If trying to enable the feature
-            if ($movie->$field == 0) {
-                // Check the count
-                $count = Movie::where($field, 1)->count();
-                if ($count >= 5) {
-                    return response()->json([
-                        'status' => 0,
-                        'msg' => __('Maximum limit of 5 ' . ($field == 'is_featured' ? 'featured' : 'featured vertical') . ' movies has been reached.')
-                    ]);
-                }
-            }
-
-            // Toggle the status
-            $movie->$field = $movie->$field == 1 ? 0 : 1;
-            $movie->save();
-
-            $output = [
-                'status' => 1,
-                'msg' => __('Status updated successfully'),
-                'newStatus' => $movie->$field
-            ];
-
-            DB::commit();
-        } catch (Exception $e) {
-            DB::rollBack();
-            $output = ['status' => 0, 'msg' => __('Something went wrong')];
-        }
-
-        return response()->json($output);
-    }
 }

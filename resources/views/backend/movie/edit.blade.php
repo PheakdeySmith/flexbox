@@ -947,19 +947,23 @@
                                 '<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/' +
                                 videoId + '?autoplay=1" allowfullscreen></iframe></div>';
 
-                        Swal.fire({
-                            title: 'Trailer Preview',
-                            html: embedHtml,
-                            width: 800,
-                            showCloseButton: true,
-                            showConfirmButton: false
-                        });
+                            Swal.fire({
+                                title: 'Trailer Preview',
+                                html: embedHtml,
+                                width: 800,
+                                showCloseButton: true,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Could not extract video ID from the provided URL.',
+                                icon: 'error'
+                            });
+                        }
                     } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Could not extract video ID from the provided URL.',
-                            icon: 'error'
-                        });
+                        // For other video services, just open in new tab
+                        window.open(trailerUrl, '_blank');
                     }
                 } else {
                     // For other video services, just open in new tab

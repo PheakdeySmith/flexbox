@@ -35,6 +35,7 @@ class WatchlistController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'movie_id' => 'required|exists:movies,id',
@@ -54,8 +55,7 @@ class WatchlistController extends Controller
             'movie_id' => $request->movie_id,
             'added_at' => now(),
         ]);
-
-        return redirect()->route('watchlist.index')->with('success', 'Movie added to watchlist successfully.');
+        return redirect()->route('frontend.watchlist')->with('success', 'Movie added to watchlist successfully.');
     }
 
     /**
