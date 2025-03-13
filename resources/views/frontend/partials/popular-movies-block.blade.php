@@ -102,7 +102,7 @@
                                                 </li>
                                             </ul>
                                             <div class="iq-button">
-                                                <a href=""
+                                                <a href="{{ route('frontend.detail', $movie->id) }}"
                                                     class="btn text-uppercase position-relative rounded-circle">
                                                     <i class="fa-solid fa-play ms-0"></i>
                                                 </a>

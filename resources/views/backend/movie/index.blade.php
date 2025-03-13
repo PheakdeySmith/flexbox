@@ -59,7 +59,6 @@
                                             <th>Release Date</th>
                                             <th>Price</th>
                                             <th>IMDb</th>
-                                            <th>Status</th>
                                             <th>Slide</th>
                                             <th>Actions</th>
                                         </tr>
@@ -99,15 +98,6 @@
                                                         {{ ucfirst($movie->status) }}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input" id="is_featured"
-                                                            name="is_featured" value="1">
-                                                        <label class="custom-control-label" for="statusToggle"></label>
-                                                    </div>
-                                                </td>
-
-
                                                 <td>
                                                     <a href="{{ route('movie.show', $movie->id) }}"
                                                         class="btn btn-info btn-sm">
@@ -206,23 +196,6 @@
                         }
                     });
 
-                });
-            });
-            $('input.is_featured').on('change', function() {
-                $.ajax({
-                    type: "get",
-                    url: "{{ route('movie.update_status') }}",
-                    data: {
-                        "id": $(this).data('id')
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.status == 1) {
-                            toastr.success(response.msg);
-                        } else {
-                            toastr.error(response.msg);
-                        }
-                    }
                 });
             });
         });

@@ -19,7 +19,7 @@
                                 <div class="iq-card card-hover">
                                     <div class="block-images position-relative w-100">
                                         <div class="img-box w-100">
-                                            <a href=""
+                                            <a href="{{ route('frontend.detail', $movie->id) }}"
                                                 class="position-absolute top-0 bottom-0 start-0 end-0"></a>
                                             <img src="{{ $movie->poster_url }}" alt="{{ $movie->title }}"
                                                 class="img-fluid object-cover w-100 d-block border-0">
@@ -99,7 +99,7 @@
                                                 </li>
                                             </ul>
                                             <div class="iq-button">
-                                                <a href=""
+                                                <a href="{{ route('frontend.detail', $movie->id) }}"
                                                     class="btn text-uppercase position-relative rounded-circle">
                                                     <i class="fa-solid fa-play ms-0"></i>
                                                 </a>

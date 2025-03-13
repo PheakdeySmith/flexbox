@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\SubscriptionController as FrontendSubscriptionController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\Frontend\OrderHistoryController;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
@@ -94,7 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('backend')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
         Route::resource('genre', GenreController::class);
-        Route::get('movie/update_status', [MovieController::class, 'updateSlideStatus'])->name('movie.update_status');
+        Route::post('movie/updateSlideStatus', [MovieController::class, 'updateSlideStatus'])->name('movie.updateSlideStatus');
         Route::resource('movie', MovieController::class);
         Route::resource('actor', ActorController::class);
         Route::resource('director', DirectorController::class);
@@ -130,4 +131,16 @@ Route::middleware('auth')->group(function () {
         // Update the authenticated user's profile
         Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
     });
+
+    // Frontend Order History Routes
+    Route::get('/orders', [OrderHistoryController::class, 'index'])
+        ->name('frontend.orders.history');
+    Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])
+        ->name('frontend.orders.show');
+    Route::patch('/orders/{order}/cancel', [OrderHistoryController::class, 'cancel'])
+        ->name('frontend.orders.cancel');
+
+    // Movie watching route
+    Route::get('/movies/{movie}/watch', [App\Http\Controllers\Frontend\MovieController::class, 'watch'])
+        ->name('frontend.movies.watch');
 });

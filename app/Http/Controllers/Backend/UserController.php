@@ -18,6 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
+
         $roles = Role::all();
         $users = User::all();
         return view('backend.user.index', compact('users', 'roles'));
@@ -91,11 +92,15 @@ class UserController extends Controller
 
     public function front_edit(Request $request)
     {
+        $orders = \App\Models\Order::with(['items.movie', 'paymentDetail.payment'])
+            ->where('user_id', \Illuminate\Support\Facades\Auth::id())
+            ->latest()
+            ->get();
         // Get the currently authenticated user
         $user = $request->user();
 
         // Pass the user details to the frontend view
-        return view('frontend.account.index', compact('user'));
+        return view('frontend.account.index', compact('user', 'orders'));
     }
 
     /**

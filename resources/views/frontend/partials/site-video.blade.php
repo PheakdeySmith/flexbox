@@ -1,3 +1,4 @@
+@if(auth()->check())
 <div class="iq-main-slider site-video mt-5">
     <div class="container-fluid">
       <div class="row">
@@ -26,3 +27,30 @@
       </div>
     </div>
   </div>
+@else
+<div class="iq-main-slider site-video">
+    <div class="container-fluid">
+      <div class="iq-content_restriction">
+        <div class="iq-restriction_box">
+          <span class="subscribe-text">You must be logged in to view this content.</span>
+          <div class="iq-button">
+            <a href="{{ route('frontend.subscription') }}"
+              class="btn text-uppercase position-relative">
+              <span class="button-text">Subscribe To Watch</span>
+              <i class="fa-solid fa-play"></i>
+            </a>
+          </div>
+          <span> Already a Member?</span>
+          <div class="iq-button">
+            <a href="{{ route('frontend.login') }}"
+              class="btn text-uppercase position-relative">
+              <span class="button-text">Log in</span>
+              <i class="fa-solid fa-play"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+@endif
+
