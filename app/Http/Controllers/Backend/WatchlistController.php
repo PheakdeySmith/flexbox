@@ -54,9 +54,12 @@ class WatchlistController extends Controller
             'movie_id' => $request->movie_id,
             'added_at' => now(),
         ]);
-        
-
-        return redirect()->route('watchlist.index')->with('success', 'Movie added to watchlist successfully.');
+         // Check if the logged-in user is an admin
+         if ($request->source === 'frontend') {
+            return redirect()->route('frontend.watchlist')->with('success', 'Movie added to watchlist successfully.');
+        } else {
+            return redirect()->route('watchlist.index')->with('success', 'Movie added to watchlist successfully.');
+        }
     }
 
     /**

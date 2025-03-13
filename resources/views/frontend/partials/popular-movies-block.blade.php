@@ -44,6 +44,7 @@
                                                                     value="{{ auth()->id() }}">
                                                                 <input type="hidden" name="movie_id"
                                                                     value="{{ $movie->id }}">
+                                                                <input type="hidden" name="source" value="frontend">
                                                                 <button type="submit" class="watch-list-not">
                                                                     <svg width="10" height="10"
                                                                         viewBox="0 0 24 24" fill="none"
