@@ -51,6 +51,15 @@ Route::middleware(['role:user,member,admin'])->group(function () {
     Route::post('/process-checkout', [CheckoutController::class, 'processCheckout'])->name('frontend.processCheckout');
     Route::get('/order-detail/{id}', [CheckoutController::class, 'orderDetail'])->name('frontend.orderDetail');
     Route::get('/purchase-history', [CheckoutController::class, 'purchaseHistory'])->name('frontend.purchaseHistory');
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    Route::get('/profile/photo/remove', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove');
+    // Password routes
+    Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
 });
 
 // Frontend Subscription Routes
@@ -69,27 +78,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 });
 
+
+
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/account', [UserController::class, 'front_edit'])->name('frontend.account');
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
-
     // Redirect /dashboard to backend/dashboard
     Route::get('/dashboard', function () {
         return redirect()->route('backend.dashboard');
     });
-
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::patch('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
-    Route::get('/profile/photo/remove', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove');
-
-    // Password routes
-    Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
-
     // Backend routes
     Route::prefix('backend')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
@@ -101,38 +101,30 @@ Route::middleware('auth')->group(function () {
         Route::resource('user', UserController::class);
         Route::resource('order', OrderController::class);
         Route::resource('role', RoleController::class);
-
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);
         Route::post('watchlist/toggle/{movie}', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');
-
         // Review routes
         Route::resource('review', ReviewController::class);
         Route::post('review/toggle-approval/{review}', [ReviewController::class, 'toggleApproval'])->name('review.toggle-approval');
         Route::post('review/submit/{movie}', [ReviewController::class, 'submitReview'])->name('review.submit');
-
         // Subscription Plan routes
         Route::resource('subscription-plan', SubscriptionPlanController::class);
         Route::post('subscription-plan/toggle-active/{subscriptionPlan}', [SubscriptionPlanController::class, 'toggleActive'])->name('subscription-plan.toggle-active');
-
         // Subscription routes
         Route::resource('subscription', SubscriptionController::class);
         Route::post('subscription/cancel/{subscription}', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
         Route::post('subscription/extend/{subscription}', [SubscriptionController::class, 'extend'])->name('subscription.extend');
-
         // Payment routes
         Route::resource('payment', PaymentController::class);
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');
         Route::post('payment/mark-as-completed/{payment}', [PaymentController::class, 'markAsCompleted'])->name('payment.mark-as-completed');
-
         // Additional payment routes
         Route::get('payments/dashboard', [PaymentController::class, 'dashboard'])->name('payment.dashboard');
         Route::patch('payments/{payment}/status', [PaymentController::class, 'updateStatus'])->name('payment.update-status');
         Route::get('users/{user}/payments', [PaymentController::class, 'userHistory'])->name('payment.user-history');
-
         // Additional order routes
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
-
         // View the authenticated user's profile
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile
