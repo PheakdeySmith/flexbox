@@ -42,8 +42,19 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
-                                        <li><span><i class="fa-solid fa-plus"></i></span></li>
+                                        <form id="watchlist-form-{{ $movie->id }}" action="{{ route('watchlist.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                            <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+                                            <input type="hidden" name="source" value="frontend">
+                                        </form>
 
+                                        <li onclick="document.getElementById('watchlist-form-{{ $movie->id }}').submit()" style="cursor: pointer;">
+                                            <span><i class="fa-solid fa-plus"></i></span>
+                                        </li>
+                                        <li onclick="document.getElementById('watchlist-form-{{ $movie->id }}').submit()" style="cursor: pointer;">
+                                            <span><i class="fa-solid fa-plus"></i></span>
+                                        </li>
                                     </ul>
 
                                     <div class="iq-button">

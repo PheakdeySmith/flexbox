@@ -13,7 +13,7 @@
                                 {{-- <i class="fa-regular fa-pen-to-square"></i> --}}
                             </div>
                             <div>
-                                <a href="{{ route('frontend.account') }}" class="text-white" >
+                                <a href="{{ route('frontend.account') }}" class="text-white">
                                     <h6 class="font-size-18 text-capitalize text-white fw-500">
                                         {{ Auth::user()->name }} <!-- This will display the user's name -->
                                     </h6>
@@ -305,134 +305,40 @@
                                         </h5>
                                     </div>
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4">
-                                        <div class="col mb-4">
-                                            <div class="watchlist-warpper card-hover-style-two">
-                                                <div class="block-images position-relative w-100">
-                                                    <div class="img-box">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
-                                                            class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                        <img src="{{ asset('frontend/assets') }}/images/01.webp"
-                                                            alt="movie-card"
-                                                            class="img-fluid object-cover w-100 d-block border-0" />
-                                                    </div>
-                                                    <div class="card-description">
-                                                        <h5 class="text-capitalize fw-500">
-                                                            <a
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
-                                                                List 1</a>
-                                                        </h5>
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-solid fa-earth-americas text-primary"></i>
-                                                                <span
-                                                                    class="text-body fw-semibold text-capitalize">Public</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-regular fa-eye text-primary"></i>
-                                                                <span class="text-body fw-semibold text-capitalize">3
-                                                                    Views</span>
+                                        @foreach ($watchlists as $watchlist)
+                                            <div class="col mb-4">
+                                                <div class="watchlist-warpper card-hover-style-two">
+                                                    <div class="block-images position-relative w-100">
+                                                        <div class="img-box">
+                                                            <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
+                                                                class="position-absolute top-0 bottom-0 start-0 end-0"></a>
+                                                            <img src="{{ asset('frontend/assets') }}/images/01.webp"
+                                                                alt="movie-card"
+                                                                class="img-fluid object-cover w-100 d-block border-0" />
+                                                        </div>
+                                                        <div class="card-description">
+                                                            <h5 class="text-capitalize fw-500">
+                                                                <a
+                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
+                                                                    List 2</a>
+                                                            </h5>
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                <div class="d-flex align-items-center gap-1 font-size-12">
+                                                                    <i class="fa-solid fa-earth-americas text-primary"></i>
+                                                                    <span
+                                                                        class="text-body fw-semibold text-capitalize">Public</span>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-1 font-size-12">
+                                                                    <i class="fa-regular fa-eye text-primary"></i>
+                                                                    <span class="text-body fw-semibold text-capitalize">3
+                                                                        Views</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col mb-4">
-                                            <div class="watchlist-warpper card-hover-style-two">
-                                                <div class="block-images position-relative w-100">
-                                                    <div class="img-box">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
-                                                            class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                        <img src="{{ asset('frontend/assets') }}/images/02.webp"
-                                                            alt="movie-card"
-                                                            class="img-fluid object-cover w-100 d-block border-0" />
-                                                    </div>
-                                                    <div class="card-description">
-                                                        <h5 class="text-capitalize fw-500">
-                                                            <a
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
-                                                                List 2</a>
-                                                        </h5>
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-solid fa-earth-americas text-primary"></i>
-                                                                <span
-                                                                    class="text-body fw-semibold text-capitalize">Private</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-regular fa-eye text-primary"></i>
-                                                                <span class="text-body fw-semibold text-capitalize">1
-                                                                    Views</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col mb-4">
-                                            <div class="watchlist-warpper card-hover-style-two">
-                                                <div class="block-images position-relative w-100">
-                                                    <div class="img-box">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
-                                                            class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                        <img src="{{ asset('frontend/assets') }}/images/03.webp"
-                                                            alt="movie-card"
-                                                            class="img-fluid object-cover w-100 d-block border-0" />
-                                                    </div>
-                                                    <div class="card-description">
-                                                        <h5 class="text-capitalize fw-500">
-                                                            <a
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
-                                                                List 3</a>
-                                                        </h5>
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-solid fa-earth-americas text-primary"></i>
-                                                                <span
-                                                                    class="text-body fw-semibold text-capitalize">Public</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-regular fa-eye text-primary"></i>
-                                                                <span class="text-body fw-semibold text-capitalize">10
-                                                                    Views</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col mb-4">
-                                            <div class="watchlist-warpper card-hover-style-two">
-                                                <div class="block-images position-relative w-100">
-                                                    <div class="img-box">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
-                                                            class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                        <img src="{{ asset('frontend/assets') }}/images/04.webp"
-                                                            alt="movie-card"
-                                                            class="img-fluid object-cover w-100 d-block border-0" />
-                                                    </div>
-                                                    <div class="card-description">
-                                                        <h5 class="text-capitalize fw-500">
-                                                            <a
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
-                                                                List 4</a>
-                                                        </h5>
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-solid fa-earth-americas text-primary"></i>
-                                                                <span
-                                                                    class="text-body fw-semibold text-capitalize">Public</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-regular fa-eye text-primary"></i>
-                                                                <span class="text-body fw-semibold text-capitalize">30
-                                                                    Views</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @endforeach
                                     </div>
                                     <div class="text-center">
                                         <div class="iq-button">
