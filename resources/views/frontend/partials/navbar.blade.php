@@ -140,14 +140,6 @@
                                 </a>
                                 <ul class="sub-nav collapse  list-unstyled" id="features">
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.restrictDetail') }}">
-                                            Restricted Content </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.restrictDetail') }}">
-                                            Related Merchandise </a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a class="nav-link " href="{{ route('frontend.genre') }}"> Geners </a>
                                     </li>
                                     <li class="nav-item">

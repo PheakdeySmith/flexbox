@@ -467,17 +467,45 @@
                                                                     <div class="card-body">
                                                                         <div class="custom-control custom-switch">
                                                                             <input type="checkbox"
-                                                                                class="custom-control-input"
-                                                                                id="is_free" name="is_free"
+                                                                                class="custom-control-input featured-toggle"
+                                                                                id="is_featured" name="is_featured"
                                                                                 value="1"
-                                                                                {{ old('is_free', $movie->is_free) ? 'checked' : '' }}>
+                                                                                data-type="is_featured"
+                                                                                data-id="{{ $movie->id }}"
+                                                                                {{ old('is_featured', $movie->is_featured) ? 'checked' : '' }}
+                                                                                {{ $featuredCount >= 5 && !$movie->is_featured ? 'disabled' : '' }}>
                                                                             <label class="custom-control-label"
-                                                                                for="is_free">
-                                                                                <i class="fas fa-gift mr-1"></i> Visible on
-                                                                                Slide
+                                                                                for="is_featured">
+                                                                                <i class="fas fa-star mr-1"></i> Featured
                                                                             </label>
                                                                         </div>
-
+                                                                        <small class="form-text text-muted mt-2">
+                                                                            Featured movies: {{ $featuredCount }}/5
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <div class="custom-control custom-switch">
+                                                                            <input type="checkbox"
+                                                                                class="custom-control-input featured-toggle"
+                                                                                id="is_featured_vertical"
+                                                                                name="is_featured_vertical"
+                                                                                value="1"
+                                                                                data-type="is_featured_vertical"
+                                                                                data-id="{{ $movie->id }}"
+                                                                                {{ old('is_featured_vertical', $movie->is_featured_vertical) ? 'checked' : '' }}
+                                                                                {{ $featuredVerticalCount >= 5 && !$movie->is_featured_vertical ? 'disabled' : '' }}>
+                                                                            <label class="custom-control-label"
+                                                                                for="is_featured_vertical">
+                                                                                <i class="fas fa-arrows-alt-v mr-1"></i> Featured Vertical
+                                                                            </label>
+                                                                        </div>
+                                                                        <small class="form-text text-muted mt-2">
+                                                                            Featured vertical: {{ $featuredVerticalCount }}/5
+                                                                        </small>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -492,35 +520,14 @@
                                                                                 {{ old('is_free', $movie->is_free) ? 'checked' : '' }}>
                                                                             <label class="custom-control-label"
                                                                                 for="is_free">
-                                                                                <i class="fas fa-gift mr-1"></i> Verticall
+                                                                                <i class="fas fa-gift mr-1"></i> Free to Watch
                                                                             </label>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-4">
-                                                                <div class="card">
-                                                                    <div class="card-body">
-                                                                        <div class="custom-control custom-switch">
-                                                                            <input type="checkbox"
-                                                                                class="custom-control-input"
-                                                                                id="is_free" name="is_free"
-                                                                                value="1"
-                                                                                {{ old('is_free', $movie->is_free) ? 'checked' : '' }}>
-                                                                            <label class="custom-control-label"
-                                                                                for="is_free">
-                                                                                <i class="fas fa-gift mr-1"></i> Free to
-                                                                                Watch
-                                                                            </label>
-                                                                        </div>
-                                                                        <small class="form-text text-muted mt-2">Enable
-                                                                            this option to make this movie available for
-                                                                            free.</small>
+                                                                        <small class="form-text text-muted mt-2">Enable this option to make this movie available for free.</small>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -577,40 +584,6 @@
                                                                 </div>
                                                                 <div id="selected-actors-list" class="row">
                                                                     <!-- Selected actors will be displayed here -->
-                                                                    @foreach ($movie->actors as $index => $actor)
-                                                                        <div class="col-md-3 mb-4">
-                                                                            <div class="card h-100">
-                                                                                <img src="{{ $actor->profile_photo ?: asset('backend/assets/image/no-profile.png') }}"
-                                                                                    class="card-img-top"
-                                                                                    alt="{{ $actor->name }}"
-                                                                                    style="height: 200px; object-fit: cover;">
-                                                                                <div class="card-body">
-                                                                                    <h5 class="card-title">
-                                                                                        {{ $actor->name }}</h5>
-                                                                                    <p class="card-text text-muted">
-                                                                                        {{ $actor->pivot->character ? 'as ' . $actor->pivot->character : '' }}
-                                                                                    </p>
-                                                                                    <button type="button"
-                                                                                        class="btn btn-sm btn-danger w-100 remove-actor"
-                                                                                        data-id="{{ $actor->tmdb_id ?: $actor->id }}">
-                                                                                        <i class="fas fa-trash"></i> Remove
-                                                                                    </button>
-                                                                                    <input type="hidden"
-                                                                                        name="actors[{{ $index }}][id]"
-                                                                                        value="{{ $actor->tmdb_id ?: $actor->id }}">
-                                                                                    <input type="hidden"
-                                                                                        name="actors[{{ $index }}][name]"
-                                                                                        value="{{ $actor->name }}">
-                                                                                    <input type="hidden"
-                                                                                        name="actors[{{ $index }}][profile_photo]"
-                                                                                        value="{{ $actor->profile_photo ?: '' }}">
-                                                                                    <input type="hidden"
-                                                                                        name="actors[{{ $index }}][character]"
-                                                                                        value="{{ $actor->pivot->character ?: '' }}">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    @endforeach
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -991,13 +964,6 @@
                 } else {
                     // For other video services, just open in new tab
                     window.open(trailerUrl, '_blank');
-                }
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'No trailer URL provided.',
-                    icon: 'error'
-                });
             }
         });
 
@@ -1025,57 +991,42 @@
                 }
             });
 
-            // Store selected actors
+            // Initialize arrays to store selected items
             window.selectedActors = [];
-            // Store selected directors
             window.selectedDirectors = [];
-            // Store selected genres
             window.selectedGenres = [];
 
-            // Initialize selectedActors with existing actors
+            // Initialize with existing data
             @foreach ($movie->actors as $actor)
                 selectedActors.push({
-                    id: {{ $actor->tmdb_id ?: $actor->id }},
+                    id: {{ $actor->id }},
                     name: "{{ $actor->name }}",
                     profile_photo: "{{ $actor->profile_photo ?: '' }}",
                     character: "{{ $actor->pivot->character ?: '' }}"
                 });
             @endforeach
 
-            // Initialize existing genres
-            $('.genre-item').each(function() {
-                var genreId = $(this).data('id');
-                var genreName = $(this).find('.card-title').text();
-
-                window.selectedGenres.push({
-                    id: genreId,
-                    name: genreName
+            @foreach ($movie->directors as $director)
+                selectedDirectors.push({
+                    id: {{ $director->id }},
+                    name: "{{ $director->name }}",
+                    profile_photo: "{{ $director->profile_photo ?: '' }}",
+                    job: "{{ $director->pivot->job ?: '' }}"
                 });
-            });
+            @endforeach
 
-            // Initialize existing directors
-            $('.director-item').each(function() {
-                var directorId = $(this).data('id');
-                var directorName = $(this).find('.card-title').text();
-                var directorJob = $(this).data('job');
-                var directorProfile = $(this).find('img').attr('src');
-                var directorBiography = '';
-
-                window.selectedDirectors.push({
-                    id: directorId,
-                    name: directorName,
-                    job: directorJob,
-                    profile_photo: directorProfile !==
-                        '{{ asset('backend/assets/image/no-profile.png') }}' ? directorProfile :
-                        '',
-                    biography: directorBiography
+            @foreach ($movie->genres as $genre)
+                selectedGenres.push({
+                    id: {{ $genre->id }},
+                    name: "{{ $genre->name }}"
                 });
-            });
+            @endforeach
 
-            // Handle remove genre button clicks
-            $(document).on('click', '.remove-genre', function() {
-                var genreId = $(this).data('id');
-                removeSelectedGenre(genreId);
+            // Handle remove actor button clicks
+            $(document).on('click', '.remove-actor', function() {
+                var actorId = $(this).data('id');
+                removeSelectedActor(actorId);
+                return false; // Prevent form submission
             });
 
             // Handle remove director button clicks
@@ -1083,206 +1034,41 @@
                 var directorId = $(this).data('id');
                 var job = $(this).data('job');
                 removeSelectedDirector(directorId, job);
+                return false; // Prevent form submission
             });
 
-            // Handle add new genre button click
-            $('#add-new-genre').on('click', function() {
-                var genreName = $('#new-genre-name').val().trim();
-
-                if (genreName.length === 0) {
-                    window.showWarningToast('Please enter a genre name');
-                    return;
-                }
-
-                // Generate a temporary ID (negative to avoid conflicts with real IDs)
-                var tempId = -Math.floor(Math.random() * 1000000);
-
-                addSelectedGenre({
-                    id: tempId,
-                    name: genreName
-                });
-
-                // Clear the input field
-                $('#new-genre-name').val('');
+            // Handle remove genre button clicks
+            $(document).on('click', '.remove-genre', function() {
+                var genreId = $(this).data('id');
+                removeSelectedGenre(genreId);
+                return false; // Prevent form submission
             });
 
-            // Handle add new director button click
-            $('#add-new-director').on('click', function() {
-                var directorName = $('#new-director-name').val().trim();
-                var directorJob = $('#new-director-job').val();
-                var directorProfile = $('#new-director-profile').val().trim();
-
-                if (directorName.length === 0) {
-                    window.showWarningToast('Please enter a director name');
-                    return;
-                }
-
-                // Generate a temporary ID (negative to avoid conflicts with real IDs)
-                var tempId = -Math.floor(Math.random() * 1000000);
-
-                addSelectedDirector({
-                    id: tempId,
-                    name: directorName,
-                    job: directorJob,
-                    profile_photo: directorProfile,
-                    biography: ''
+            // Function to remove actor
+            function removeSelectedActor(actorId) {
+                window.selectedActors = window.selectedActors.filter(function(actor) {
+                    return actor.id !== actorId;
                 });
-
-                // Clear the input fields
-                $('#new-director-name').val('');
-                $('#new-director-profile').val('');
-            });
-
-            // Update the fetchMovie function to include country and language data
-            function fetchMovie(id) {
-                $.ajax({
-                    url: 'https://api.themoviedb.org/3/movie/' + id,
-                    type: 'GET',
-                    data: {
-                        append_to_response: 'videos,credits',
-                        language: 'en-US'
-                    },
-                    headers: {
-                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
-                        'Content-Type': 'application/json'
-                    },
-                    success: function(movie) {
-                        console.log('Movie details:', movie);
-
-                        // Fill form fields with movie data
-                        $('#tmdb_id').val(movie.id);
-                        $('#title').val(movie.title);
-                        $('#description').val(movie.overview);
-
-                        // Set type to 'movie' by default (required field)
-                        $('#type').val('movie');
-
-                        // Set status to 'active' by default (required field)
-                        $('#status').val('active');
-
-                        if (movie.release_date) {
-                            $('#release_date').val(movie.release_date);
-                        }
-
-                        if (movie.poster_path) {
-                            $('#poster_url').val('https://image.tmdb.org/t/p/w500' + movie.poster_path);
-                        }
-
-                        if (movie.backdrop_path) {
-                            $('#backdrop_url').val('https://image.tmdb.org/t/p/original' + movie
-                                .backdrop_path);
-                        }
-
-                        if (movie.runtime) {
-                            $('#duration').val(movie.runtime);
-                        }
-
-                        if (movie.vote_average) {
-                            // Format to one decimal place
-                            const rating = parseFloat(movie.vote_average).toFixed(1);
-                            $('#imdb_rating').val(rating);
-                        } else {
-                            // Set a default value for imdb_rating to avoid validation error
-                            $('#imdb_rating').val('0.0');
-                        }
-
-                        // Set country from production_countries
-                        if (movie.production_countries && movie.production_countries.length > 0) {
-                            $('#country').val(movie.production_countries[0].name);
-                        }
-
-                        // Set language from spoken_languages
-                        if (movie.spoken_languages && movie.spoken_languages.length > 0) {
-                            // Try to get English name first, fall back to name if not available
-                            const language = movie.spoken_languages[0].english_name || movie
-                                .spoken_languages[0].name;
-                            $('#language').val(language);
-                        }
-
-                        // Handle trailer
-                        if (movie.videos && movie.videos.results && movie.videos.results.length > 0) {
-                            const trailer = movie.videos.results.find(video => video.type ===
-                                'Trailer' && video.site === 'YouTube');
-                            if (trailer) {
-                                $('#trailer_url').val('https://www.youtube.com/watch?v=' + trailer.key);
-                            }
-                        }
-
-                        // Handle actors
-                        if (movie.credits && movie.credits.cast && movie.credits.cast.length > 0) {
-                            // Store the cast for use in the Actors tab
-                            window.movieCast = movie.credits.cast;
-
-                            // Update the Actors tab with the cast
-                            updateActorsTab(movie.credits.cast, movie.title);
-
-                            // Automatically select all actors
-                            selectAllActors(movie.credits.cast);
-
-                            // Show a notification that actors are available
-                            const actorCount = movie.credits.cast.length;
-                            const actorNotification = `<div class="alert alert-success mt-3">
-                            <i class="fas fa-info-circle mr-1"></i> ${actorCount} actors found and automatically selected for this movie.
-                            <a href="#" onclick="$('#actors-tab').tab('show'); return false;" class="alert-link">
-                                Go to Actors tab to review them.
-                            </a>
-                        </div>`;
-                            $('#tmdb-search-results').after(actorNotification);
-                        }
-
-                        // Switch to basic tab
-                        $('#basic-tab').tab('show');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Failed to fetch movie details:', error);
-                        window.showErrorToast('Failed to fetch movie details: ' + error);
-                    }
-                });
+                updateSelectedActorsList();
             }
 
-            // Update the selectAllActors function to include birth date and biography data
-            function selectAllActors(cast) {
-                // Clear any previously selected actors
-                window.selectedActors = [];
-
-                // Add all actors from the cast to the selected actors
-                cast.slice(0, 12).forEach(function(actor) {
-                    // Fetch additional actor details to get biography and birth date
-                    fetchActorDetails(actor.id, function(actorDetails) {
-                        addSelectedActor({
-                            id: actor.id,
-                            name: actor.name,
-                            profile_photo: actor.profile_path ?
-                                'https://image.tmdb.org/t/p/w185' + actor.profile_path : '',
-                            character: actor.character || '',
-                            birth_date: actorDetails.birthday || '',
-                            biography: actorDetails.biography || ''
-                        });
-                    });
+            // Function to remove director
+            function removeSelectedDirector(directorId, job) {
+                window.selectedDirectors = window.selectedDirectors.filter(function(director) {
+                    return !(director.id === directorId && director.job === job);
                 });
+                updateSelectedDirectorsList();
             }
 
-            // Add a function to fetch actor details from TMDB
-            function fetchActorDetails(actorId, callback) {
-                $.ajax({
-                    url: 'https://api.themoviedb.org/3/person/' + actorId,
-                    type: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
-                        'Content-Type': 'application/json'
-                    },
-                    success: function(data) {
-                        callback(data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Failed to fetch actor details:', error);
-                        // Call the callback with empty data
-                        callback({});
-                    }
+            // Function to remove genre
+            function removeSelectedGenre(genreId) {
+                window.selectedGenres = window.selectedGenres.filter(function(genre) {
+                    return genre.id !== genreId;
                 });
+                updateSelectedGenresList();
             }
 
-            // Update the updateSelectedActorsList function to include birth date and biography fields
+            // Function to update actors list in the view
             function updateSelectedActorsList() {
                 var container = $('#selected-actors-list');
                 container.empty();
@@ -1295,217 +1081,30 @@
                 $('#no-selected-actors').addClass('d-none');
 
                 $.each(window.selectedActors, function(index, actor) {
-                    var profileUrl = actor.profile_photo ||
-                        '{{ asset('backend/assets/image/no-profile.png') }}';
-
-                    var html = '<div class="col-md-3 mb-4">' +
-                        '<div class="card h-100">' +
-                        '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name +
-                        '" style="height: 200px; object-fit: cover;">' +
-                        '<div class="card-body">' +
-                        '<h5 class="card-title">' + actor.name + '</h5>' +
-                        '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character :
-                            '') + '</p>' +
-                        '<button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="' +
-                        actor.id + '">' +
-                        '<i class="fas fa-trash"></i> Remove' +
-                        '</button>' +
-                        // Hidden inputs to include actor data in form submission
-                        '<input type="hidden" name="actors[' + index + '][id]" value="' + actor.id + '">' +
-                        '<input type="hidden" name="actors[' + index + '][name]" value="' + actor.name +
-                        '">' +
-                        '<input type="hidden" name="actors[' + index + '][profile_photo]" value="' + (actor
-                            .profile_photo || '') + '">' +
-                        '<input type="hidden" name="actors[' + index + '][character]" value="' + (actor
-                            .character || '') + '">' +
-                        '<input type="hidden" name="actors[' + index + '][birth_date]" value="' + (actor
-                            .birth_date || '') + '">' +
-                        '<input type="hidden" name="actors[' + index + '][biography]" value="' + (actor
-                            .biography || '') + '">' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
-                    container.append(html);
-                });
-
-                // Add click event for remove actor buttons
-                $('.remove-actor').on('click', function() {
-                    var actorId = $(this).data('id');
-                    removeSelectedActor(actorId);
-                });
-            }
-
-            // Add these functions for actor management
-            function addSelectedActor(actor) {
-                // Check if actor is already selected
-                var existingIndex = window.selectedActors.findIndex(function(selectedActor) {
-                    return selectedActor.id === actor.id;
-                });
-
-                if (existingIndex === -1) {
-                    window.selectedActors.push(actor);
-                    updateSelectedActorsList();
-                }
-            }
-
-            function removeSelectedActor(actorId) {
-                window.selectedActors = window.selectedActors.filter(function(actor) {
-                    return actor.id !== actorId;
-                });
-
-                updateSelectedActorsList();
-
-                // Re-enable the select button in the movie actors list if it exists
-                $('.select-actor[data-id="' + actorId + '"]').removeClass('btn-secondary').addClass('btn-primary')
-                    .html('<i class="fas fa-plus"></i> Select')
-                    .prop('disabled', false);
-            }
-
-            // Initialize remove buttons for existing actors
-            $(document).ready(function() {
-                $('.remove-actor').on('click', function() {
-                    var actorId = $(this).data('id');
-                    removeSelectedActor(actorId);
-                });
-            });
-
-            // Add back the updateActorsTab function
-            function updateActorsTab(cast, movieTitle) {
-                // Hide the no movie selected message
-                $('#no-movie-selected').addClass('d-none');
-
-                // Show the movie actors container
-                $('#movie-actors-container').removeClass('d-none');
-
-                // Set the movie title
-                $('#selected-movie-title').text(movieTitle);
-
-                // Clear the movie actors container
-                $('#movie-actors').empty();
-
-                // If no cast, show the no actors message
-                if (!cast || cast.length === 0) {
-                    $('#no-movie-actors-message').removeClass('d-none');
-                    return;
-                }
-
-                // Hide the no actors message
-                $('#no-movie-actors-message').addClass('d-none');
-
-                // Limit to top 12 actors
-                const topCast = cast.slice(0, 12);
-
-                // Add each actor to the container
-                $.each(topCast, function(index, actor) {
-                    var profileUrl = actor.profile_path ?
-                        'https://image.tmdb.org/t/p/w185' + actor.profile_path :
-                        '{{ asset('backend/assets/image/no-profile.png') }}';
-
-                    // All actors are selected by default
-                    var buttonClass = 'btn-secondary';
-                    var buttonText = '<i class="fas fa-check"></i> Selected';
-                    var buttonDisabled = 'disabled';
-
-                    var html = '<div class="col-md-3 mb-4">' +
-                        '<div class="card h-100">' +
-                        '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name +
-                        '" style="height: 250px; object-fit: cover;">' +
-                        '<div class="card-body">' +
-                        '<h5 class="card-title">' + actor.name + '</h5>' +
-                        '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character :
-                            '') + '</p>' +
-                        '<button type="button" class="btn btn-sm ' + buttonClass + ' w-100 select-actor" ' +
-                        buttonDisabled + ' ' +
-                        'data-id="' + actor.id + '" ' +
-                        'data-name="' + actor.name + '" ' +
-                        'data-profile="' + (actor.profile_path ? 'https://image.tmdb.org/t/p/w185' + actor
-                            .profile_path : '') + '" ' +
-                        'data-character="' + (actor.character || '') + '">' +
-                        buttonText +
-                        '</button>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
-                    $('#movie-actors').append(html);
-                });
-            }
-
-            // Functions for genre management
-            function addSelectedGenre(genre) {
-                // Check if genre is already selected
-                var existingIndex = window.selectedGenres.findIndex(function(selectedGenre) {
-                    return selectedGenre.id === genre.id;
-                });
-
-                if (existingIndex === -1) {
-                    window.selectedGenres.push(genre);
-                    updateSelectedGenresList();
-                }
-            }
-
-            function removeSelectedGenre(genreId) {
-                window.selectedGenres = window.selectedGenres.filter(function(genre) {
-                    return genre.id !== genreId;
-                });
-
-                updateSelectedGenresList();
-            }
-
-            function updateSelectedGenresList() {
-                var container = $('#selected-genres-list');
-                container.empty();
-
-                if (window.selectedGenres.length === 0) {
-                    $('#no-selected-genres').removeClass('d-none');
-                    return;
-                }
-
-                $('#no-selected-genres').addClass('d-none');
-
-                $.each(window.selectedGenres, function(index, genre) {
-                    var html = '<div class="col-md-3 mb-4 genre-item" data-id="' + genre.id + '">' +
-                        '<div class="card h-100">' +
-                        '<div class="card-body">' +
-                        '<h5 class="card-title">' + genre.name + '</h5>' +
-                        '<button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="' +
-                        genre.id + '">' +
-                        '<i class="fas fa-trash"></i> Remove' +
-                        '</button>' +
-                        // Hidden inputs to include genre data in form submission
-                        '<input type="hidden" name="genres[' + index + '][id]" value="' + genre.id + '">' +
-                        '<input type="hidden" name="genres[' + index + '][name]" value="' + genre.name +
-                        '">' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
+                    var profileUrl = actor.profile_photo || '{{ asset("backend/assets/image/no-profile.png") }}';
+                    var html = `
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <img src="${profileUrl}" class="card-img-top" alt="${actor.name}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${actor.name}</h5>
+                                    <p class="card-text text-muted">${actor.character ? 'as ' + actor.character : ''}</p>
+                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="${actor.id}">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                    <input type="hidden" name="actors[${index}][id]" value="${actor.id}">
+                                    <input type="hidden" name="actors[${index}][name]" value="${actor.name}">
+                                    <input type="hidden" name="actors[${index}][profile_photo]" value="${actor.profile_photo || ''}">
+                                    <input type="hidden" name="actors[${index}][character]" value="${actor.character || ''}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     container.append(html);
                 });
             }
 
-            // Functions for director management
-            function addSelectedDirector(director) {
-                // Check if director is already selected
-                var existingIndex = window.selectedDirectors.findIndex(function(selectedDirector) {
-                    return selectedDirector.id === director.id && selectedDirector.job === director.job;
-                });
-
-                if (existingIndex === -1) {
-                    window.selectedDirectors.push(director);
-                    updateSelectedDirectorsList();
-                }
-            }
-
-            function removeSelectedDirector(directorId, job) {
-                window.selectedDirectors = window.selectedDirectors.filter(function(director) {
-                    return !(director.id === directorId && director.job === job);
-                });
-
-                updateSelectedDirectorsList();
-            }
-
+            // Function to update directors list in the view
             function updateSelectedDirectorsList() {
                 var container = $('#selected-directors-list');
                 container.empty();
@@ -1518,39 +1117,64 @@
                 $('#no-selected-directors').addClass('d-none');
 
                 $.each(window.selectedDirectors, function(index, director) {
-                    var profileUrl = director.profile_photo ||
-                        '{{ asset('backend/assets/image/no-profile.png') }}';
-
-                    var html = '<div class="col-md-3 mb-4 director-item" data-id="' + director.id +
-                        '" data-job="' + director.job + '">' +
-                        '<div class="card h-100">' +
-                        '<img src="' + profileUrl + '" class="card-img-top" alt="' + director.name +
-                        '" style="height: 200px; object-fit: cover;">' +
-                        '<div class="card-body">' +
-                        '<h5 class="card-title">' + director.name + '</h5>' +
-                        '<p class="card-text text-muted">' + director.job + '</p>' +
-                        '<button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="' +
-                        director.id + '" data-job="' + director.job + '">' +
-                        '<i class="fas fa-trash"></i> Remove' +
-                        '</button>' +
-                        // Hidden inputs to include director data in form submission
-                        '<input type="hidden" name="directors[' + index + '][id]" value="' + director.id +
-                        '">' +
-                        '<input type="hidden" name="directors[' + index + '][name]" value="' + director
-                        .name + '">' +
-                        '<input type="hidden" name="directors[' + index + '][profile_photo]" value="' + (
-                            director.profile_photo || '') + '">' +
-                        '<input type="hidden" name="directors[' + index + '][job]" value="' + director.job +
-                        '">' +
-                        '<input type="hidden" name="directors[' + index + '][biography]" value="' + (
-                            director.biography || '') + '">' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-
+                    var profileUrl = director.profile_photo || '{{ asset("backend/assets/image/no-profile.png") }}';
+                    var html = `
+                        <div class="col-md-3 mb-4 director-item" data-id="${director.id}" data-job="${director.job}">
+                            <div class="card h-100">
+                                <img src="${profileUrl}" class="card-img-top" alt="${director.name}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${director.name}</h5>
+                                    <p class="card-text text-muted">${director.job}</p>
+                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="${director.id}" data-job="${director.job}">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                    <input type="hidden" name="directors[${index}][id]" value="${director.id}">
+                                    <input type="hidden" name="directors[${index}][name]" value="${director.name}">
+                                    <input type="hidden" name="directors[${index}][profile_photo]" value="${director.profile_photo || ''}">
+                                    <input type="hidden" name="directors[${index}][job]" value="${director.job}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
                     container.append(html);
                 });
             }
+
+            // Function to update genres list in the view
+            function updateSelectedGenresList() {
+                var container = $('#selected-genres-list');
+                container.empty();
+
+                if (window.selectedGenres.length === 0) {
+                    $('#no-selected-genres').removeClass('d-none');
+                    return;
+                }
+
+                $('#no-selected-genres').addClass('d-none');
+
+                $.each(window.selectedGenres, function(index, genre) {
+                    var html = `
+                        <div class="col-md-3 mb-4 genre-item" data-id="${genre.id}">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">${genre.name}</h5>
+                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="${genre.id}">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                    <input type="hidden" name="genres[${index}][id]" value="${genre.id}">
+                                    <input type="hidden" name="genres[${index}][name]" value="${genre.name}">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.append(html);
+                });
+            }
+
+            // Initialize the lists
+            updateSelectedActorsList();
+                    updateSelectedDirectorsList();
+            updateSelectedGenresList();
         });
     </script>
 @endpush

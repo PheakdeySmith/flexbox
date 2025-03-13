@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class MovieController extends Controller
 {
@@ -297,7 +299,12 @@ class MovieController extends Controller
     public function edit($id)
     {
         $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
-        return view('backend.movie.edit', compact('movie'));
+
+        // Get counts for featured movies
+        $featuredCount = Movie::where('is_featured', 1)->count();
+        $featuredVerticalCount = Movie::where('is_featured_vertical', 1)->count();
+
+        return view('backend.movie.edit', compact('movie', 'featuredCount', 'featuredVerticalCount'));
     }
 
     /**
@@ -310,6 +317,21 @@ class MovieController extends Controller
     public function update(Request $request, $id)
     {
         $movie = Movie::findOrFail($id);
+
+        // Check featured limits only if the movie isn't already featured
+        if ($request->has('is_featured') && $request->is_featured && !$movie->is_featured) {
+            $featuredCount = Movie::where('is_featured', 1)->count();
+            if ($featuredCount >= 5) {
+                return redirect()->back()->with('error', 'Maximum limit of 5 featured movies has been reached.');
+            }
+        }
+
+        if ($request->has('is_featured_vertical') && $request->is_featured_vertical && !$movie->is_featured_vertical) {
+            $featuredVerticalCount = Movie::where('is_featured_vertical', 1)->count();
+            if ($featuredVerticalCount >= 5) {
+                return redirect()->back()->with('error', 'Maximum limit of 5 featured vertical movies has been reached.');
+            }
+        }
 
         $validator = Validator::make($request->all(), [
             'tmdb_id' => ['nullable', 'integer', Rule::unique('movies')->ignore($id)],
@@ -328,6 +350,8 @@ class MovieController extends Controller
             'type' => 'required|in:movie,tv_series',
             'maturity_rating' => 'nullable|in:G,PG,PG-13,R,NC-17',
             'is_free' => 'boolean',
+            'is_featured' => 'boolean',
+            'is_featured_vertical' => 'boolean',
             'status' => 'required|in:active,inactive',
             'actors' => 'nullable|array',
             'actors.*.id' => 'nullable|integer',
@@ -553,21 +577,41 @@ class MovieController extends Controller
 
     public function updateSlideStatus(Request $request)
     {
-
-
         try {
             DB::beginTransaction();
 
             $movie = Movie::findOrFail($request->id);
-            $movie->is_featured = $movie->is_featured == 1 ? 0 : 1;
+            $type = $request->type ?? 'is_featured';
+
+            // Determine which field to update
+            $field = in_array($type, ['is_featured', 'is_featured_vertical']) ? $type : 'is_featured';
+
+            // If trying to enable the feature
+            if ($movie->$field == 0) {
+                // Check the count
+                $count = Movie::where($field, 1)->count();
+                if ($count >= 5) {
+                    return response()->json([
+                        'status' => 0,
+                        'msg' => __('Maximum limit of 5 ' . ($field == 'is_featured' ? 'featured' : 'featured vertical') . ' movies has been reached.')
+                    ]);
+                }
+            }
+
+            // Toggle the status
+            $movie->$field = $movie->$field == 1 ? 0 : 1;
             $movie->save();
 
-            $output = ['status' => 1, 'msg' => __('Status updated')];
+            $output = [
+                'status' => 1,
+                'msg' => __('Status updated successfully'),
+                'newStatus' => $movie->$field
+            ];
 
             DB::commit();
         } catch (Exception $e) {
-            $output = ['status' => 0, 'msg' => __('Something went wrong')];
             DB::rollBack();
+            $output = ['status' => 0, 'msg' => __('Something went wrong')];
         }
 
         return response()->json($output);

@@ -84,11 +84,14 @@
                                                 <td>
                                                     <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                         data-toggle="modal" data-target="#editModal"
-                                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
+                                                        data-id="{{ $user->id }}"
+                                                        data-name="{{ $user->name }}"
                                                         data-email="{{ $user->email }}"
                                                         data-profile-photo="{{ $user->user_profile }}"
-                                                        data-role="{{ $user->roles->first()->id }}"
-                                                        data-action="{{ route('user.update', $user->id) }}">Edit</button>
+                                                        data-role="{{ optional($user->roles->first())->id ?? '' }}"
+                                                        data-action="{{ route('user.update', $user->id) }}">
+                                                        <i class="fas fa-edit"></i> Edit
+                                                    </button>
 
 
                                                     <button type="button" class="btn btn-danger btn-sm delete-btn"
