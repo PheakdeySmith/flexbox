@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
 use App\Models\Playlist;
-use App\Models\Watchlist;
+use App\Models\watchlist;
 use App\Models\SubscriptionPlan;
 use App\Models\Order;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class FrontendController extends Controller
@@ -20,7 +21,7 @@ class FrontendController extends Controller
     public function index()
     {
         $recommendedMovies = Movie::where('status', 'active')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_free', true)
                     ->orWhere('imdb_rating', '>=', 7);
             })
@@ -62,7 +63,7 @@ class FrontendController extends Controller
         $genres = Genre::orderBy('name')
             ->get();
 
-            $actors = Actor::orderBy('name')
+        $actors = Actor::orderBy('name')
             ->take(20)
             ->get();
 
@@ -81,8 +82,9 @@ class FrontendController extends Controller
 
     public function detail($id = null)
     {
+        $playlists = Playlist::all();
         $recommendedMovies = Movie::where('status', 'active')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_free', true)
                     ->orWhere('imdb_rating', '>=', 7);
             })
@@ -99,7 +101,7 @@ class FrontendController extends Controller
             $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
         }
 
-        return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies'));
+        return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies', 'playlists'));
     }
 
     public function viewAll(Request $request)
@@ -185,9 +187,35 @@ class FrontendController extends Controller
         return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists'));
     }
 
-    public function playlistDetail()
+    public function playlistDetail($id)
     {
-        return view('frontend.watchlist.playlist_detail');
+        $playlist = Playlist::findOrFail($id);
+        return view('frontend.watchlist.playlist_detail', compact('playlist'));
+    }
+
+    public function playlistStore(Request $request)
+    {
+        $userId = auth()->id();
+        $movieId = $request->movie_id;
+        $playlistIds = $request->playlists;
+
+        foreach ($playlistIds as $playlistId) {
+            $exists = DB::table('movie_playlist')
+                ->where('movie_id', $movieId)
+                ->where('playlist_id', $playlistId)
+                ->exists();
+
+            if (!$exists) {
+                DB::table('movie_playlist')->insert([
+                    'movie_id' => $movieId,
+                    'playlist_id' => $playlistId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Movie added to playlist successfully!');
     }
 
 

@@ -40,7 +40,7 @@
                                         {{ $movie->release_date }}
                                     </span>
                                 </div>
-                                <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
                                         <form id="watchlist-form-{{ $movie->id }}"
                                             action="{{ route('watchlist.store') }}" method="POST">
@@ -59,15 +59,16 @@
 
                                     </ul>
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
-                                        <form id="playlist-form-{{ $movie->id }}" action="{{ route('playlist.store') }}" method="POST">
+                                        <form id="playlist-form-{{ $movie->id }}"
+                                            action="{{ route('playlist.store') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                                             <input type="hidden" name="movie_id" value="{{ $movie->id }}">
                                             <input type="hidden" name="source" value="frontend">
                                         </form>
 
-                                        <li onclick="document.getElementById('playlist-form-{{ $movie->id }}').submit()"
-                                            class="watchlist-btn" data-bs-toggle="tooltip" title="Add to playlist"
+                                        <li onclick="openModal()" class="watchlist-btn" data-bs-toggle="modal"
+                                            data-bs-target="#showPlaylist" title="Add to playlist"
                                             style="cursor: pointer;">
                                             <span class="btn-inner">
                                                 <i class="fa-solid fa-plus"></i>
@@ -82,8 +83,9 @@
 
                                             // Check if user has bought this movie
                                             if (isset($movie) && $movie) {
-                                                $hasBoughtMovie = $user->orders()
-                                                    ->whereHas('items', function($query) use ($movie) {
+                                                $hasBoughtMovie = $user
+                                                    ->orders()
+                                                    ->whereHas('items', function ($query) use ($movie) {
                                                         $query->where('movie_id', $movie->id);
                                                     })
                                                     ->where('status', 'completed')
@@ -92,8 +94,10 @@
                                         @endphp
 
                                         @if(!$hasBoughtMovie && !$movie->is_free)
+
                                             <div class="iq-button">
-                                                <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                                <a href="{{ route('frontend.addToCart', $movie->id) }}"
+                                                    class="btn btn-sm" id="button-addon2">Add to Cart</a>
                                             </div>
                                         @elseif($hasBoughtMovie)
                                             <div class="iq-button">
@@ -287,6 +291,65 @@
             @else
                 <p>Movie not found.</p>
             @endif
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="showPlaylist" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0">
+            <div class="modal-header border-0">
+                <div>
+                    <h1 class="modal-title fs-5 fw-500" ;">
+                        Choose a Playlist
+                    </h1>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" style="margin-right:300px;"
+                    onclick="window.location.href='{{ route('frontend.watchlist') }}'">
+                    <i class="fa-solid fa-plus me-1"></i>Create New Playlist
+                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('frontend.playlistStore') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="source" value="frontend">
+                    <input type="hidden" name="movie_id" value="{{ $movie->id }}"> <!-- Add this line -->
+
+                    <!-- Playlists with checkboxes -->
+                    <div class="form-group">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="fw-bold mb-0">Select Playlists</label>
+                        </div>
+                        <div class="playlist-list">
+                            @foreach ($playlists as $playlist)
+                            @php
+                                $exists = DB::table('movie_playlist')
+                                    ->where('movie_id', $movie->id)
+                                    ->where('playlist_id', $playlist->id)
+                                    ->exists();
+                            @endphp
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="playlists[]" value="{{ $playlist->id }}" id="playlist{{ $playlist->id }}" {{ $exists ? 'disabled' : '' }}>
+                                <label class="form-check-label" for="playlist{{ $playlist->id }}">
+                                    {{ $playlist->name }} {{ $exists ? '(Already added)' : '' }}
+                                </label>
+                            </div>
+                        @endforeach
+
+                        </div>
+                    </div>
+
+                    <div class="form-group d-flex align-items-center gap-3 mt-4">
+                        <button type="button" class="btn btn-sm btn-light text-uppercase fw-medium" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-primary text-uppercase fw-medium">
+                            Save
+                        </button>
+                    </div>
+                </form>
+
+            </div>
         </div>
     </div>
 </div>
