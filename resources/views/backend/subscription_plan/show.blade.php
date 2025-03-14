@@ -68,27 +68,15 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Features:</label>
-                                        <ul class="list-group">
-                                            @if(is_array($subscriptionPlan->features))
+                                        @if(is_array($subscriptionPlan->features) && count($subscriptionPlan->features) > 0)
+                                            <ul class="list-group">
                                                 @foreach($subscriptionPlan->features as $feature)
-                                                    @if(!empty(trim($feature)))
-                                                        <li class="list-group-item">{{ $feature }}</li>
-                                                    @endif
+                                                    <li class="list-group-item">{{ $feature }}</li>
                                                 @endforeach
-                                            @elseif(is_string($subscriptionPlan->features))
-                                                @foreach(explode("\n", $subscriptionPlan->features) as $feature)
-                                                    @if(!empty(trim($feature)))
-                                                        <li class="list-group-item">{{ $feature }}</li>
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                <li class="list-group-item">No features specified</li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Stripe Price ID:</label>
-                                        <p>{{ $subscriptionPlan->stripe_price_id ?? 'Not set' }}</p>
+                                            </ul>
+                                        @else
+                                            <p>No features specified for this plan.</p>
+                                        @endif
                                     </div>
                                     <div class="form-group">
                                         <label>Status:</label>

@@ -41,7 +41,7 @@ Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404'
 
 
 
-Route::middleware(['role:user,member,admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
     Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');
@@ -61,15 +61,15 @@ Route::middleware(['role:user,member,admin'])->group(function () {
     Route::get('/profile/photo/remove', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove');
     // Password routes
     Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
-});
 
-// Frontend Subscription Routes
-// Route::get('/subscription', [FrontendSubscriptionController::class, 'index'])->name('frontend.subscription');
-// Route::get('/subscription/checkout/{id}', [FrontendSubscriptionController::class, 'checkout'])->name('frontend.subscriptionCheckout');
-// Route::post('/subscription/subscribe/{id}', [FrontendSubscriptionController::class, 'subscribe'])->name('frontend.subscribe');
-// Route::get('/subscription/detail/{id}', [FrontendSubscriptionController::class, 'subscriptionDetail'])->name('frontend.subscriptionDetail');
-// Route::post('/subscription/cancel/{id}', [FrontendSubscriptionController::class, 'cancel'])->name('frontend.cancelSubscription');
-// Route::get('/subscription/history', [FrontendSubscriptionController::class, 'history'])->name('frontend.subscriptionHistory');
+    // Frontend Subscription Routes
+    Route::get('/subscription', [FrontendSubscriptionController::class, 'index'])->name('frontend.subscription');
+    Route::get('/subscription/checkout/{id}', [FrontendSubscriptionController::class, 'checkout'])->name('frontend.subscriptionCheckout');
+    Route::post('/subscription/subscribe/{id}', [FrontendSubscriptionController::class, 'subscribe'])->name('frontend.subscribe');
+    Route::get('/subscription/detail/{id}', [FrontendSubscriptionController::class, 'subscriptionDetail'])->name('frontend.subscriptionDetail');
+    Route::post('/subscription/cancel/{id}', [FrontendSubscriptionController::class, 'cancel'])->name('frontend.cancelSubscription');
+    Route::get('/subscription/history', [FrontendSubscriptionController::class, 'history'])->name('frontend.subscriptionHistory');
+});
 
 // Custom Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -84,7 +84,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/account', [UserController::class, 'front_edit'])->name('frontend.account');
+    Route::get('/account', [FrontendController::class, 'account'])->name('frontend.account');
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
     // Redirect /dashboard to backend/dashboard
@@ -130,9 +130,9 @@ Route::middleware('auth')->group(function () {
         // Additional order routes
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
         // View the authenticated user's profile
-        Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+        Route::get('/user/profile', [ProfileController::class, 'profile'])->name('user.profile');
         // Update the authenticated user's profile
-        Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+        Route::put('/user/profile', [ProfileController::class, 'updateProfile'])->name('user.updateProfile');
     });
 
     // Frontend Order History Routes

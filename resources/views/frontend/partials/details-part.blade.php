@@ -74,12 +74,39 @@
                                             </span>
                                         </li>
                                     </ul>
+                                    
+                                    @if(auth()->check())
+                                        @php
+                                            $user = auth()->user();
+                                            $hasBoughtMovie = false;
 
+                                            // Check if user has bought this movie
+                                            if (isset($movie) && $movie) {
+                                                $hasBoughtMovie = $user->orders()
+                                                    ->whereHas('items', function($query) use ($movie) {
+                                                        $query->where('movie_id', $movie->id);
+                                                    })
+                                                    ->where('status', 'completed')
+                                                    ->exists();
+                                            }
+                                        @endphp
 
-                                    <div class="iq-button">
-                                        <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm"
-                                            id="button-addon2">Add to Cart</a>
-                                    </div>
+                                        @if(!$hasBoughtMovie)
+                                            <div class="iq-button">
+                                                <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                            </div>
+                                        @else
+                                            <div class="iq-button">
+                                                <span class="btn btn-sm btn-success disabled">
+                                                    <i class="fa-solid fa-check me-1"></i> Purchased
+                                                </span>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <div class="iq-button">
+                                            <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                        </div>
+                                    @endif
 
                                     {{-- <div class="movie-detail-select">
                                         <select name="movieselect"

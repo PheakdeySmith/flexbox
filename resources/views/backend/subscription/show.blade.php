@@ -98,7 +98,13 @@
                                     </div>
                                     <div class="form-group">
                                         <label>End Date:</label>
-                                        <p>{{ $subscription->end_date->format('F d, Y') }}</p>
+                                        <p>
+                                            @if($subscription->plan->duration_in_days > 3650)
+                                                Lifetime
+                                            @else
+                                                {{ $subscription->end_date->format('F d, Y') }}
+                                            @endif
+                                        </p>
                                     </div>
                                     <div class="form-group">
                                         <label>Auto Renew:</label>
@@ -109,10 +115,6 @@
                                                 <span class="badge badge-danger">No</span>
                                             @endif
                                         </p>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Stripe ID:</label>
-                                        <p>{{ $subscription->stripe_id ?? 'Not set' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -163,10 +165,18 @@
                                         <div>
                                             <i class="fas fa-stop bg-warning"></i>
                                             <div class="timeline-item">
-                                                <span class="time"><i class="fas fa-clock"></i> {{ $subscription->end_date->format('M d, Y') }}</span>
+                                                <span class="time"><i class="fas fa-clock"></i>
+                                                    @if($subscription->plan->duration_in_days > 3650)
+                                                        Lifetime
+                                                    @else
+                                                        {{ $subscription->end_date->format('M d, Y') }}
+                                                    @endif
+                                                </span>
                                                 <h3 class="timeline-header">Subscription End Date</h3>
                                                 <div class="timeline-body">
-                                                    @if($subscription->end_date->isPast())
+                                                    @if($subscription->plan->duration_in_days > 3650)
+                                                        This is a lifetime subscription.
+                                                    @elseif($subscription->end_date->isPast())
                                                         Subscription period ended.
                                                     @else
                                                         Subscription will end on this date.

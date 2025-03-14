@@ -18,8 +18,9 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
         return view('backend.profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
         ]);
     }
 

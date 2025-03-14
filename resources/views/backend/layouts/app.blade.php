@@ -150,32 +150,34 @@
     <script src="{{ asset('AdminLTE') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="{{ asset('AdminLTE') }}/plugins/select2/js/select2.full.min.js"></script>
     <script src="{{ asset('AdminLTE') }}/plugins/dropzone/min/dropzone.min.js"></script>
-    <!-- Include jQuery before your script that uses it -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Other scripts that depend on jQuery -->
-    <script src="{{ asset('AdminLTE') }}/plugins/select2/js/select2.full.min.js"></script>
-
 
     <script>
         $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+            // Initialize DataTables with try-catch to prevent errors if the table doesn't exist
+            try {
+                $("#example1").DataTable({
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+                $('#example2').DataTable({
+                    "paging": true,
+                    "lengthChange": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                });
+            } catch (e) {
+                console.log("DataTables initialization error:", e);
+            }
+
+            // Initialize Select2
+            $('.select2').select2()
         });
-        $('.select2').select2()
     </script>
 
     <script>
@@ -249,6 +251,7 @@
 
     <!-- Page specific scripts -->
     @yield('footer_scripts')
+    @stack('footer_scripts')
 
 </body>
 

@@ -120,7 +120,7 @@
                       </div>
                       <div class="RightAnimate-four">
                         <div class="iq-button">
-                          <a href="{{ url('detail') }}" class="btn text-uppercase position-relative">
+                          <a href="{{ route('frontend.detail', $movie->id) }}" class="btn text-uppercase position-relative">
                             <span class="button-text">stream now</span>
                             <i class="fa-solid fa-play"></i>
                           </a>

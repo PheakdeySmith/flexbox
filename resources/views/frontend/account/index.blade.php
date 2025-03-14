@@ -38,6 +38,12 @@
                                 </li>
                                 <li class="py-3 nav-item" role="presentation">
                                     <button class="nav-link p-0 bg-transparent" data-bs-toggle="tab"
+                                        data-bs-target="#subscriptions" type="button" role="tab"
+                                        aria-selected="false" tabindex="-1"><i class="fas fa-credit-card"></i><span
+                                            class="ms-2">Subscriptions</span></button>
+                                </li>
+                                <li class="py-3 nav-item" role="presentation">
+                                    <button class="nav-link p-0 bg-transparent" data-bs-toggle="tab"
                                         data-bs-target="#account-details" type="button" role="tab"
                                         aria-selected="false" tabindex="-1"><i class="fas fa-user"></i><span
                                             class="ms-2">Account details</span></button>
@@ -68,9 +74,9 @@
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
-                                <p>From your account dashboard you can view your <a href="javascript:void(1)">recent
-                                        orders</a> and <a
-                                        href="javascript:void(4)">edit your password and account details</a>.
+                                <p>From your account dashboard you can view your <a href="javascript:void(0)" onclick="document.querySelector('[data-bs-target=\'#orders\']').click()">recent
+                                        orders</a>, manage your <a href="javascript:void(0)" onclick="document.querySelector('[data-bs-target=\'#subscriptions\']').click()">subscription</a> and <a
+                                        href="javascript:void(0)" onclick="document.querySelector('[data-bs-target=\'#account-details\']').click()">edit your password and account details</a>.
                                 </p>
                             </div>
                         </div>
@@ -156,6 +162,130 @@
                                             @endforelse
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="subscriptions" role="tabpanel">
+                            <div class="subscriptions-table text-body p-4">
+                                <h4 class="mb-4">Your Subscription History</h4>
+
+                                @if($activeSubscription)
+                                    <div class="active-subscription mb-5">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="mb-0">Active Subscription</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5>{{ $activeSubscription->plan->name }}</h5>
+                                                        <p class="mb-1"><strong>Price:</strong> ${{ number_format($activeSubscription->plan->price, 2) }} / {{ $activeSubscription->plan->billing_cycle }}</p>
+                                                        <p class="mb-1"><strong>Status:</strong>
+                                                            <span class="badge bg-success">Active</span>
+                                                        </p>
+                                                        <p class="mb-1"><strong>Started:</strong> {{ $activeSubscription->start_date->format('F d, Y') }}</p>
+                                                        <p class="mb-1"><strong>Expires:</strong>
+                                                            @if($activeSubscription->plan->duration_in_days > 3650)
+                                                                Lifetime
+                                                            @else
+                                                                {{ $activeSubscription->end_date->format('F d, Y') }}
+                                                            @endif
+                                                        </p>
+                                                        <p class="mb-1"><strong>Auto-renew:</strong> {{ $activeSubscription->auto_renew ? 'Yes' : 'No' }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 d-flex align-items-center justify-content-end">
+                                                        <div class="d-flex gap-2">
+                                                            <div class="iq-button">
+                                                                <a href="{{ route('frontend.subscriptionDetail', $activeSubscription->id) }}" class="btn text-uppercase position-relative">
+                                                                    <span class="button-text">Details</span>
+                                                                    <i class="fa-solid fa-play"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="iq-button">
+                                                                <a href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to cancel your subscription?')) { document.getElementById('cancel-subscription-{{ $activeSubscription->id }}').submit(); }" class="btn text-uppercase position-relative">
+                                                                    <span class="button-text">Cancel</span>
+                                                                    <i class="fa-solid fa-play"></i>
+                                                                </a>
+                                                                <form id="cancel-subscription-{{ $activeSubscription->id }}" action="{{ route('frontend.cancelSubscription', $activeSubscription->id) }}" method="POST" style="display: none;">
+                                                                    @csrf
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="no-subscription mb-4">
+                                        <div class="alert alert-info">
+                                            <p class="mb-0">You don't have an active subscription. <a href="{{ route('frontend.subscription') }}" class="alert-link">Browse our subscription plans</a> to subscribe.</p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <h5 class="mb-3">Subscription History</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="border-bottom">
+                                                <th class="fw-bolder p-3">ID</th>
+                                                <th class="fw-bolder p-3">Plan</th>
+                                                <th class="fw-bolder p-3">Start Date</th>
+                                                <th class="fw-bolder p-3">End Date</th>
+                                                <th class="fw-bolder p-3">Status</th>
+                                                <th class="fw-bolder p-3">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($subscriptions as $subscription)
+                                                <tr class="border-bottom">
+                                                    <td class="text-primary fs-6">#{{ $subscription->id }}</td>
+                                                    <td>{{ $subscription->plan->name }}</td>
+                                                    <td>{{ $subscription->start_date->format('F d, Y') }}</td>
+                                                    <td>
+                                                        @if($subscription->plan->duration_in_days > 3650)
+                                                            Lifetime
+                                                        @else
+                                                            {{ $subscription->end_date->format('F d, Y') }}
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($subscription->status == 'active' && $subscription->end_date > now())
+                                                            <span class="badge bg-success">Active</span>
+                                                        @elseif($subscription->status == 'active' && $subscription->end_date <= now())
+                                                            <span class="badge bg-secondary">Expired</span>
+                                                        @elseif($subscription->status == 'canceled')
+                                                            <span class="badge bg-danger">Canceled</span>
+                                                        @else
+                                                            <span class="badge bg-info">{{ ucfirst($subscription->status) }}</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="iq-button">
+                                                            <a href="{{ route('frontend.subscriptionDetail', $subscription->id) }}" class="btn text-uppercase position-relative">
+                                                                <span class="button-text">Details</span>
+                                                                <i class="fa-solid fa-play"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No subscription history found.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mt-4">
+                                    <div class="iq-button">
+                                        <a href="{{ route('frontend.subscriptionHistory') }}" class="btn text-uppercase position-relative">
+                                            <span class="button-text">View Full History</span>
+                                            <i class="fa-solid fa-play"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

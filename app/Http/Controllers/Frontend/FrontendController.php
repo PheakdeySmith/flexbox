@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
 use App\Models\Playlist;
-use App\Models\Watchlist;
+use App\Models\Watchlis;
+use App\Models\SubscriptionPlan;
+use App\Models\Order;
+use App\Models\Subscription;
+use Illuminate\Support\Facades\Auth;
+
 
 class FrontendController extends Controller
 {
@@ -108,7 +113,10 @@ class FrontendController extends Controller
 
     public function subscription()
     {
-        return view('frontend.subscription.index');
+        // Fetch the subscription plans
+        $plans = SubscriptionPlan::active()->get(); // Fetch active plans
+
+        return view('frontend.subscription.index', compact('plans'));
     }
 
     public function login()
@@ -174,5 +182,39 @@ class FrontendController extends Controller
     public function orderDetail()
     {
         return view('frontend.cart.order-detail');
+    }
+
+    /**
+     * Display the user's account page.
+     */
+    public function account()
+    {
+        $user = Auth::user();
+
+        // Get user's orders
+        $orders = Order::where('user_id', $user->id)
+            ->with(['items.movie', 'paymentDetail.payment'])
+            ->latest()
+            ->get();
+
+        // Get user's active subscription
+        $activeSubscription = Subscription::with('plan')
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->where('end_date', '>', now())
+            ->first();
+
+        // Get user's subscription history
+        $subscriptions = Subscription::with('plan')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return view('frontend.account.index', compact(
+            'user',
+            'orders',
+            'activeSubscription',
+            'subscriptions'
+        ));
     }
 }

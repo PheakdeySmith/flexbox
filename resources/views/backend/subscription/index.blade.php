@@ -76,7 +76,13 @@
                                                     @endif
                                                 </td>
                                                 <td>{{ $subscription->start_date->format('M d, Y') }}</td>
-                                                <td>{{ $subscription->end_date->format('M d, Y') }}</td>
+                                                <td>
+                                                    @if($subscription->plan && $subscription->plan->duration_in_days > 3650)
+                                                        Lifetime
+                                                    @else
+                                                        {{ $subscription->end_date->format('M d, Y') }}
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if($subscription->auto_renew)
                                                         <span class="badge badge-success">Yes</span>

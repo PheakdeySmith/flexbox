@@ -46,11 +46,10 @@
 
 @section('content')
 
-    <div style="margin-top: 100px;">
+
         <!-- Site Video -->
         @include('frontend.partials.site-video')
         <!-- Site Video -->
-    </div>
 
     @include('frontend.partials.details-part')
 

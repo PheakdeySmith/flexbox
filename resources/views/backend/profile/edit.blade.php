@@ -79,8 +79,6 @@
                             <p class="text-muted">
                                 @if(Auth::user()->isAdmin())
                                     Administrator
-                                @elseif(Auth::user()->isModerator())
-                                    Moderator
                                 @else
                                     Member
                                 @endif
