@@ -69,9 +69,6 @@ class SubscriptionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'trial_ends_at' => 'nullable|date|after_or_equal:start_date|before_or_equal:end_date',
             'auto_renew' => 'boolean',
-            'stripe_id' => 'nullable|string',
-            'stripe_status' => 'nullable|string',
-            'stripe_price' => 'nullable|string',
         ]);
 
         // Check if the user already has an active subscription
@@ -88,22 +85,62 @@ class SubscriptionController extends Controller
         DB::beginTransaction();
 
         try {
-            // Create the subscription
-            $subscription = Subscription::create([
-                'user_id' => $request->user_id,
-                'subscription_plan_id' => $request->subscription_plan_id,
-                'status' => $request->status,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'trial_ends_at' => $request->trial_ends_at,
-                'auto_renew' => $request->auto_renew ?? false,
-                'stripe_id' => $request->stripe_id,
-                'stripe_status' => $request->stripe_status,
-                'stripe_price' => $request->stripe_price,
-            ]);
-
             // Get the subscription plan
             $plan = SubscriptionPlan::findOrFail($request->subscription_plan_id);
+
+            // Check if this is a lifetime plan (36500 days or more)
+            $isLifetimePlan = $plan->duration_in_days >= 36500;
+
+            // For lifetime plans, use a more reasonable end date (10 years from start)
+            if ($isLifetimePlan) {
+                $startDate = Carbon::parse($request->start_date);
+                // Use 10 years instead of 100 years to stay well within MySQL's datetime limits
+                $endDate = $startDate->copy()->addYears(10);
+            } else {
+                // For regular plans, use the provided end date
+                $endDate = Carbon::parse($request->end_date);
+            }
+
+            // Format dates for MySQL
+            $formattedEndDate = $endDate->format('Y-m-d H:i:s');
+            $formattedStartDate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
+            $formattedTrialEndsAt = $request->trial_ends_at
+                ? Carbon::parse($request->trial_ends_at)->format('Y-m-d H:i:s')
+                : null;
+            $formattedCreatedAt = now()->format('Y-m-d H:i:s');
+            $formattedUpdatedAt = $formattedCreatedAt;
+
+            // Log the formatted date for debugging
+            Log::info('Creating subscription with end date', [
+                'user_id' => $request->user_id,
+                'plan_id' => $request->subscription_plan_id,
+                'formatted_end_date' => $formattedEndDate,
+                'formatted_start_date' => $formattedStartDate
+            ]);
+
+            // Use a raw query with proper bindings to ensure dates are quoted correctly
+            DB::insert(
+                'INSERT INTO subscriptions
+                (user_id, subscription_plan_id, status, start_date, end_date, trial_ends_at, auto_renew, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    $request->user_id,
+                    $request->subscription_plan_id,
+                    $request->status,
+                    $formattedStartDate,
+                    $formattedEndDate,
+                    $formattedTrialEndsAt,
+                    $request->auto_renew ?? false,
+                    $formattedCreatedAt,
+                    $formattedUpdatedAt
+                ]
+            );
+
+            // Get the ID of the last inserted record
+            $subscriptionId = DB::getPdo()->lastInsertId();
+
+            // Retrieve the created subscription
+            $subscription = Subscription::findOrFail($subscriptionId);
 
             // Create a payment record if status is active
             if ($request->status === 'active') {
@@ -132,6 +169,13 @@ class SubscriptionController extends Controller
                 ->with('success', 'Subscription created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
+
+            Log::error('Error creating subscription', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => $request->user_id,
+                'plan_id' => $request->subscription_plan_id
+            ]);
 
             return redirect()->back()
                 ->with('error', 'Failed to create subscription: ' . $e->getMessage())
@@ -177,9 +221,6 @@ class SubscriptionController extends Controller
             'end_date' => 'required|date|after:start_date',
             'trial_ends_at' => 'nullable|date|after_or_equal:start_date|before_or_equal:end_date',
             'auto_renew' => 'boolean',
-            'stripe_id' => 'nullable|string',
-            'stripe_status' => 'nullable|string',
-            'stripe_price' => 'nullable|string',
         ]);
 
         // Check if another user has an active subscription with the same user_id
@@ -200,22 +241,77 @@ class SubscriptionController extends Controller
             $canceled_at = now();
         }
 
-        $subscription->update([
-            'user_id' => $request->user_id,
-            'subscription_plan_id' => $request->subscription_plan_id,
-            'status' => $request->status,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'trial_ends_at' => $request->trial_ends_at,
-            'auto_renew' => $request->auto_renew ?? false,
-            'canceled_at' => $canceled_at,
-            'stripe_id' => $request->stripe_id,
-            'stripe_status' => $request->stripe_status,
-            'stripe_price' => $request->stripe_price,
-        ]);
+        try {
+            // Get the subscription plan
+            $plan = SubscriptionPlan::findOrFail($request->subscription_plan_id);
 
-        return redirect()->route('subscription.index')
-            ->with('success', 'Subscription updated successfully.');
+            // Check if this is a lifetime plan (36500 days or more)
+            $isLifetimePlan = $plan->duration_in_days >= 36500;
+
+            // For lifetime plans, use a more reasonable end date (10 years from start)
+            if ($isLifetimePlan) {
+                $startDate = Carbon::parse($request->start_date);
+                // Use 10 years instead of 100 years to stay well within MySQL's datetime limits
+                $endDate = $startDate->copy()->addYears(10);
+            } else {
+                // For regular plans, use the provided end date
+                $endDate = Carbon::parse($request->end_date);
+            }
+
+            // Format the end date for MySQL
+            $formattedEndDate = $endDate->format('Y-m-d H:i:s');
+            $formattedStartDate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
+            $formattedTrialEndsAt = $request->trial_ends_at ? Carbon::parse($request->trial_ends_at)->format('Y-m-d H:i:s') : null;
+            $formattedCanceledAt = $canceled_at ? $canceled_at->format('Y-m-d H:i:s') : null;
+            $formattedUpdatedAt = now()->format('Y-m-d H:i:s');
+
+            // Log the formatted date for debugging
+            Log::info('Updating subscription with end date', [
+                'subscription_id' => $subscription->id,
+                'formatted_end_date' => $formattedEndDate,
+                'formatted_start_date' => $formattedStartDate
+            ]);
+
+            // Use a raw query with proper bindings to ensure dates are quoted correctly
+            DB::update(
+                'UPDATE subscriptions SET
+                user_id = ?,
+                subscription_plan_id = ?,
+                status = ?,
+                start_date = ?,
+                end_date = ?,
+                trial_ends_at = ?,
+                auto_renew = ?,
+                canceled_at = ?,
+                updated_at = ?
+                WHERE id = ?',
+                [
+                    $request->user_id,
+                    $request->subscription_plan_id,
+                    $request->status,
+                    $formattedStartDate,
+                    $formattedEndDate,
+                    $formattedTrialEndsAt,
+                    $request->auto_renew ?? false,
+                    $formattedCanceledAt,
+                    $formattedUpdatedAt,
+                    $subscription->id
+                ]
+            );
+
+            return redirect()->route('subscription.index')
+                ->with('success', 'Subscription updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error updating subscription', [
+                'subscription_id' => $subscription->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to update subscription: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -247,10 +343,40 @@ class SubscriptionController extends Controller
                 ->with('info', 'Subscription is already canceled.');
         }
 
-        $subscription->cancel();
+        try {
+            // Format dates for MySQL
+            $formattedCanceledAt = now()->format('Y-m-d H:i:s');
+            $formattedUpdatedAt = $formattedCanceledAt;
 
-        return redirect()->back()
-            ->with('success', 'Subscription canceled successfully.');
+            // Use a raw query with proper bindings to ensure dates are quoted correctly
+            DB::update(
+                'UPDATE subscriptions SET
+                status = ?,
+                canceled_at = ?,
+                auto_renew = ?,
+                updated_at = ?
+                WHERE id = ?',
+                [
+                    'canceled',
+                    $formattedCanceledAt,
+                    false,
+                    $formattedUpdatedAt,
+                    $subscription->id
+                ]
+            );
+
+            return redirect()->back()
+                ->with('success', 'Subscription canceled successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error canceling subscription', [
+                'subscription_id' => $subscription->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to cancel subscription: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -267,24 +393,46 @@ class SubscriptionController extends Controller
                 ->with('error', 'Only active subscriptions can be extended.');
         }
 
-        $newEndDate = Carbon::parse($subscription->end_date)->addDays($request->days);
+        try {
+            $newEndDate = Carbon::parse($subscription->end_date)->addDays($request->days);
 
-        $subscription->update([
-            'end_date' => $newEndDate,
-        ]);
+            // Format dates for MySQL
+            $formattedEndDate = $newEndDate->format('Y-m-d H:i:s');
+            $formattedUpdatedAt = now()->format('Y-m-d H:i:s');
 
-        // Create a note about the extension
-        $note = "Subscription extended by {$request->days} days by admin.";
+            // Log the extension for debugging
+            Log::info('Extending subscription', [
+                'subscription_id' => $subscription->id,
+                'days_added' => $request->days,
+                'original_end_date' => $subscription->end_date->format('Y-m-d H:i:s'),
+                'new_end_date' => $formattedEndDate
+            ]);
 
-        // Log this action
-        Log::info('Subscription extended', [
-            'subscription_id' => $subscription->id,
-            'days' => $request->days,
-            'new_end_date' => $newEndDate->format('Y-m-d'),
-            'user_id' => $subscription->user_id
-        ]);
+            // Use a raw query with proper bindings to ensure dates are quoted correctly
+            DB::update(
+                'UPDATE subscriptions SET
+                end_date = ?,
+                updated_at = ?
+                WHERE id = ?',
+                [
+                    $formattedEndDate,
+                    $formattedUpdatedAt,
+                    $subscription->id
+                ]
+            );
 
-        return redirect()->back()
-            ->with('success', "Subscription extended by {$request->days} days.");
+            return redirect()->back()
+                ->with('success', "Subscription extended by {$request->days} days.");
+        } catch (\Exception $e) {
+            Log::error('Error extending subscription', [
+                'subscription_id' => $subscription->id,
+                'days' => $request->days,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to extend subscription: ' . $e->getMessage());
+        }
     }
 }

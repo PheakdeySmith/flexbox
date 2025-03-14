@@ -107,6 +107,7 @@
                                                 <option value="quarterly" {{ old('billing_cycle', $subscriptionPlan->billing_cycle) == 'quarterly' ? 'selected' : '' }}>Quarterly</option>
                                                 <option value="biannually" {{ old('billing_cycle', $subscriptionPlan->billing_cycle) == 'biannually' ? 'selected' : '' }}>Biannually</option>
                                                 <option value="annually" {{ old('billing_cycle', $subscriptionPlan->billing_cycle) == 'annually' ? 'selected' : '' }}>Annually</option>
+                                                <option value="lifetime" {{ old('billing_cycle', $subscriptionPlan->billing_cycle) == 'lifetime' ? 'selected' : '' }}>Lifetime (one-time payment)</option>
                                             </select>
                                             @error('billing_cycle')
                                                 <span class="invalid-feedback" role="alert">
@@ -142,7 +143,7 @@
                                         <h5 class="mb-3">Features</h5>
                                         <div class="form-group">
                                             <label for="features">Features (one per line)</label>
-                                            <textarea class="form-control @error('features') is-invalid @enderror" id="features" name="features" rows="6" placeholder="Enter features, one per line">{{ old('features', is_array($subscriptionPlan->features) ? implode("\n", $subscriptionPlan->features) : $subscriptionPlan->features) }}</textarea>
+                                            <textarea class="form-control @error('features') is-invalid @enderror" id="features" name="features" rows="6" placeholder="Enter features, one per line">{{ old('features', $subscriptionPlan->features_text) }}</textarea>
                                             <small class="form-text text-muted">Enter each feature on a new line. These will be displayed as bullet points.</small>
                                             @error('features')
                                                 <span class="invalid-feedback" role="alert">
@@ -156,26 +157,19 @@
                                         <h5 class="mb-3">Trial Settings</h5>
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="has_trial" name="has_trial" value="1" {{ old('has_trial', $subscriptionPlan->has_trial) ? 'checked' : '' }}>
-                                                <label class="custom-control-label" for="has_trial">Enable Free Trial</label>
+                                                <input type="checkbox" class="custom-control-input" id="has_trial" name="has_trial"
+                                                       {{ old('has_trial', $subscriptionPlan->has_trial) ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="has_trial">Has Trial Period</label>
                                             </div>
                                         </div>
 
-                                        <div class="form-group" id="trial_days_group" style="{{ old('has_trial', $subscriptionPlan->has_trial) ? '' : 'display: none;' }}">
-                                            <label for="trial_days">Trial Period (days)</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-clock"></i></span>
-                                                </div>
-                                                <input type="number" min="1" class="form-control @error('trial_days') is-invalid @enderror" id="trial_days" name="trial_days" placeholder="Enter trial period in days" value="{{ old('trial_days', $subscriptionPlan->trial_days) }}">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">days</span>
-                                                </div>
-                                            </div>
+                                        <div class="form-group trial-days-group" id="trial_days_group">
+                                            <label for="trial_days">Trial Days</label>
+                                            <input type="number" class="form-control" id="trial_days" name="trial_days"
+                                                   value="{{ old('trial_days', $subscriptionPlan->trial_days) }}"
+                                                   {{ !old('has_trial', $subscriptionPlan->has_trial) ? 'disabled' : '' }}>
                                             @error('trial_days')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
+                                                <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
 
@@ -186,22 +180,6 @@
                                                 <label class="custom-control-label" for="is_active">Active</label>
                                             </div>
                                             <small class="form-text text-muted">If disabled, users won't be able to subscribe to this plan</small>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="stripe_price_id">Stripe Price ID</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fab fa-stripe"></i></span>
-                                                </div>
-                                                <input type="text" class="form-control @error('stripe_price_id') is-invalid @enderror" id="stripe_price_id" name="stripe_price_id" placeholder="e.g. price_1NhJ2bCZ6qsJgndJYX6Ij" value="{{ old('stripe_price_id', $subscriptionPlan->stripe_price_id) }}">
-                                            </div>
-                                            <small class="form-text text-muted">Required for Stripe integration</small>
-                                            @error('stripe_price_id')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -231,13 +209,22 @@
 <script>
 $(function() {
     // Toggle trial days input based on has_trial checkbox
-    $('#has_trial').on('change', function() {
-        if ($(this).is(':checked')) {
+    function updateTrialDaysVisibility() {
+        if ($('#has_trial').is(':checked')) {
+            $('#trial_days').prop('disabled', false);
             $('#trial_days_group').show();
         } else {
+            $('#trial_days').prop('disabled', false); // Don't disable for form submission
+            $('#trial_days').val(0); // Set to 0 when not using trial
             $('#trial_days_group').hide();
         }
-    });
+    }
+
+    // Initial state
+    updateTrialDaysVisibility();
+
+    // Update on change
+    $('#has_trial').on('change', updateTrialDaysVisibility);
 
     // Auto-generate slug from name
     $('#name').on('blur', function() {
@@ -267,6 +254,9 @@ $(function() {
                 break;
             case 'annually':
                 days = 365;
+                break;
+            case 'lifetime':
+                days = 36500; // ~100 years (effectively forever)
                 break;
         }
 

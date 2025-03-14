@@ -31,29 +31,32 @@ class SubscriptionPlanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:subscription_plans',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'billing_cycle' => 'required|in:monthly,yearly',
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:subscription_plans',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+            'billing_cycle' => 'required|in:monthly,quarterly,biannually,annually,lifetime',
             'duration_in_days' => 'required|integer|min:1',
             'has_trial' => 'boolean',
             'trial_days' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
             'features' => 'nullable|string',
-            'stripe_price' => 'nullable|string|max:255',
         ]);
 
         // Generate slug if not provided
         $slug = $request->slug ?? Str::slug($request->name);
 
         // Process features from textarea to array
-        $features = null;
+        $features = [];
         if ($request->features) {
             $features = array_filter(explode("\n", $request->features), function($line) {
                 return trim($line) !== '';
             });
+
+            // Trim each feature
+            $features = array_map('trim', $features);
         }
 
         SubscriptionPlan::create([
@@ -67,11 +70,14 @@ class SubscriptionPlanController extends Controller
             'trial_days' => $request->has_trial ? ($request->trial_days ?? 0) : 0,
             'is_active' => $request->is_active ?? true,
             'features' => $features,
-            'stripe_price' => $request->stripe_price,
         ]);
 
         return redirect()->route('subscription-plan.index')
             ->with('success', 'Subscription plan created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to create subscription plan. Please try again.');
+        }
     }
 
     /**
@@ -113,29 +119,32 @@ class SubscriptionPlanController extends Controller
      */
     public function update(Request $request, SubscriptionPlan $subscriptionPlan)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:subscription_plans,slug,' . $subscriptionPlan->id,
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'billing_cycle' => 'required|in:monthly,yearly',
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:subscription_plans,slug,' . $subscriptionPlan->id,
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+            'billing_cycle' => 'required|in:monthly,quarterly,biannually,annually,lifetime',
             'duration_in_days' => 'required|integer|min:1',
             'has_trial' => 'boolean',
             'trial_days' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
             'features' => 'nullable|string',
-            'stripe_price' => 'nullable|string|max:255',
         ]);
 
         // Generate slug if not provided
         $slug = $request->slug ?? Str::slug($request->name);
 
         // Process features from textarea to array
-        $features = null;
+        $features = [];
         if ($request->features) {
             $features = array_filter(explode("\n", $request->features), function($line) {
                 return trim($line) !== '';
             });
+
+            // Trim each feature
+            $features = array_map('trim', $features);
         }
 
         $subscriptionPlan->update([
@@ -149,11 +158,14 @@ class SubscriptionPlanController extends Controller
             'trial_days' => $request->has_trial ? ($request->trial_days ?? 0) : 0,
             'is_active' => $request->is_active ?? true,
             'features' => $features,
-            'stripe_price' => $request->stripe_price,
         ]);
 
         return redirect()->route('subscription-plan.index')
             ->with('success', 'Subscription plan updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to update subscription plan. Please try again.');
+        }
     }
 
     /**

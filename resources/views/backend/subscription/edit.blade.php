@@ -115,8 +115,9 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
-                                                        <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $subscription->start_date->format('Y-m-d')) }}">
+                                                        <input type="text" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date', $subscription->start_date->format('m/d/Y')) }}" readonly>
                                                     </div>
+                                                    <small class="form-text text-muted">Start date is used for calculations</small>
                                                     @error('start_date')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -131,8 +132,9 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
-                                                        <input type="date" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $subscription->end_date->format('Y-m-d')) }}">
+                                                        <input type="text" class="form-control @error('end_date') is-invalid @enderror" id="end_date" name="end_date" value="{{ old('end_date', $subscription->end_date->format('m/d/Y')) }}" readonly>
                                                     </div>
+                                                    <small class="form-text text-muted">End date is calculated based on the selected plan</small>
                                                     @error('end_date')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
@@ -140,22 +142,6 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="trial_ends_at">Trial End Date</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-check"></i></span>
-                                                </div>
-                                                <input type="date" class="form-control @error('trial_ends_at') is-invalid @enderror" id="trial_ends_at" name="trial_ends_at" value="{{ old('trial_ends_at', $subscription->trial_ends_at ? $subscription->trial_ends_at->format('Y-m-d') : '') }}">
-                                            </div>
-                                            <small class="form-text text-muted">Leave empty if no trial period</small>
-                                            @error('trial_ends_at')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
                                     </div>
 
@@ -208,49 +194,10 @@
 
                                 <hr>
 
-                                <!-- Payment Integration -->
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h5 class="mb-3">Payment Integration (Optional)</h5>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stripe_id">Stripe Subscription ID</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="fab fa-stripe"></i></span>
-                                                        </div>
-                                                        <input type="text" class="form-control @error('stripe_id') is-invalid @enderror" id="stripe_id" name="stripe_id" placeholder="e.g. sub_1NhJ2bCZ6qsJgndJYX6Ij" value="{{ old('stripe_id', $subscription->stripe_id) }}">
-                                                    </div>
-                                                    @error('stripe_id')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stripe_status">Stripe Status</label>
-                                                    <input type="text" class="form-control @error('stripe_status') is-invalid @enderror" id="stripe_status" name="stripe_status" placeholder="e.g. active" value="{{ old('stripe_status', $subscription->stripe_status) }}">
-                                                    @error('stripe_status')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stripe_price">Stripe Price ID</label>
-                                                    <input type="text" class="form-control @error('stripe_price') is-invalid @enderror" id="stripe_price" name="stripe_price" placeholder="e.g. price_1NhJ2bCZ6qsJgndJYX6Ij" value="{{ old('stripe_price', $subscription->stripe_price) }}">
-                                                    @error('stripe_price')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle mr-1"></i> Review the subscription details before updating.
                                         </div>
                                     </div>
                                 </div>
@@ -276,45 +223,139 @@
 </div>
 @endsection
 
-@push('scripts')
+@push('footer_scripts')
 <script>
 $(function() {
     // Initialize Select2
     $('.select2').select2({
         theme: 'bootstrap4',
         width: '100%'
+    }).on('select2:select', function(e) {
+        if ($(this).attr('id') === 'subscription_plan_id') {
+            updateDates();
+            updatePlanDetails();
+        }
     });
 
-    // Update end date and trial date when plan or start date changes
-    $('#subscription_plan_id, #start_date').on('change', function() {
+    // Add hidden fields for actual date values
+    $('<input>').attr({
+        type: 'hidden',
+        id: 'start_date_hidden',
+        name: 'start_date'
+    }).insertAfter('#start_date');
+
+    $('<input>').attr({
+        type: 'hidden',
+        id: 'end_date_hidden',
+        name: 'end_date'
+    }).insertAfter('#end_date');
+
+    $('<input>').attr({
+        type: 'hidden',
+        id: 'trial_ends_at_hidden',
+        name: 'trial_ends_at'
+    }).insertAfter('#trial_ends_at');
+
+    // Remove name attribute from display fields to prevent them from being submitted
+    $('#start_date').removeAttr('name');
+    $('#end_date').removeAttr('name');
+    $('#trial_ends_at').removeAttr('name');
+
+    // Initialize hidden fields with current values
+    const startDateStr = $('#start_date').val();
+    const endDateStr = $('#end_date').val();
+    const trialEndsAtStr = $('#trial_ends_at').val();
+
+    if (startDateStr) {
+        const startParts = startDateStr.split('/');
+        const startDate = new Date(startParts[2], startParts[0] - 1, startParts[1]);
+        $('#start_date_hidden').val(formatDateForServer(startDate));
+    }
+
+    if (endDateStr) {
+        // Remove the "(Lifetime)" indicator if present
+        const cleanEndDateStr = endDateStr.replace(" (Lifetime)", "");
+        const endParts = cleanEndDateStr.split('/');
+        const endDate = new Date(endParts[2], endParts[0] - 1, endParts[1]);
+        $('#end_date_hidden').val(formatDateForServer(endDate));
+    }
+
+    if (trialEndsAtStr) {
+        const trialParts = trialEndsAtStr.split('/');
+        const trialDate = new Date(trialParts[2], trialParts[0] - 1, trialParts[1]);
+        $('#trial_ends_at_hidden').val(formatDateForServer(trialDate));
+    }
+
+    // Regular change handler
+    $('#subscription_plan_id').on('change', function() {
         updateDates();
+        updatePlanDetails();
     });
+
+    // Trigger change event on page load to calculate initial dates
+    setTimeout(function() {
+        const currentPlanId = $('#subscription_plan_id').val();
+        if (currentPlanId) {
+            updateDates();
+            updatePlanDetails();
+        }
+    }, 500);
 
     function updateDates() {
         const planId = $('#subscription_plan_id').val();
-        const startDate = $('#start_date').val();
+        const startDateStr = $('#start_date').val();
 
-        if (planId && startDate) {
+        if (planId && startDateStr) {
+            // Parse the displayed date (MM/DD/YYYY)
+            const startParts = startDateStr.split('/');
+            const start = new Date(startParts[2], startParts[0] - 1, startParts[1]);
+
             const selectedOption = $('#subscription_plan_id option:selected');
             const duration = parseInt(selectedOption.data('duration'));
             const trialDays = parseInt(selectedOption.data('trial'));
 
             if (duration) {
                 // Calculate end date
-                const start = new Date(startDate);
                 const end = new Date(start);
-                end.setDate(start.getDate() + duration);
 
-                // Format date as YYYY-MM-DD
-                const endFormatted = end.toISOString().split('T')[0];
-                $('#end_date').val(endFormatted);
+                // For lifetime plans (duration >= 36500 days)
+                if (duration >= 36500) {
+                    // Cap at 10 years for lifetime plans
+                    end.setFullYear(start.getFullYear() + 10);
+
+                    // Add a special indicator for lifetime plans
+                    const endFormatted = formatDate(end) + " (Lifetime)";
+                    const endFormattedServer = formatDateForServer(end);
+
+                    // Update display and hidden fields
+                    $('#end_date').val(endFormatted);
+                    $('#end_date_hidden').val(endFormattedServer);
+                } else {
+                    // For normal plans, use the actual duration
+                    end.setDate(start.getDate() + duration);
+
+                    // Format dates for display and server
+                    const endFormatted = formatDate(end);
+                    const endFormattedServer = formatDateForServer(end);
+
+                    // Update display and hidden fields
+                    $('#end_date').val(endFormatted);
+                    $('#end_date_hidden').val(endFormattedServer);
+                }
 
                 // Calculate trial end date if trial exists
                 if (trialDays > 0) {
                     const trialEnd = new Date(start);
                     trialEnd.setDate(start.getDate() + trialDays);
-                    const trialEndFormatted = trialEnd.toISOString().split('T')[0];
+
+                    const trialEndFormatted = formatDate(trialEnd);
+                    const trialEndFormattedServer = formatDateForServer(trialEnd);
+
                     $('#trial_ends_at').val(trialEndFormatted);
+                    $('#trial_ends_at_hidden').val(trialEndFormattedServer);
+                } else {
+                    $('#trial_ends_at').val('');
+                    $('#trial_ends_at_hidden').val('');
                 }
             }
         }
@@ -322,16 +363,76 @@ $(function() {
 
     // Update status field based on dates
     $('#end_date').on('change', function() {
-        const endDate = new Date($(this).val());
-        const today = new Date();
+        const endDateStr = $(this).val();
+        if (endDateStr) {
+            // Remove the "(Lifetime)" indicator if present
+            const cleanEndDateStr = endDateStr.replace(" (Lifetime)", "");
+            const endParts = cleanEndDateStr.split('/');
+            const endDate = new Date(endParts[2], endParts[0] - 1, endParts[1]);
+            const today = new Date();
 
-        // If end date is in the past, suggest expired status
-        if (endDate < today && $('#status').val() === 'active') {
-            if (confirm('The end date is in the past. Would you like to set the status to "expired"?')) {
-                $('#status').val('expired');
+            // If end date is in the past, suggest expired status
+            if (endDate < today && $('#status').val() === 'active') {
+                if (confirm('The end date is in the past. Would you like to set the status to "expired"?')) {
+                    $('#status').val('expired');
+                }
             }
         }
     });
+
+    function updatePlanDetails() {
+        const selectedOption = $('#subscription_plan_id option:selected');
+
+        if (selectedOption.val()) {
+            // Get plan details
+            const planName = selectedOption.text().split(' - ')[0];
+            const planPrice = parseFloat(selectedOption.data('price')).toFixed(2);
+            const planDuration = selectedOption.data('duration');
+            const planTrial = selectedOption.data('trial');
+
+            // Update plan details in the UI
+            $('.plan-details h6.font-weight-bold').text('Current Plan: ' + planName);
+            $('.plan-details p:contains("Price:")').html('<strong>Price:</strong> $' + planPrice);
+            $('.plan-details p:contains("Duration:")').html('<strong>Duration:</strong> ' + planDuration + ' days');
+            $('.plan-details p:contains("Trial Period:")').html('<strong>Trial Period:</strong> ' + planTrial + ' days');
+        }
+    }
+
+    // Helper function to format date as MM/DD/YYYY for display
+    function formatDate(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+    }
+
+    // Helper function to format date as YYYY-MM-DD for server
+    function formatDateForServer(date) {
+        // Ensure we're working with a valid date object
+        if (!(date instanceof Date) || isNaN(date)) {
+            console.error('Invalid date object:', date);
+            // Return a safe default (today's date)
+            const today = new Date();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            const year = today.getFullYear();
+            return `${year}-${month}-${day}`;
+        }
+
+        // For lifetime plans, if the year is too far in the future, cap it at 10 years from now
+        const currentYear = new Date().getFullYear();
+        if (date.getFullYear() > currentYear + 10) {
+            const cappedDate = new Date();
+            cappedDate.setFullYear(currentYear + 10);
+            date = cappedDate;
+        }
+
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${year}-${month}-${day}`;
+    }
 });
 </script>
 @endpush

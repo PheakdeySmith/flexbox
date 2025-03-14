@@ -182,26 +182,10 @@
                                         <h5 class="mb-3 mt-4">Status & Integration</h5>
                                         <div class="form-group">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" {{ old('is_active', '1') ? 'checked' : '' }}>
+                                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
                                                 <label class="custom-control-label" for="is_active">Active</label>
                                             </div>
                                             <small class="form-text text-muted">If disabled, users won't be able to subscribe to this plan</small>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="stripe_price_id">Stripe Price ID</label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fab fa-stripe"></i></span>
-                                                </div>
-                                                <input type="text" class="form-control @error('stripe_price_id') is-invalid @enderror" id="stripe_price_id" name="stripe_price_id" placeholder="e.g. price_1NhJ2bCZ6qsJgndJYX6Ij" value="{{ old('stripe_price_id') }}">
-                                            </div>
-                                            <small class="form-text text-muted">Required for Stripe integration</small>
-                                            @error('stripe_price_id')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +194,7 @@
 
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-plus-circle mr-1"></i> Create Plan
+                                    <i class="fas fa-save mr-1"></i> Create Plan
                                 </button>
                                 <a href="{{ route('subscription-plan.index') }}" class="btn btn-default">
                                     <i class="fas fa-times-circle mr-1"></i> Cancel
