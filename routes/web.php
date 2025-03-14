@@ -39,6 +39,7 @@ Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor
 Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->name('frontend.actorDetail');
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
 Route::get('/view-all', [FrontendController::class, 'viewAll'])->name('frontend.viewAll');
+Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
 
 Route::get('/playlist-detail/{id}', [FrontendController::class, 'playlistDetail'])->name('frontend.playlistDetail');
 Route::post('/playlist-store', [FrontendController::class, 'playlistStore'])->name('frontend.playlistStore');

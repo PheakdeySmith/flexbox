@@ -312,6 +312,25 @@
                                                         </div>
                                             <input type="url" class="form-control" id="trailer_url" name="trailer_url"
                                                             value="{{ old('trailer_url') }}" placeholder="Enter trailer URL (YouTube, Vimeo, etc.)">
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-info" id="preview-trailer-btn" title="Preview Trailer">
+                                                                <i class="fas fa-play"></i> Preview
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="trailer-preview-container" class="mt-3 d-none">
+                                                        <div class="card">
+                                                            <div class="card-body p-0">
+                                                                <div class="embed-responsive embed-responsive-16by9">
+                                                                    <iframe id="trailer-preview-iframe" class="embed-responsive-item" src="" allowfullscreen></iframe>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-footer p-2">
+                                                                <button type="button" class="btn btn-sm btn-secondary" id="close-trailer-preview">
+                                                                    <i class="fas fa-times"></i> Close Preview
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -721,19 +740,22 @@
         $('.select-movie').on('click', function() {
             var movieId = $(this).data('id');
             console.log('Selected movie ID:', movieId);
-            fetchMovie(movieId);
+            selectMovie(movieId);
         });
     }
 
     // Update the fetchMovie function to include country and language data
-    function fetchMovie(id) {
+    function selectMovie(movieId) {
+        // Show loading state
+        $('#tmdb-search-results').html('<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Loading movie details...</p></div>');
+
+        // Clear any previous notifications
+        $('.tmdb-notification').remove();
+
+        // Fetch movie details from TMDB
         $.ajax({
-            url: 'https://api.themoviedb.org/3/movie/' + id,
+            url: 'https://api.themoviedb.org/3/movie/' + movieId + '?append_to_response=credits,release_dates,videos',
             type: 'GET',
-            data: {
-                append_to_response: 'videos,credits',
-                language: 'en-US'
-            },
             headers: {
                 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Yzc1NjUxNzIxMTE4YzJiMWExYTIxMjJmNWZmZWU3YSIsIm5iZiI6MTc0MTE0MDM5MS41NjQsInN1YiI6IjY3YzdiMWE3MGEwMDU3NjE0M2MyOGIwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k1w1YejJkhyptQRCP2NmVAQSNACbTHSBN_PMI0z8BPA',
                 'Content-Type': 'application/json'
@@ -741,60 +763,97 @@
             success: function(movie) {
                 console.log('Movie details:', movie);
 
-                // Fill form fields with movie data
+                // Fill in the form fields with movie data
                 $('#tmdb_id').val(movie.id);
                 $('#title').val(movie.title);
                 $('#description').val(movie.overview);
-
-                // Set type to 'movie' by default (required field)
-                $('#type').val('movie');
-
-                // Set status to 'active' by default (required field)
-                $('#status').val('active');
-
-                if (movie.release_date) {
-                    $('#release_date').val(movie.release_date);
+                if ($.fn.summernote) {
+                    $('#description').summernote('code', movie.overview);
                 }
+                $('#release_date').val(movie.release_date);
+                $('#duration').val(movie.runtime);
+                $('#imdb_rating').val(movie.vote_average);
+                $('#poster_url').val(movie.poster_path ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path : '');
+                $('#backdrop_url').val(movie.backdrop_path ? 'https://image.tmdb.org/t/p/original' + movie.backdrop_path : '');
 
-                if (movie.poster_path) {
-                    $('#poster_url').val('https://image.tmdb.org/t/p/w500' + movie.poster_path);
-                }
-
-                if (movie.backdrop_path) {
-                    $('#backdrop_url').val('https://image.tmdb.org/t/p/original' + movie.backdrop_path);
-                }
-
-                if (movie.runtime) {
-                    $('#duration').val(movie.runtime);
-                }
-
-                if (movie.vote_average) {
-                    // Format to one decimal place
-                    const rating = parseFloat(movie.vote_average).toFixed(1);
-                    $('#imdb_rating').val(rating);
-                } else {
-                    // Set a default value for imdb_rating to avoid validation error
-                    $('#imdb_rating').val('0.0');
-                }
-
-                // Set country from production_countries
+                // Set country and language if available
                 if (movie.production_countries && movie.production_countries.length > 0) {
                     $('#country').val(movie.production_countries[0].name);
                 }
 
-                // Set language from spoken_languages
                 if (movie.spoken_languages && movie.spoken_languages.length > 0) {
-                    // Try to get English name first, fall back to name if not available
-                    const language = movie.spoken_languages[0].english_name || movie.spoken_languages[0].name;
-                    $('#language').val(language);
+                    $('#language').val(movie.spoken_languages[0].english_name || movie.spoken_languages[0].name);
                 }
 
-                // Handle trailer
-                if (movie.videos && movie.videos.results && movie.videos.results.length > 0) {
-                    const trailer = movie.videos.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-                    if (trailer) {
-                        $('#trailer_url').val('https://www.youtube.com/watch?v=' + trailer.key);
+                // Set maturity rating if available
+                if (movie.release_dates && movie.release_dates.results) {
+                    // Try to find US rating first
+                    const usRating = movie.release_dates.results.find(country => country.iso_3166_1 === 'US');
+                    if (usRating && usRating.release_dates && usRating.release_dates.length > 0) {
+                        const certification = usRating.release_dates[0].certification;
+                        if (certification) {
+                            $('#maturity_rating').val(certification);
+                        }
                     }
+                }
+
+                // Set trailer URL if available
+                let trailerFound = false;
+                if (movie.videos && movie.videos.results && movie.videos.results.length > 0) {
+                    console.log('Videos found:', movie.videos.results);
+
+                    // Look for official trailers first
+                    let trailer = movie.videos.results.find(video =>
+                        video.type === 'Trailer' &&
+                        video.site === 'YouTube' &&
+                        video.official === true
+                    );
+
+                    // If no official trailer, look for any trailer
+                    if (!trailer) {
+                        trailer = movie.videos.results.find(video =>
+                            video.type === 'Trailer' &&
+                            video.site === 'YouTube'
+                        );
+                    }
+
+                    // If still no trailer, use any YouTube video
+                    if (!trailer) {
+                        trailer = movie.videos.results.find(video => video.site === 'YouTube');
+                    }
+
+                    if (trailer) {
+                        console.log('Trailer found:', trailer);
+                        $('#trailer_url').val('https://www.youtube.com/watch?v=' + trailer.key);
+                        trailerFound = true;
+                    }
+                }
+
+                // Set default values for other fields
+                $('#type').val('movie');
+                $('#status').val('active');
+
+                // Trigger the input event to update the image previews
+                $('#poster_url').trigger('input');
+                $('#backdrop_url').trigger('input');
+
+                // Show success message
+                $('#tmdb-search-results').html('<div class="alert alert-success"><i class="fas fa-check-circle mr-1"></i> Movie details loaded successfully!</div>');
+
+                // Add notification about trailer
+                if (trailerFound) {
+                    const trailerNotification = `<div class="alert alert-success mt-3 tmdb-notification">
+                        <i class="fas fa-film mr-1"></i> Trailer found and added to the movie.
+                        <a href="#" onclick="$('#media-tab').tab('show'); return false;" class="alert-link">
+                            Go to Media & Links tab to see it.
+                        </a>
+                    </div>`;
+                    $('#tmdb-search-results').after(trailerNotification);
+                } else {
+                    const trailerNotification = `<div class="alert alert-warning mt-3 tmdb-notification">
+                        <i class="fas fa-exclamation-triangle mr-1"></i> No trailer found for this movie.
+                    </div>`;
+                    $('#tmdb-search-results').after(trailerNotification);
                 }
 
                 // Handle actors
@@ -810,7 +869,7 @@
 
                     // Show a notification that actors are available
                     const actorCount = movie.credits.cast.length;
-                    const actorNotification = `<div class="alert alert-success mt-3">
+                    const actorNotification = `<div class="alert alert-success mt-3 tmdb-notification">
                         <i class="fas fa-info-circle mr-1"></i> ${actorCount} actors found and automatically selected for this movie.
                         <a href="#" onclick="$('#actors-tab').tab('show'); return false;" class="alert-link">
                             Go to Actors tab to review them.
@@ -836,7 +895,7 @@
                     ).length;
 
                     if (directorCount > 0) {
-                        const directorNotification = `<div class="alert alert-success mt-3">
+                        const directorNotification = `<div class="alert alert-success mt-3 tmdb-notification">
                             <i class="fas fa-info-circle mr-1"></i> ${directorCount} directors and crew members found and automatically selected for this movie.
                             <a href="#" onclick="$('#directors-tab').tab('show'); return false;" class="alert-link">
                                 Go to Directors tab to review them.
@@ -859,7 +918,7 @@
 
                     // Show a notification that genres are available
                     const genreCount = movie.genres.length;
-                    const genreNotification = `<div class="alert alert-success mt-3">
+                    const genreNotification = `<div class="alert alert-success mt-3 tmdb-notification">
                         <i class="fas fa-info-circle mr-1"></i> ${genreCount} genres found and automatically selected for this movie.
                         <a href="#" onclick="$('#genres-tab').tab('show'); return false;" class="alert-link">
                             Go to Genres tab to review them.
@@ -868,12 +927,12 @@
                     $('#tmdb-search-results').after(genreNotification);
                 }
 
-                // Switch to basic tab
+                // Switch to basic tab to show the movie information
                 $('#basic-tab').tab('show');
             },
             error: function(xhr, status, error) {
                 console.error('Failed to fetch movie details:', error);
-                window.showErrorToast('Failed to fetch movie details: ' + error);
+                $('#tmdb-search-results').html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle mr-1"></i> Failed to fetch movie details: ' + error + '</div>');
             }
         });
     }
@@ -895,6 +954,14 @@
                     birth_date: actorDetails.birthday || '',
                     biography: actorDetails.biography || ''
                 });
+
+                // Update the UI to reflect the selected state
+                var selectButton = $('.select-actor[data-id="' + actor.id + '"]');
+                if (selectButton.length) {
+                    selectButton.removeClass('btn-primary').addClass('btn-secondary')
+                        .html('<i class="fas fa-check"></i> Selected')
+                        .prop('disabled', true);
+                }
             });
         });
     }
@@ -951,10 +1018,14 @@
                 ? 'https://image.tmdb.org/t/p/w185' + actor.profile_path
                 : '{{ asset('backend/assets/image/no-profile.png') }}';
 
-            // All actors are selected by default
-            var buttonClass = 'btn-secondary';
-            var buttonText = '<i class="fas fa-check"></i> Selected';
-            var buttonDisabled = 'disabled';
+            // Check if this actor is already in the selected actors list
+            var isSelected = window.selectedActors.some(function(selectedActor) {
+                return selectedActor.id === actor.id;
+            });
+
+            var buttonClass = isSelected ? 'btn-secondary' : 'btn-primary';
+            var buttonText = isSelected ? '<i class="fas fa-check"></i> Selected' : '<i class="fas fa-plus"></i> Select';
+            var buttonDisabled = isSelected ? 'disabled' : '';
 
             var html = '<div class="col-md-3 mb-4">' +
                 '<div class="card h-100">' +
@@ -986,7 +1057,143 @@
         // Store selected genres
         window.selectedGenres = [];
 
-        // ... existing code ...
+        // Image preview for poster
+        $('#poster_url').on('input', function() {
+            const url = $(this).val();
+            if (url) {
+                $('#poster_preview').attr('src', url);
+                $('.poster-preview').removeClass('d-none');
+            } else {
+                $('.poster-preview').addClass('d-none');
+            }
+        });
+
+        // Image preview for backdrop
+        $('#backdrop_url').on('input', function() {
+            const url = $(this).val();
+            if (url) {
+                $('#backdrop_preview').attr('src', url);
+                $('.backdrop-preview').removeClass('d-none');
+            } else {
+                $('.backdrop-preview').addClass('d-none');
+            }
+        });
+
+        // Trailer preview functionality
+        $('#preview-trailer-btn').on('click', function() {
+            const trailerUrl = $('#trailer_url').val();
+            if (!trailerUrl) {
+                window.showWarningToast('Please enter a trailer URL first');
+                return;
+            }
+
+            // Extract YouTube video ID
+            let videoId = '';
+
+            // Match YouTube URLs
+            const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const youtubeMatch = trailerUrl.match(youtubeRegex);
+
+            if (youtubeMatch && youtubeMatch[1]) {
+                videoId = youtubeMatch[1];
+                const embedUrl = 'https://www.youtube.com/embed/' + videoId;
+                $('#trailer-preview-iframe').attr('src', embedUrl);
+                $('#trailer-preview-container').removeClass('d-none');
+            } else {
+                window.showErrorToast('Invalid YouTube URL. Please enter a valid YouTube URL.');
+            }
+        });
+
+        // Close trailer preview
+        $('#close-trailer-preview').on('click', function() {
+            $('#trailer-preview-container').addClass('d-none');
+            $('#trailer-preview-iframe').attr('src', '');
+        });
+
+        // Event delegation for actor selection
+        $(document).on('click', '.select-actor:not([disabled])', function() {
+            var actorId = $(this).data('id');
+            var actorName = $(this).data('name');
+            var actorProfile = $(this).data('profile');
+            var actorCharacter = $(this).data('character');
+
+            // Disable the button and change its appearance
+            $(this).removeClass('btn-primary').addClass('btn-secondary')
+                .html('<i class="fas fa-check"></i> Selected')
+                .prop('disabled', true);
+
+            // Fetch additional actor details and add to selected actors
+            fetchActorDetails(actorId, function(actorDetails) {
+                addSelectedActor({
+                    id: actorId,
+                    name: actorName,
+                    profile_photo: actorProfile,
+                    character: actorCharacter,
+                    birth_date: actorDetails.birthday || '',
+                    biography: actorDetails.biography || ''
+                });
+            });
+        });
+
+        // Event delegation for director selection
+        $(document).on('click', '.select-director:not([disabled])', function() {
+            var directorId = $(this).data('id');
+            var directorName = $(this).data('name');
+            var directorProfile = $(this).data('profile');
+            var directorJob = $(this).data('job');
+
+            // Disable the button and change its appearance
+            $(this).removeClass('btn-primary').addClass('btn-secondary')
+                .html('<i class="fas fa-check"></i> Selected')
+                .prop('disabled', true);
+
+            // Fetch additional director details and add to selected directors
+            fetchPersonDetails(directorId, function(personDetails) {
+                addSelectedDirector({
+                    id: directorId,
+                    name: directorName,
+                    profile_photo: directorProfile,
+                    job: directorJob,
+                    biography: personDetails.biography || ''
+                });
+            });
+        });
+
+        // Event delegation for genre selection
+        $(document).on('click', '.select-genre:not([disabled])', function() {
+            var genreId = $(this).data('id');
+            var genreName = $(this).data('name');
+
+            // Disable the button and change its appearance
+            $(this).removeClass('btn-primary').addClass('btn-secondary')
+                .html('<i class="fas fa-check"></i> Selected')
+                .prop('disabled', true);
+
+            // Add to selected genres
+            addSelectedGenre({
+                id: genreId,
+                name: genreName
+            });
+        });
+
+        // Event delegation for actor removal
+        $(document).on('click', '.remove-actor', function() {
+            var actorId = $(this).data('id');
+            removeSelectedActor(actorId);
+        });
+
+        // Event delegation for director removal
+        $(document).on('click', '.remove-director', function() {
+            var directorId = $(this).data('id');
+            var job = $(this).data('job');
+            removeSelectedDirector(directorId, job);
+        });
+
+        // Event delegation for genre removal
+        $(document).on('click', '.remove-genre', function() {
+            var genreId = $(this).data('id');
+            removeSelectedGenre(genreId);
+        });
     });
 
     // Add these functions for actor management
@@ -1010,9 +1217,12 @@
         updateSelectedActorsList();
 
         // Re-enable the select button in the movie actors list if it exists
-        $('.select-actor[data-id="' + actorId + '"]').removeClass('btn-secondary').addClass('btn-primary')
+        var selectButton = $('.select-actor[data-id="' + actorId + '"]');
+        if (selectButton.length) {
+            selectButton.removeClass('btn-secondary').addClass('btn-primary')
             .html('<i class="fas fa-plus"></i> Select')
             .prop('disabled', false);
+        }
     }
 
     function updateSelectedActorsList() {
@@ -1050,12 +1260,6 @@
                 '</div>';
 
             container.append(html);
-        });
-
-        // Add click event for remove actor buttons
-        $('.remove-actor').on('click', function() {
-            var actorId = $(this).data('id');
-            removeSelectedActor(actorId);
         });
     }
 
@@ -1097,10 +1301,14 @@
                 ? 'https://image.tmdb.org/t/p/w185' + person.profile_path
                 : '{{ asset('backend/assets/image/no-profile.png') }}';
 
-            // All directors are selected by default
-            var buttonClass = 'btn-secondary';
-            var buttonText = '<i class="fas fa-check"></i> Selected';
-            var buttonDisabled = 'disabled';
+            // Check if this director is already in the selected directors list
+            var isSelected = window.selectedDirectors.some(function(selectedDirector) {
+                return selectedDirector.id === person.id && selectedDirector.job === person.job;
+            });
+
+            var buttonClass = isSelected ? 'btn-secondary' : 'btn-primary';
+            var buttonText = isSelected ? '<i class="fas fa-check"></i> Selected' : '<i class="fas fa-plus"></i> Select';
+            var buttonDisabled = isSelected ? 'disabled' : '';
 
             var html = '<div class="col-md-3 mb-4">' +
                 '<div class="card h-100">' +
@@ -1147,6 +1355,14 @@
                     job: person.job,
                     biography: personDetails.biography || ''
                 });
+
+                // Update the UI to reflect the selected state
+                var selectButton = $('.select-director[data-id="' + person.id + '"][data-job="' + person.job + '"]');
+                if (selectButton.length) {
+                    selectButton.removeClass('btn-primary').addClass('btn-secondary')
+                        .html('<i class="fas fa-check"></i> Selected')
+                        .prop('disabled', true);
+                }
             });
         });
     }
@@ -1190,9 +1406,12 @@
         updateSelectedDirectorsList();
 
         // Re-enable the select button in the movie directors list if it exists
-        $('.select-director[data-id="' + directorId + '"][data-job="' + job + '"]').removeClass('btn-secondary').addClass('btn-primary')
+        var selectButton = $('.select-director[data-id="' + directorId + '"][data-job="' + job + '"]');
+        if (selectButton.length) {
+            selectButton.removeClass('btn-secondary').addClass('btn-primary')
             .html('<i class="fas fa-plus"></i> Select')
             .prop('disabled', false);
+        }
     }
 
     function updateSelectedDirectorsList() {
@@ -1230,13 +1449,6 @@
 
             container.append(html);
         });
-
-        // Add click event for remove director buttons
-        $('.remove-director').on('click', function() {
-            var directorId = $(this).data('id');
-            var job = $(this).data('job');
-            removeSelectedDirector(directorId, job);
-        });
     }
 
     // Add these functions for genre management
@@ -1264,10 +1476,14 @@
 
         // Add each genre to the container
         $.each(genres, function(index, genre) {
-            // All genres are selected by default
-            var buttonClass = 'btn-secondary';
-            var buttonText = '<i class="fas fa-check"></i> Selected';
-            var buttonDisabled = 'disabled';
+            // Check if this genre is already in the selected genres list
+            var isSelected = window.selectedGenres.some(function(selectedGenre) {
+                return selectedGenre.id === genre.id;
+            });
+
+            var buttonClass = isSelected ? 'btn-secondary' : 'btn-primary';
+            var buttonText = isSelected ? '<i class="fas fa-check"></i> Selected' : '<i class="fas fa-plus"></i> Select';
+            var buttonDisabled = isSelected ? 'disabled' : '';
 
             var html = '<div class="col-md-3 mb-4">' +
                 '<div class="card h-100">' +
@@ -1296,6 +1512,14 @@
                 id: genre.id,
                 name: genre.name
             });
+
+            // Update the UI to reflect the selected state
+            var selectButton = $('.select-genre[data-id="' + genre.id + '"]');
+            if (selectButton.length) {
+                selectButton.removeClass('btn-primary').addClass('btn-secondary')
+                    .html('<i class="fas fa-check"></i> Selected')
+                    .prop('disabled', true);
+            }
         });
     }
 
@@ -1319,9 +1543,12 @@
         updateSelectedGenresList();
 
         // Re-enable the select button in the movie genres list if it exists
-        $('.select-genre[data-id="' + genreId + '"]').removeClass('btn-secondary').addClass('btn-primary')
+        var selectButton = $('.select-genre[data-id="' + genreId + '"]');
+        if (selectButton.length) {
+            selectButton.removeClass('btn-secondary').addClass('btn-primary')
             .html('<i class="fas fa-plus"></i> Select')
             .prop('disabled', false);
+        }
     }
 
     function updateSelectedGenresList() {
@@ -1351,12 +1578,6 @@
                 '</div>';
 
             container.append(html);
-        });
-
-        // Add click event for remove genre buttons
-        $('.remove-genre').on('click', function() {
-            var genreId = $(this).data('id');
-            removeSelectedGenre(genreId);
         });
     }
 </script>

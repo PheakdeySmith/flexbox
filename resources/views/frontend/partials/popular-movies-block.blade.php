@@ -3,7 +3,7 @@
         <section class="overflow-hidden">
             <div class="d-flex align-items-center justify-content-between px-md-3 px-1 my-4">
                 <h5 class="main-title text-capitalize mb-0">popular movies</h5>
-                <a href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html"
+                <a href="{{ route('frontend.viewAll', ['section' => 'popular']) }}"
                     class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
             </div>
             <div class="card-style-slider">

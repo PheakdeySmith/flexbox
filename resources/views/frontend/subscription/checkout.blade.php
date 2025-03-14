@@ -42,7 +42,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-primary">
                         <h4>Payment Information</h4>
                     </div>
                     <div class="card-body">
@@ -105,7 +105,7 @@
 
             <div class="col-lg-4">
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-primary">
                         <h4>Order Summary</h4>
                     </div>
                     <div class="card-body">

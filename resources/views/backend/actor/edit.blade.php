@@ -49,6 +49,78 @@
                             </div>
                             @endif
 
+                            <div class="modal fade" id="editActorModal">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary">
+                                            <h4 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Actor</h4>
+                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form id="editActorForm" action="{{ route('actor.update', ':id') }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" id="edit_id" name="actor_id">
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <label for="edit_name"><i class="fas fa-user mr-1"></i>Name <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="edit_name" name="name" placeholder="Enter actor's name" required>
+                                                            <small class="form-text text-muted">Enter the full name of the actor</small>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="edit_biography"><i class="fas fa-book mr-1"></i>Biography</label>
+                                                            <textarea class="form-control" id="edit_biography" name="biography" rows="5" placeholder="Enter actor's biography"></textarea>
+                                                            <small class="form-text text-muted">Provide a detailed biography of the actor</small>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="edit_birth_date"><i class="fas fa-calendar-alt mr-1"></i>Birth Date</label>
+                                                            <input type="date" class="form-control" id="edit_birth_date" name="birth_date">
+                                                            <small class="form-text text-muted">Enter the actor's date of birth</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="edit_profile_photo"><i class="fas fa-image mr-1"></i>Profile Photo URL</label>
+                                                            <input type="text" class="form-control" id="edit_profile_photo" name="profile_photo" placeholder="https://example.com/photo.jpg">
+                                                            <small class="form-text text-muted">Enter a URL for the actor's profile photo</small>
+                                                        </div>
+
+                                                        <div class="text-center mt-3">
+                                                            <div class="img-preview">
+                                                                <img id="edit_preview_image" src="" class="img-fluid rounded border" alt="Actor Profile">
+                                                            </div>
+                                                            <small class="d-block mt-2 text-muted">Current profile photo</small>
+                                                        </div>
+
+                                                        <div class="form-group mt-3">
+                                                            <label><i class="fas fa-film mr-1"></i>Search Actor</label>
+                                                            <button type="button" class="btn btn-outline-primary btn-block" id="edit-search-tmdb-btn">
+                                                                <i class="fas fa-search mr-1"></i> Search TMDB
+                                                            </button>
+                                                            <small class="form-text text-muted">Search for actor information from TMDB</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer justify-content-between bg-light">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    <i class="fas fa-times mr-1"></i>Cancel
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save mr-1"></i>Save Changes
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                             <form action="{{ route('actor.update', $actor->id) }}" method="POST" id="actorForm">
                                 @csrf
                                 @method('PUT')
@@ -219,18 +291,52 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Handle modal show event
+        $('#editActorModal').on('show.bs.modal', function(event) {
+            const button = $(event.relatedTarget);
+            const { id, name, biography, birthDate, profilePhoto } = button.data();
+
+            const modal = $(this);
+
+            // Update the form action URL
+            modal.find('#editActorForm').attr('action', `/backend/actor/${id}`);
+            modal.find('#edit_id').val(id);
+            modal.find('#edit_name').val(name);
+            modal.find('#edit_biography').val(biography);
+            modal.find('#edit_birth_date').val(birthDate);
+            modal.find('#edit_profile_photo').val(profilePhoto);
+
+            // Set profile photo preview
+            const preview = modal.find('#edit_preview_image');
+
+            if (profilePhoto) {
+                preview.attr('src', profilePhoto);
+            } else {
+                preview.attr('src', 'https://via.placeholder.com/200x200?text=No+Image');
+            }
+        });
+
         // Preview profile photo when URL changes
-        document.getElementById('profile_photo').addEventListener('input', function() {
+        document.getElementById('edit_profile_photo').addEventListener('input', function() {
             const photoUrl = this.value.trim();
-            const previewContainer = document.getElementById('profile-photo-preview');
-            const previewImg = previewContainer.querySelector('img');
+            const previewImg = document.getElementById('edit_preview_image');
 
             if (photoUrl) {
                 previewImg.src = photoUrl;
-                previewContainer.style.display = 'block';
             } else {
-                previewContainer.style.display = 'none';
+                previewImg.src = 'https://via.placeholder.com/200x200?text=No+Image';
             }
+        });
+
+        // Open TMDB search modal for edit
+        document.getElementById('edit-search-tmdb-btn').addEventListener('click', function() {
+            $('#tmdbSearchModal').modal('show');
+            $('#editActorModal').modal('hide');
+
+            // Add event to handle returning to edit modal after TMDB search
+            $('#tmdbSearchModal').on('hidden.bs.modal', function() {
+                $('#editActorModal').modal('show');
+            });
         });
 
         // Search movies when clicking the search button

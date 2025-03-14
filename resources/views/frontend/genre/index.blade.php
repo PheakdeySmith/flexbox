@@ -36,7 +36,7 @@
                                         class="img-fluid object-cover w-100 rounded">
                                     <div class="blog-description">
                                         <h6 class="mb-0 iq-title"><a
-                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html"
+                                                href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}"
                                                 class="text-decoration-none text-capitalize line-count-2 p-2">{{ $genre->name }}</a>
                                         </h6>
                                     </div>

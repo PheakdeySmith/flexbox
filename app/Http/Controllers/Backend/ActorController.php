@@ -3,10 +3,12 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Actor;
+use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ActorController extends Controller
 {
@@ -25,14 +27,15 @@ class ActorController extends Controller
             $query->where('name', 'LIKE', "%{$searchTerm}%");
         }
 
-        $actors = $query->latest()->get();
+        $actors = $query->with('movies')->latest()->get();
+        $movies = Movie::all();
 
         // If it's an AJAX request, return JSON
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json($actors);
         }
 
-        return view('backend.actor.index', compact('actors'));
+        return view('backend.actor.index', compact('actors', 'movies'));
     }
 
     /**
@@ -58,18 +61,30 @@ class ActorController extends Controller
             'biography' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'profile_photo' => 'nullable|string|max:255',
+            'movies' => 'nullable|array',
+            'movies.*' => 'exists:movies,id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('actor.create')
+            return redirect()->route('actor.index')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('error', 'There were errors in your submission.');
         }
 
-        // Handle file uploads if present (for future implementation)
+        $actor = Actor::create([
+            'name' => $request->name,
+            'biography' => $request->biography,
+            'birth_date' => $request->birth_date,
+            'profile_photo' => $request->profile_photo,
+        ]);
 
-        Actor::create($request->all());
+        // Attach movies if selected
+        if ($request->has('movies') && is_array($request->movies)) {
+            foreach ($request->movies as $movieId) {
+                $actor->movies()->attach($movieId);
+            }
+        }
 
         return redirect()->route('actor.index')
             ->with('success', 'Actor created successfully.');
@@ -83,7 +98,7 @@ class ActorController extends Controller
      */
     public function show($id)
     {
-        $actor = Actor::findOrFail($id);
+        $actor = Actor::with('movies')->findOrFail($id);
         return view('backend.actor.show', compact('actor'));
     }
 
@@ -96,7 +111,8 @@ class ActorController extends Controller
     public function edit($id)
     {
         $actor = Actor::findOrFail($id);
-        return view('backend.actor.edit', compact('actor'));
+        $movies = Movie::all();
+        return view('backend.actor.edit', compact('actor', 'movies'));
     }
 
     /**
@@ -108,25 +124,37 @@ class ActorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $actor = Actor::findOrFail($id);
+        // If actor_id is provided in the request, use it instead of the route parameter
+        $actorId = $request->actor_id ?? $id;
+        $actor = Actor::findOrFail($actorId);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'profile_photo' => 'nullable|string|max:255',
+            'movies' => 'nullable|array',
+            'movies.*' => 'exists:movies,id',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('actor.edit', $id)
+            return redirect()->route('actor.index')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('error', 'There were errors in your submission.');
         }
 
-        // Handle file uploads if present (for future implementation)
+        $actor->update([
+            'name' => $request->name,
+            'biography' => $request->biography,
+            'birth_date' => $request->birth_date,
+            'profile_photo' => $request->profile_photo,
+        ]);
 
-        $actor->update($request->all());
+        // Sync movies if provided
+        if ($request->has('movies')) {
+            $actor->movies()->sync($request->movies);
+        }
 
         return redirect()->route('actor.index')
             ->with('success', 'Actor updated successfully.');
@@ -141,6 +169,8 @@ class ActorController extends Controller
     public function destroy($id)
     {
         $actor = Actor::findOrFail($id);
+
+        // Delete the actor record
         $actor->delete();
 
         return redirect()->route('actor.index')
