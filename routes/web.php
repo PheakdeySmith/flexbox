@@ -40,7 +40,8 @@ Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->n
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
 Route::get('/view-all', [FrontendController::class, 'viewAll'])->name('frontend.viewAll');
 
-Route::get('/playlist-detail', [FrontendController::class, 'playlistDetail'])->name('frontend.playlistDetail');
+Route::get('/playlist-detail/{id}', [FrontendController::class, 'playlistDetail'])->name('frontend.playlistDetail');
+Route::post('/playlist-store', [FrontendController::class, 'playlistStore'])->name('frontend.playlistStore');
 
 
 Route::middleware(['auth'])->group(function () {

@@ -66,13 +66,13 @@
                                                 <div class="watchlist-warpper card-hover-style-two">
                                                     <div class="block-images position-relative w-100">
                                                         <div class="img-box">
-                                                            <a href=""
+                                                            <a href="{{ route('frontend.playlistDetail', $playlist->id) }}"
                                                                 class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-
                                                         </div>
                                                         <div class="card-description">
                                                             <h5 class="text-capitalize fw-500">
-                                                                <a href="">
+                                                                <a
+                                                                    href="{{ route('frontend.playlistDetail', $playlist->id) }}">
                                                                     {{ $playlist->name ?? 'Unnamed Playlist' }}
                                                                 </a>
                                                             </h5>
@@ -437,7 +437,8 @@
                             @enderror
                         </div>
                         <div class="form-group d-flex align-items-center gap-3 mt-4">
-                            <button type="button" class="btn btn-sm btn-light text-uppercase fw-medium" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-sm btn-light text-uppercase fw-medium"
+                                data-bs-dismiss="modal">
                                 Cancel
                             </button>
                             <button type="submit" class="btn btn-sm btn-primary text-uppercase fw-medium">
