@@ -192,6 +192,27 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i> <!-- Playlist icon -->
+                                <p>
+                                    Playlist
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('playlist.index') }}" class="nav-link">
+                                        <i class="far fa-list-alt nav-icon"></i>
+                                        <!-- Changed to fa-list-alt for playlist table -->
+                                        <p>Playlist Table</p>
+                                    </a>
+
+                                </li>
+                            </ul>
+                        </li>
+
+
 
                         <li class="nav-item">
                             <a href="#" class="nav-link">

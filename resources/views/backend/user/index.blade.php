@@ -94,11 +94,11 @@
                                                     </button>
 
 
-                                                    <button type="button" class="btn btn-danger btn-sm delete-btn"
-                                                        data-id="{{ $user->id }}"
-                                                        data-url="{{ route('user.destroy', $user->id) }}">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
+                                                        <button type="button" class="btn btn-danger btn-sm delete-btn"
+                                                            data-id="{{ $user->id }}"
+                                                            data-url="{{ route('user.destroy', $user->id) }}">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -7,10 +7,13 @@ use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
+use App\Models\Playlist;
+use App\Models\Watchlis;
 use App\Models\SubscriptionPlan;
 use App\Models\Order;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Auth;
+
 
 class FrontendController extends Controller
 {
@@ -101,7 +104,10 @@ class FrontendController extends Controller
 
     public function watchlist()
     {
-        return view('frontend.watchlist.index');
+        $watchlists =  Watchlist::all();
+        $movies = Movie::all();
+        $playlists = Playlist::all();
+        return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists'));
     }
 
 

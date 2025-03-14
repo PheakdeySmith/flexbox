@@ -36,17 +36,26 @@
                                                                 class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
                                                         </div>
                                                         <div class="watchlist">
-                                                            <a class="watch-list-not"
-                                                                href="{{ route('frontend.watchlist') }}">
-                                                                <svg width="10" height="10" viewBox="0 0 24 24"
-                                                                    fill="none" xmlns="http://www.w3.org/2000/svg"
+                                                            <form action="{{ route('watchlist.store') }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="user_id"
+                                                                value="{{ auth()->id() }}">
+                                                            <input type="hidden" name="movie_id"
+                                                                value="{{ $movie->id }}">
+                                                            <input type="hidden" name="source" value="frontend">
+                                                            <button type="submit" class="watch-list-not">
+                                                                <svg width="10" height="10"
+                                                                    viewBox="0 0 24 24" fill="none"
+                                                                    xmlns="http://www.w3.org/2000/svg"
                                                                     class="icon-10">
                                                                     <path d="M12 4V20M20 12H4" stroke="currentColor"
                                                                         stroke-width="2" stroke-linecap="round"
                                                                         stroke-linejoin="round"></path>
                                                                 </svg>
                                                                 <span class="watchlist-label"> Watchlist </span>
-                                                            </a>
+                                                            </button>
+                                                        </form>
                                                         </div>
                                                     </div>
                                                 </div>

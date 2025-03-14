@@ -37,30 +37,24 @@ class WatchlistController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'movie_id' => 'required|exists:movies,id',
+            'movie_id' => 'required|exists:movies,id', // Change from 'movies' to 'movie_id'
         ]);
 
-        // Check if the watchlist entry already exists
-        $exists = Watchlist::where('user_id', $request->user_id)
-            ->where('movie_id', $request->movie_id)
-            ->exists();
+        // Check if the user already has a default playlist (or create one)
+        $playlist = Playlist::firstOrCreate(
+            ['user_id' => $request->user_id, 'name' => 'My Playlist'], // Default playlist name
+            ['description' => 'Automatically created playlist']
+        );
 
-        if ($exists) {
-            return redirect()->back()->with('error', 'This movie is already in the user\'s watchlist.');
+        // Attach the movie to the playlist (avoid duplicates)
+        if (!$playlist->movies()->where('movie_id', $request->movie_id)->exists()) {
+            $playlist->movies()->attach($request->movie_id);
         }
 
-        Watchlist::create([
-            'user_id' => $request->user_id,
-            'movie_id' => $request->movie_id,
-            'added_at' => now(),
-        ]);
-         // Check if the logged-in user is an admin
-         if ($request->source === 'frontend') {
-            return redirect()->route('frontend.watchlist')->with('success', 'Movie added to watchlist successfully.');
-        } else {
-            return redirect()->route('watchlist.index')->with('success', 'Movie added to watchlist successfully.');
-        }
+        // Redirect to the playlist page
+        return redirect()->route('frontend.playlist')->with('success', 'Movie added to your playlist successfully.');
     }
+
 
     /**
      * Display the specified resource.

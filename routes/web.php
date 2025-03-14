@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\SubscriptionController as FrontendSubscription
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Frontend\OrderHistoryController;
+use App\Http\Controllers\PlaylistController;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
@@ -52,7 +53,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/process-checkout', [CheckoutController::class, 'processCheckout'])->name('frontend.processCheckout');
     Route::get('/order-detail/{id}', [CheckoutController::class, 'orderDetail'])->name('frontend.orderDetail');
     Route::get('/purchase-history', [CheckoutController::class, 'purchaseHistory'])->name('frontend.purchaseHistory');
-
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -102,6 +102,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('user', UserController::class);
         Route::resource('order', OrderController::class);
         Route::resource('role', RoleController::class);
+
+        // Playlist routes
+        Route::resource('playlist', PlaylistController::class);
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);
         Route::post('watchlist/toggle/{movie}', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');
