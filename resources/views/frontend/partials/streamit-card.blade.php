@@ -3,7 +3,7 @@
       <div class="overflow-hidden">
         <div class="d-flex align-items-center justify-content-between px-md-3 px-1 my-4">
           <h5 class="main-title text-capitalize mb-0">Only on Streamit</h5>
-          <a href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html"
+          <a href="{{ route('frontend.viewAll', ['section' => 'all']) }}"
             class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
         </div>
         <div class="card-style-slider">
@@ -103,8 +103,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -197,8 +197,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="3">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -291,8 +291,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="4">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -385,8 +385,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="5">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -479,8 +479,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="6">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -573,8 +573,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="0">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -667,8 +667,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="1">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -761,8 +761,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="2">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -855,8 +855,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="3">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -949,8 +949,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="4">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1043,8 +1043,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="5">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1137,8 +1137,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide" data-swiper-slide-index="6">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1231,8 +1231,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" data-swiper-slide-index="0">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1325,8 +1325,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="1">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1419,8 +1419,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="2">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1513,8 +1513,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="3">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1607,8 +1607,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="4">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1701,8 +1701,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" data-swiper-slide-index="5">
                 <div class="iq-card card-hover iq-card-style-2">
@@ -1795,8 +1795,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
             </ul>
             <div class="swiper-button swiper-button-next" tabindex="0" role="button" aria-label="Next slide"

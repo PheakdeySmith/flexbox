@@ -19,8 +19,8 @@
         // Check if user has subscriber role using Spatie Roles
         $isSubscriber = $user->hasRole('subscriber');
 
-        // User can watch if they bought the movie or have a subscriber role
-        $canWatchMovie = $hasBoughtMovie || $isSubscriber;
+        // User can watch if they bought the movie, have a subscriber role, or if the movie is free
+        $canWatchMovie = $hasBoughtMovie || $isSubscriber || (isset($movie) && $movie->is_free);
     @endphp
 
     <div class="iq-main-slider site-video mt-5">

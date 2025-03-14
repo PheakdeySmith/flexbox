@@ -74,7 +74,7 @@
                                             </span>
                                         </li>
                                     </ul>
-                                    
+
                                     @if(auth()->check())
                                         @php
                                             $user = auth()->user();
@@ -91,21 +91,35 @@
                                             }
                                         @endphp
 
-                                        @if(!$hasBoughtMovie)
+                                        @if(!$hasBoughtMovie && !$movie->is_free)
                                             <div class="iq-button">
                                                 <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
                                             </div>
-                                        @else
+                                        @elseif($hasBoughtMovie)
                                             <div class="iq-button">
                                                 <span class="btn btn-sm btn-success disabled">
                                                     <i class="fa-solid fa-check me-1"></i> Purchased
                                                 </span>
                                             </div>
+                                        @elseif($movie->is_free)
+                                            <div class="iq-button">
+                                                <span class="btn btn-sm btn-info disabled">
+                                                    <i class="fa-solid fa-gift me-1"></i> Free
+                                                </span>
+                                            </div>
                                         @endif
                                     @else
-                                        <div class="iq-button">
-                                            <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
-                                        </div>
+                                        @if(!$movie->is_free)
+                                            <div class="iq-button">
+                                                <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                            </div>
+                                        @else
+                                            <div class="iq-button">
+                                                <span class="btn btn-sm btn-info disabled">
+                                                    <i class="fa-solid fa-gift me-1"></i> Free
+                                                </span>
+                                            </div>
+                                        @endif
                                     @endif
 
                                     {{-- <div class="movie-detail-select">

@@ -3,7 +3,7 @@
       <div class="overflow-hidden">
         <div class="d-flex align-items-center justify-content-between px-md-3 px-1 my-4">
           <h5 class="main-title text-capitalize mb-0">Only on Streamit</h5>
-          <a href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html"
+          <a href="{{ route('frontend.viewAll', ['section' => 'all']) }}"
             class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
         </div>
         <div class="card-style-slider">
@@ -104,8 +104,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="3 / 7" data-swiper-slide-index="2"
                 style="width: 219.833px;">
@@ -199,8 +199,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="4 / 7" data-swiper-slide-index="3"
                 style="width: 219.833px;">
@@ -294,8 +294,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="5 / 7" data-swiper-slide-index="4"
                 style="width: 219.833px;">
@@ -389,8 +389,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="6 / 7" data-swiper-slide-index="5"
                 style="width: 219.833px;">
@@ -484,8 +484,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate swiper-slide-prev" role="group" aria-label="7 / 7"
                 data-swiper-slide-index="6" style="width: 219.833px;">
@@ -579,8 +579,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-active" role="group" aria-label="1 / 7" data-swiper-slide-index="0"
                 style="width: 219.833px;">
@@ -674,8 +674,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-active swiper-slide-next" role="group" aria-label="2 / 7"
                 data-swiper-slide-index="1" style="width: 219.833px;">
@@ -769,8 +769,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-active" role="group" aria-label="3 / 7" data-swiper-slide-index="2"
                 style="width: 219.833px;">
@@ -864,8 +864,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-active" role="group" aria-label="4 / 7" data-swiper-slide-index="3"
                 style="width: 219.833px;">
@@ -959,8 +959,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-active" role="group" aria-label="5 / 7" data-swiper-slide-index="4"
                 style="width: 219.833px;">
@@ -1054,8 +1054,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-active last" role="group" aria-label="6 / 7" data-swiper-slide-index="5"
                 style="width: 219.833px;">
@@ -1149,8 +1149,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate-prev" role="group" aria-label="7 / 7"
                 data-swiper-slide-index="6" style="width: 219.833px;">
@@ -1244,8 +1244,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-active" role="group"
                 aria-label="1 / 7" data-swiper-slide-index="0" style="width: 219.833px;">
@@ -1339,8 +1339,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate swiper-slide-duplicate-next" role="group" aria-label="2 / 7"
                 data-swiper-slide-index="1" style="width: 219.833px;">
@@ -1434,8 +1434,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="3 / 7" data-swiper-slide-index="2"
                 style="width: 219.833px;">
@@ -1529,8 +1529,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="4 / 7" data-swiper-slide-index="3"
                 style="width: 219.833px;">
@@ -1624,8 +1624,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="5 / 7" data-swiper-slide-index="4"
                 style="width: 219.833px;">
@@ -1719,8 +1719,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
               <li class="swiper-slide swiper-slide-duplicate" role="group" aria-label="6 / 7" data-swiper-slide-index="5"
                 style="width: 219.833px;">
@@ -1814,8 +1814,8 @@
                     </div>
                   </div>
                 </div>
-  
-  
+
+
               </li>
             </ul>
             <div class="swiper-button swiper-button-next" tabindex="0" role="button" aria-label="Next slide"

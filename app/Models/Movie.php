@@ -32,6 +32,8 @@ class Movie extends Model
         'type',
         'maturity_rating',
         'is_free',
+        'is_featured',
+        'is_featured_vertical',
         'status',
     ];
 
@@ -45,6 +47,8 @@ class Movie extends Model
         'price' => 'decimal:2',
         'imdb_rating' => 'decimal:1',
         'is_free' => 'boolean',
+        'is_featured' => 'boolean',
+        'is_featured_vertical' => 'boolean',
     ];
 
     /**

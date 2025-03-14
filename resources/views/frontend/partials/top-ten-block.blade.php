@@ -2,8 +2,8 @@
     <div class="container-fluid">
       <section class="overflow-hidden">
         <div class="d-flex align-items-center justify-content-between px-md-3 px-1 mb-4">
-          <h5 class="main-title text-capitalize mb-0">Top Ten Movies to Watch</h5>
-          <a href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html"
+          <h5 class="main-title text-capitalize mb-0">top 10 in your country</h5>
+          <a href="{{ route('frontend.viewAll', ['section' => 'top_rated']) }}"
             class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
         </div>
         <div

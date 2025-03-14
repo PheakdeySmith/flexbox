@@ -17,6 +17,10 @@ use Exception;
 
 class MovieController extends Controller
 {
+    // Define constants for the limits
+    const FEATURED_LIMIT = 3;
+    const FEATURED_VERTICAL_LIMIT = 4;
+
     /**
      * Display a listing of the resource.
      *
@@ -62,7 +66,6 @@ class MovieController extends Controller
             'language' => 'nullable|string|max:255',
             'type' => 'required|in:movie,tv_series',
             'maturity_rating' => 'nullable|in:G,PG,PG-13,R,NC-17',
-            'is_free' => 'boolean',
             'status' => 'required|in:active,inactive',
             'actors' => 'nullable|array',
             'actors.*.id' => 'nullable|integer',
@@ -89,8 +92,14 @@ class MovieController extends Controller
                 ->with('error', 'There were errors in your submission.');
         }
 
+        // Handle boolean fields explicitly
+        $data = $request->except(['actors', 'genres', 'directors']);
+        $data['is_free'] = $request->has('is_free');
+        $data['is_featured'] = $request->has('is_featured');
+        $data['is_featured_vertical'] = $request->has('is_featured_vertical');
+
         // Create the movie
-        $movie = Movie::create($request->except(['actors', 'genres', 'directors']));
+        $movie = Movie::create($data);
 
         // Handle actors if provided
         if ($request->has('actors') && is_array($request->actors)) {
@@ -304,7 +313,17 @@ class MovieController extends Controller
         $featuredCount = Movie::where('is_featured', 1)->count();
         $featuredVerticalCount = Movie::where('is_featured_vertical', 1)->count();
 
-        return view('backend.movie.edit', compact('movie', 'featuredCount', 'featuredVerticalCount'));
+        // Use the constants for the limits
+        $featuredLimit = self::FEATURED_LIMIT;
+        $featuredVerticalLimit = self::FEATURED_VERTICAL_LIMIT;
+
+        return view('backend.movie.edit', compact(
+            'movie',
+            'featuredCount',
+            'featuredVerticalCount',
+            'featuredLimit',
+            'featuredVerticalLimit'
+        ));
     }
 
     /**
@@ -321,15 +340,15 @@ class MovieController extends Controller
         // Check featured limits only if the movie isn't already featured
         if ($request->has('is_featured') && $request->is_featured && !$movie->is_featured) {
             $featuredCount = Movie::where('is_featured', 1)->count();
-            if ($featuredCount >= 5) {
-                return redirect()->back()->with('error', 'Maximum limit of 5 featured movies has been reached.');
+            if ($featuredCount >= self::FEATURED_LIMIT) {
+                return redirect()->back()->with('error', 'Maximum limit of ' . self::FEATURED_LIMIT . ' featured movies has been reached.');
             }
         }
 
         if ($request->has('is_featured_vertical') && $request->is_featured_vertical && !$movie->is_featured_vertical) {
             $featuredVerticalCount = Movie::where('is_featured_vertical', 1)->count();
-            if ($featuredVerticalCount >= 5) {
-                return redirect()->back()->with('error', 'Maximum limit of 5 featured vertical movies has been reached.');
+            if ($featuredVerticalCount >= self::FEATURED_VERTICAL_LIMIT) {
+                return redirect()->back()->with('error', 'Maximum limit of ' . self::FEATURED_VERTICAL_LIMIT . ' featured vertical movies has been reached.');
             }
         }
 
@@ -349,26 +368,7 @@ class MovieController extends Controller
             'language' => 'nullable|string|max:255',
             'type' => 'required|in:movie,tv_series',
             'maturity_rating' => 'nullable|in:G,PG,PG-13,R,NC-17',
-            'is_free' => 'boolean',
-            'is_featured' => 'boolean',
-            'is_featured_vertical' => 'boolean',
             'status' => 'required|in:active,inactive',
-            'actors' => 'nullable|array',
-            'actors.*.id' => 'nullable|integer',
-            'actors.*.name' => 'required|string|max:255',
-            'actors.*.profile_photo' => 'nullable|string',
-            'actors.*.character' => 'nullable|string',
-            'actors.*.birth_date' => 'nullable|date',
-            'actors.*.biography' => 'nullable|string',
-            'genres' => 'nullable|array',
-            'genres.*.id' => 'nullable|integer',
-            'genres.*.name' => 'required|string|max:255',
-            'directors' => 'nullable|array',
-            'directors.*.id' => 'nullable|integer',
-            'directors.*.name' => 'required|string|max:255',
-            'directors.*.profile_photo' => 'nullable|string',
-            'directors.*.biography' => 'nullable|string',
-            'directors.*.job' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -378,182 +378,14 @@ class MovieController extends Controller
                 ->with('error', 'There were errors in your submission.');
         }
 
+        // Handle boolean fields explicitly
+        $data = $request->except(['actors', 'genres', 'directors']);
+        $data['is_free'] = $request->has('is_free');
+        $data['is_featured'] = $request->has('is_featured');
+        $data['is_featured_vertical'] = $request->has('is_featured_vertical');
+
         // Update the movie
-        $movie->update($request->except(['actors', 'genres', 'directors']));
-
-        // Handle actors if provided
-        if ($request->has('actors') && is_array($request->actors)) {
-            $actorCount = 0;
-            $newActorCount = 0;
-            $actorsToSync = [];
-
-            foreach ($request->actors as $actorData) {
-                $actorCount++;
-
-                // Check if actor already exists by TMDB ID
-                $actor = null;
-                if (!empty($actorData['id'])) {
-                    $actor = Actor::where('tmdb_id', $actorData['id'])->first();
-                }
-
-                if (!$actor) {
-                    // Try to find by name as fallback
-                    $actor = Actor::where('name', $actorData['name'])->first();
-                }
-
-                // Create new actor if not found
-                if (!$actor) {
-                    $actor = Actor::create([
-                        'tmdb_id' => $actorData['id'] ?? null,
-                        'name' => $actorData['name'],
-                        'profile_photo' => $actorData['profile_photo'] ?? null,
-                        'birth_date' => $actorData['birth_date'] ?? null,
-                        'biography' => $actorData['biography'] ?? null,
-                    ]);
-                    $newActorCount++;
-                } else {
-                    // Update existing actor with any new information
-                    $updateData = [];
-
-                    // Only update if the field is provided and not empty
-                    if (isset($actorData['profile_photo']) && !empty($actorData['profile_photo']) && $actor->profile_photo != $actorData['profile_photo']) {
-                        $updateData['profile_photo'] = $actorData['profile_photo'];
-                    }
-
-                    if (isset($actorData['birth_date']) && !empty($actorData['birth_date']) && $actor->birth_date != $actorData['birth_date']) {
-                        $updateData['birth_date'] = $actorData['birth_date'];
-                    }
-
-                    if (isset($actorData['biography']) && !empty($actorData['biography']) && $actor->biography != $actorData['biography']) {
-                        $updateData['biography'] = $actorData['biography'];
-                    }
-
-                    // Update the actor if there are changes
-                    if (!empty($updateData)) {
-                        $actor->update($updateData);
-                    }
-                }
-
-                // Create relationship with character name if provided
-                $pivotData = [];
-                if (isset($actorData['character']) && !empty($actorData['character'])) {
-                    $pivotData['character'] = $actorData['character'];
-                }
-
-                // Add to the array of actors to sync
-                $actorsToSync[$actor->id] = $pivotData;
-            }
-
-            // Sync all actors at once
-            $movie->actors()->sync($actorsToSync);
-
-            $message = "Movie updated successfully with {$actorCount} actors";
-            if ($newActorCount > 0) {
-                $message .= " ({$newActorCount} new actors created)";
-            }
-        }
-
-        // Handle genres if provided
-        if ($request->has('genres') && is_array($request->genres)) {
-            $genreCount = 0;
-            $newGenreCount = 0;
-            $genresToSync = [];
-
-            foreach ($request->genres as $genreData) {
-                $genreCount++;
-
-                // Check if genre already exists by TMDB ID
-                $genre = null;
-                if (!empty($genreData['id'])) {
-                    $genre = Genre::where('tmdb_id', $genreData['id'])->first();
-                }
-
-                if (!$genre) {
-                    // Try to find by name as fallback
-                    $genre = Genre::where('name', $genreData['name'])->first();
-                }
-
-                // Create new genre if not found
-                if (!$genre) {
-                    $genre = Genre::create([
-                        'tmdb_id' => $genreData['id'] ?? null,
-                        'name' => $genreData['name'],
-                        'slug' => \Illuminate\Support\Str::slug($genreData['name']),
-                    ]);
-                    $newGenreCount++;
-                }
-
-                // Add to the array of genres to sync
-                $genresToSync[] = $genre->id;
-            }
-
-            // Sync all genres at once
-            $movie->genres()->sync($genresToSync);
-        }
-
-        // Handle directors if provided
-        if ($request->has('directors') && is_array($request->directors)) {
-            // Instead of detaching all directors and then reattaching them,
-            // we'll collect all directors and use sync at the end
-            $directorCount = 0;
-            $newDirectorCount = 0;
-            $directorsToSync = [];
-
-            foreach ($request->directors as $directorData) {
-                $directorCount++;
-
-                // Check if director already exists by TMDB ID
-                $director = null;
-                if (!empty($directorData['id'])) {
-                    $director = Director::where('tmdb_id', $directorData['id'])->first();
-                }
-
-                if (!$director) {
-                    // Try to find by name as fallback
-                    $director = Director::where('name', $directorData['name'])->first();
-                }
-
-                // Create new director if not found
-                if (!$director) {
-                    $director = Director::create([
-                        'tmdb_id' => $directorData['id'] ?? null,
-                        'name' => $directorData['name'],
-                        'profile_photo' => $directorData['profile_photo'] ?? null,
-                        'biography' => $directorData['biography'] ?? null,
-                    ]);
-                    $newDirectorCount++;
-                } else {
-                    // Update existing director with any new information
-                    $updateData = [];
-
-                    // Only update if the field is provided and not empty
-                    if (isset($directorData['profile_photo']) && !empty($directorData['profile_photo']) && $director->profile_photo != $directorData['profile_photo']) {
-                        $updateData['profile_photo'] = $directorData['profile_photo'];
-                    }
-
-                    if (isset($directorData['biography']) && !empty($directorData['biography']) && $director->biography != $directorData['biography']) {
-                        $updateData['biography'] = $directorData['biography'];
-                    }
-
-                    // Update the director if there are changes
-                    if (!empty($updateData)) {
-                        $director->update($updateData);
-                    }
-                }
-
-                // Create relationship with job if provided
-                $pivotData = [];
-                if (isset($directorData['job']) && !empty($directorData['job'])) {
-                    $pivotData['job'] = $directorData['job'];
-                }
-
-                // Add to the array of directors to sync
-                $directorsToSync[$director->id] = $pivotData;
-            }
-
-            // Sync all directors at once
-            $movie->directors()->sync($directorsToSync);
-        }
+        $movie->update($data);
 
         return redirect()->route('movie.index')
             ->with('success', 'Movie updated successfully.');
@@ -573,6 +405,4 @@ class MovieController extends Controller
         return redirect()->route('movie.index')
             ->with('success', 'Movie deleted successfully.');
     }
-
-
 }

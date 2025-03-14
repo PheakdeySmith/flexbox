@@ -140,7 +140,7 @@
                                 </a>
                                 <ul class="sub-nav collapse  list-unstyled" id="features">
                                     <li class="nav-item">
-                                        <a class="nav-link " href="{{ route('frontend.genre') }}"> Geners </a>
+                                        <a class="nav-link " href="{{ route('frontend.viewAll', ['section' => 'all']) }}"> Genres </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link " href="{{ route('frontend.actor') }}"> Cast </a>
@@ -230,23 +230,25 @@
                                     <ul class="dropdown-menu p-0 dropdown-search m-0 iq-search-bar"
                                         style="width: 20rem;">
                                         <li class="p-0">
-                                            <div class="form-group input-group mb-0">
-                                                <input type="text" class="form-control border-0"
-                                                    placeholder="Search...">
-                                                <button type="submit" class="search-submit">
-                                                    <svg class="icon-15" width="15" viewBox="0 0 24 24"
-                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <circle cx="11.7669" cy="11.7666" r="8.98856"
-                                                            stroke="currentColor" stroke-width="1.5"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                        </circle>
-                                                        <path d="M18.0186 18.4851L21.5426 22" stroke="currentColor"
-                                                            stroke-width="1.5" stroke-linecap="round"
-                                                            stroke-linejoin="round">
-                                                        </path>
-                                                    </svg>
-                                                </button>
-                                            </div>
+                                            <form action="{{ route('frontend.search') }}" method="GET">
+                                                <div class="form-group input-group mb-0">
+                                                    <input type="text" class="form-control border-0"
+                                                        name="query" placeholder="Search..." required>
+                                                    <button type="submit" class="search-submit">
+                                                        <svg class="icon-15" width="15" viewBox="0 0 24 24"
+                                                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <circle cx="11.7669" cy="11.7666" r="8.98856"
+                                                                stroke="currentColor" stroke-width="1.5"
+                                                                stroke-linecap="round" stroke-linejoin="round">
+                                                            </circle>
+                                                            <path d="M18.0186 18.4851L21.5426 22" stroke="currentColor"
+                                                                stroke-width="1.5" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                            </path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </li>
                                     </ul>
                                 </div>

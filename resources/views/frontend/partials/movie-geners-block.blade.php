@@ -2,8 +2,8 @@
     <div class="container-fluid">
       <div class="overflow-hidden">
         <div class="d-flex align-items-center justify-content-between px-md-3 px-1 my-4">
-          <h5 class="main-title text-capitalize mb-0">movie geners</h5>
-          <a href="{{ route('frontend.genre') }}"
+          <h5 class="main-title text-capitalize mb-0">movie genres</h5>
+          <a href="{{ route('frontend.viewAll', ['section' => 'all']) }}"
             class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
         </div>
         <div class="card-style-slider">
@@ -23,7 +23,7 @@
                         class="img-fluid object-cover w-100 rounded">
                       <div class="blog-description">
                         <h6 class="mb-0 iq-title"><a
-                            href="{{ route('frontend.genre', ['id' => $genre->id]) }}"
+                            href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}"
                             class="text-decoration-none text-capitalize line-count-2 p-2">{{ $genre->name }}</a></h6>
                       </div>
                     </div>

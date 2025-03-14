@@ -473,14 +473,14 @@
                                                                                 data-type="is_featured"
                                                                                 data-id="{{ $movie->id }}"
                                                                                 {{ old('is_featured', $movie->is_featured) ? 'checked' : '' }}
-                                                                                {{ $featuredCount >= 5 && !$movie->is_featured ? 'disabled' : '' }}>
+                                                                                {{ $featuredCount >= $featuredLimit && !$movie->is_featured ? 'disabled' : '' }}>
                                                                             <label class="custom-control-label"
                                                                                 for="is_featured">
                                                                                 <i class="fas fa-star mr-1"></i> Featured
                                                                             </label>
                                                                         </div>
                                                                         <small class="form-text text-muted mt-2">
-                                                                            Featured movies: {{ $featuredCount }}/5
+                                                                            Featured movies: {{ $featuredCount }}/{{ $featuredLimit }}
                                                                         </small>
                                                                     </div>
                                                                 </div>
@@ -497,14 +497,14 @@
                                                                                 data-type="is_featured_vertical"
                                                                                 data-id="{{ $movie->id }}"
                                                                                 {{ old('is_featured_vertical', $movie->is_featured_vertical) ? 'checked' : '' }}
-                                                                                {{ $featuredVerticalCount >= 5 && !$movie->is_featured_vertical ? 'disabled' : '' }}>
+                                                                                {{ $featuredVerticalCount >= $featuredVerticalLimit && !$movie->is_featured_vertical ? 'disabled' : '' }}>
                                                                             <label class="custom-control-label"
                                                                                 for="is_featured_vertical">
                                                                                 <i class="fas fa-arrows-alt-v mr-1"></i> Featured Vertical
                                                                             </label>
                                                                         </div>
                                                                         <small class="form-text text-muted mt-2">
-                                                                            Featured vertical: {{ $featuredVerticalCount }}/5
+                                                                            Featured vertical: {{ $featuredVerticalCount }}/{{ $featuredVerticalLimit }}
                                                                         </small>
                                                                     </div>
                                                                 </div>
@@ -539,51 +539,45 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="alert alert-info">
-                                                        <i class="fas fa-info-circle mr-1"></i> Actors from the selected
-                                                        movie will be displayed here. Select the ones you want to include.
+                                                        <i class="fas fa-info-circle mr-1"></i> Actors associated with this movie are displayed below. To modify actors, please create a new movie.
                                                     </div>
 
-                                                    <div id="no-movie-selected"
-                                                        class="alert alert-warning {{ $movie->actors->count() > 0 ? 'd-none' : '' }}">
-                                                        <i class="fas fa-exclamation-triangle mr-1"></i> No movie selected
-                                                        yet from TMDB. You can either go to the <a href="#"
-                                                            onclick="$('#tmdb-search-tab').tab('show'); return false;"
-                                                            class="alert-link">TMDB Search tab</a> to select a movie or
-                                                        manage the existing actors below.
-                                                    </div>
-
-                                                    <!-- Movie Actors Section -->
-                                                    <div id="movie-actors-container" class="mt-4 d-none">
-                                                        <h4 class="mb-3">Actors in <span
-                                                                id="selected-movie-title"></span></h4>
-                                                        <div id="movie-actors" class="row">
-                                                            <!-- Actor results will be displayed here -->
-                                                        </div>
-                                                        <div id="no-movie-actors-message" class="alert alert-info d-none">
-                                                            <i class="fas fa-info-circle mr-1"></i> No actors found for
-                                                            this movie.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Selected Actors Section -->
-                                            <div class="row mt-4">
-                                                <div class="col-md-12">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <h3 class="card-title">Selected Actors</h3>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div id="selected-actors-container">
-                                                                <div id="no-selected-actors"
-                                                                    class="alert alert-info {{ $movie->actors->count() > 0 ? 'd-none' : '' }}">
-                                                                    <i class="fas fa-info-circle mr-1"></i> No actors
-                                                                    selected yet. Select actors from above or search for a
-                                                                    movie.
+                                                    <!-- Selected Actors Section -->
+                                                    <div class="row mt-4">
+                                                        <div class="col-md-12">
+                                                            <div class="card">
+                                                                <div class="card-header">
+                                                                    <h3 class="card-title">Movie Actors</h3>
                                                                 </div>
-                                                                <div id="selected-actors-list" class="row">
-                                                                    <!-- Selected actors will be displayed here -->
+                                                                <div class="card-body">
+                                                                    <div id="selected-actors-container">
+                                                                        <div id="no-selected-actors"
+                                                                            class="alert alert-info {{ $movie->actors->count() > 0 ? 'd-none' : '' }}">
+                                                                            <i class="fas fa-info-circle mr-1"></i> No actors
+                                                                            associated with this movie.
+                                                                        </div>
+                                                                        <div id="selected-actors-list" class="row">
+                                                                            @foreach ($movie->actors as $index => $actor)
+                                                                                <div class="col-md-3 mb-4 actor-item" data-id="{{ $actor->id }}">
+                                                                                    <div class="card h-100">
+                                                                                        <img src="{{ $actor->profile_photo ?: asset('backend/assets/image/no-profile.png') }}"
+                                                                                            class="card-img-top" alt="{{ $actor->name }}"
+                                                                                            style="height: 200px; object-fit: cover;">
+                                                                                        <div class="card-body">
+                                                                                            <h5 class="card-title">{{ $actor->name }}</h5>
+                                                                                            <p class="card-text text-muted">
+                                                                                                {{ $actor->pivot->character ?: 'No character specified' }}
+                                                                                            </p>
+                                                                                            <input type="hidden" name="actors[{{ $index }}][id]" value="{{ $actor->id }}">
+                                                                                            <input type="hidden" name="actors[{{ $index }}][name]" value="{{ $actor->name }}">
+                                                                                            <input type="hidden" name="actors[{{ $index }}][profile_photo]" value="{{ $actor->profile_photo ?: '' }}">
+                                                                                            <input type="hidden" name="actors[{{ $index }}][character]" value="{{ $actor->pivot->character ?: '' }}">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -598,8 +592,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="alert alert-info">
-                                                        <i class="fas fa-info-circle mr-1"></i> Select the genres for this
-                                                        movie.
+                                                        <i class="fas fa-info-circle mr-1"></i> Genres associated with this movie are displayed below. To modify genres, please create a new movie.
                                                     </div>
 
                                                     <!-- Selected Genres Section -->
@@ -607,68 +600,27 @@
                                                         <div class="col-md-12">
                                                             <div class="card">
                                                                 <div class="card-header">
-                                                                    <h3 class="card-title">Selected Genres</h3>
+                                                                    <h3 class="card-title">Movie Genres</h3>
                                                                 </div>
                                                                 <div class="card-body">
                                                                     <div id="selected-genres-container">
                                                                         <div id="no-selected-genres"
                                                                             class="alert alert-info {{ $movie->genres->count() > 0 ? 'd-none' : '' }}">
                                                                             <i class="fas fa-info-circle mr-1"></i> No
-                                                                            genres selected yet. Add genres below.
+                                                                            genres associated with this movie.
                                                                         </div>
                                                                         <div id="selected-genres-list" class="row">
                                                                             @foreach ($movie->genres as $index => $genre)
-                                                                                <div class="col-md-3 mb-4 genre-item"
-                                                                                    data-id="{{ $genre->id }}">
+                                                                                <div class="col-md-3 mb-4 genre-item" data-id="{{ $genre->id }}">
                                                                                     <div class="card h-100">
                                                                                         <div class="card-body">
-                                                                                            <h5 class="card-title">
-                                                                                                {{ $genre->name }}</h5>
-                                                                                            <button type="button"
-                                                                                                class="btn btn-sm btn-danger w-100 remove-genre"
-                                                                                                data-id="{{ $genre->id }}">
-                                                                                                <i
-                                                                                                    class="fas fa-trash"></i>
-                                                                                                Remove
-                                                                                            </button>
-                                                                                            <input type="hidden"
-                                                                                                name="genres[{{ $index }}][id]"
-                                                                                                value="{{ $genre->id }}">
-                                                                                            <input type="hidden"
-                                                                                                name="genres[{{ $index }}][name]"
-                                                                                                value="{{ $genre->name }}">
+                                                                                            <h5 class="card-title">{{ $genre->name }}</h5>
+                                                                                            <input type="hidden" name="genres[{{ $index }}][id]" value="{{ $genre->id }}">
+                                                                                            <input type="hidden" name="genres[{{ $index }}][name]" value="{{ $genre->name }}">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             @endforeach
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Add New Genre Section -->
-                                                    <div class="row mt-4">
-                                                        <div class="col-md-12">
-                                                            <div class="card">
-                                                                <div class="card-header">
-                                                                    <h3 class="card-title">Add New Genre</h3>
-                                                                </div>
-                                                                <div class="card-body">
-                                                                    <div class="form-group">
-                                                                        <label for="new-genre-name">Genre Name</label>
-                                                                        <div class="input-group">
-                                                                            <input type="text" class="form-control"
-                                                                                id="new-genre-name"
-                                                                                placeholder="Enter genre name">
-                                                                            <div class="input-group-append">
-                                                                                <button type="button"
-                                                                                    class="btn btn-primary"
-                                                                                    id="add-new-genre">
-                                                                                    <i class="fas fa-plus"></i> Add Genre
-                                                                                </button>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -685,8 +637,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="alert alert-info">
-                                                        <i class="fas fa-info-circle mr-1"></i> Select the directors and
-                                                        crew for this movie.
+                                                        <i class="fas fa-info-circle mr-1"></i> Directors and crew associated with this movie are displayed below. To modify directors, please create a new movie.
                                                     </div>
 
                                                     <!-- Selected Directors Section -->
@@ -694,115 +645,36 @@
                                                         <div class="col-md-12">
                                                             <div class="card">
                                                                 <div class="card-header">
-                                                                    <h3 class="card-title">Selected Directors & Crew</h3>
+                                                                    <h3 class="card-title">Directors & Crew</h3>
                                                                 </div>
                                                                 <div class="card-body">
                                                                     <div id="selected-directors-container">
                                                                         <div id="no-selected-directors"
                                                                             class="alert alert-info {{ $movie->directors->count() > 0 ? 'd-none' : '' }}">
                                                                             <i class="fas fa-info-circle mr-1"></i> No
-                                                                            directors selected yet. Add directors below.
+                                                                            directors associated with this movie.
                                                                         </div>
                                                                         <div id="selected-directors-list" class="row">
                                                                             @foreach ($movie->directors as $index => $director)
-                                                                                <div class="col-md-3 mb-4 director-item"
-                                                                                    data-id="{{ $director->id }}"
-                                                                                    data-job="{{ $director->pivot->job }}">
+                                                                                <div class="col-md-3 mb-4 director-item" data-id="{{ $director->id }}" data-job="{{ $director->pivot->job }}">
                                                                                     <div class="card h-100">
                                                                                         <img src="{{ $director->profile_photo ?: asset('backend/assets/image/no-profile.png') }}"
-                                                                                            class="card-img-top"
-                                                                                            alt="{{ $director->name }}"
+                                                                                            class="card-img-top" alt="{{ $director->name }}"
                                                                                             style="height: 200px; object-fit: cover;">
                                                                                         <div class="card-body">
-                                                                                            <h5 class="card-title">
-                                                                                                {{ $director->name }}</h5>
-                                                                                            <p
-                                                                                                class="card-text text-muted">
+                                                                                            <h5 class="card-title">{{ $director->name }}</h5>
+                                                                                            <p class="card-text text-muted">
                                                                                                 {{ $director->pivot->job }}
                                                                                             </p>
-                                                                                            <button type="button"
-                                                                                                class="btn btn-sm btn-danger w-100 remove-director"
-                                                                                                data-id="{{ $director->id }}"
-                                                                                                data-job="{{ $director->pivot->job }}">
-                                                                                                <i
-                                                                                                    class="fas fa-trash"></i>
-                                                                                                Remove
-                                                                                            </button>
-                                                                                            <input type="hidden"
-                                                                                                name="directors[{{ $index }}][id]"
-                                                                                                value="{{ $director->id }}">
-                                                                                            <input type="hidden"
-                                                                                                name="directors[{{ $index }}][name]"
-                                                                                                value="{{ $director->name }}">
-                                                                                            <input type="hidden"
-                                                                                                name="directors[{{ $index }}][profile_photo]"
-                                                                                                value="{{ $director->profile_photo }}">
-                                                                                            <input type="hidden"
-                                                                                                name="directors[{{ $index }}][job]"
-                                                                                                value="{{ $director->pivot->job }}">
-                                                                                            <input type="hidden"
-                                                                                                name="directors[{{ $index }}][biography]"
-                                                                                                value="{{ $director->biography }}">
+                                                                                            <input type="hidden" name="directors[{{ $index }}][id]" value="{{ $director->id }}">
+                                                                                            <input type="hidden" name="directors[{{ $index }}][name]" value="{{ $director->name }}">
+                                                                                            <input type="hidden" name="directors[{{ $index }}][profile_photo]" value="{{ $director->profile_photo }}">
+                                                                                            <input type="hidden" name="directors[{{ $index }}][job]" value="{{ $director->pivot->job }}">
+                                                                                            <input type="hidden" name="directors[{{ $index }}][biography]" value="{{ $director->biography }}">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             @endforeach
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Add New Director Section -->
-                                                    <div class="row mt-4">
-                                                        <div class="col-md-12">
-                                                            <div class="card">
-                                                                <div class="card-header">
-                                                                    <h3 class="card-title">Add New Director</h3>
-                                                                </div>
-                                                                <div class="card-body">
-                                                                    <div class="row">
-                                                                        <div class="col-md-6">
-                                                                            <div class="form-group">
-                                                                                <label for="new-director-name">Director
-                                                                                    Name</label>
-                                                                                <input type="text" class="form-control"
-                                                                                    id="new-director-name"
-                                                                                    placeholder="Enter director name">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-6">
-                                                                            <div class="form-group">
-                                                                                <label for="new-director-job">Job</label>
-                                                                                <select class="form-control"
-                                                                                    id="new-director-job">
-                                                                                    <option value="Director">Director
-                                                                                    </option>
-                                                                                    <option value="Producer">Producer
-                                                                                    </option>
-                                                                                    <option value="Executive Producer">
-                                                                                        Executive Producer</option>
-                                                                                    <option value="Screenplay">Screenplay
-                                                                                    </option>
-                                                                                    <option value="Writer">Writer</option>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12">
-                                                                            <div class="form-group">
-                                                                                <label for="new-director-profile">Profile
-                                                                                    Photo URL</label>
-                                                                                <input type="url" class="form-control"
-                                                                                    id="new-director-profile"
-                                                                                    placeholder="Enter profile photo URL (optional)">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12">
-                                                                            <button type="button" class="btn btn-primary"
-                                                                                id="add-new-director">
-                                                                                <i class="fas fa-plus"></i> Add Director
-                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -860,23 +732,25 @@
 
             // Image preview for poster
             $('#poster_url').on('input', function() {
-                var url = $(this).val();
+                const url = $(this).val();
                 if (url) {
-                    $('#poster_preview').attr('src', url);
-                    $('.poster-preview').removeClass('d-none');
+                    $('#poster_preview').attr('src', url).removeClass('d-none');
+                    $('#no-poster-preview').addClass('d-none');
                 } else {
-                    $('.poster-preview').addClass('d-none');
+                    $('#poster_preview').addClass('d-none');
+                    $('#no-poster-preview').removeClass('d-none');
                 }
             });
 
             // Image preview for backdrop
             $('#backdrop_url').on('input', function() {
-                var url = $(this).val();
+                const url = $(this).val();
                 if (url) {
-                    $('#backdrop_preview').attr('src', url);
-                    $('.backdrop-preview').removeClass('d-none');
+                    $('#backdrop_preview').attr('src', url).removeClass('d-none');
+                    $('#no-backdrop-preview').addClass('d-none');
                 } else {
-                    $('.backdrop-preview').addClass('d-none');
+                    $('#backdrop_preview').addClass('d-none');
+                    $('#no-backdrop-preview').removeClass('d-none');
                 }
             });
 
@@ -895,290 +769,73 @@
 
             // TMDB API fetch button (placeholder - would need API implementation)
             $('#fetchTmdbBtn').click(function() {
-                var tmdbId = $('#tmdb_id').val();
-                if (tmdbId) {
-                    // Example function - would need actual implementation
-                    Swal.fire({
-                        title: 'Fetching Data',
-                        text: 'Retrieving information from TMDB...',
-                        icon: 'info',
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
-                    // Simulate API call with timeout
-                    setTimeout(function() {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Data retrieved successfully.',
-                            icon: 'success',
-                            timer: 1500
-                        });
-                        // This would be where you populate form fields with the API response
-                    }, 1500);
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please enter a valid TMDB ID first.',
-                        icon: 'error'
-                    });
+                const tmdbId = $('#tmdb_id').val();
+                if (!tmdbId) {
+                    alert('Please enter a TMDB ID');
+                    return;
                 }
+
+                // Show loading state
+                $(this).html('<i class="fas fa-spinner fa-spin"></i> Fetching...').attr('disabled', true);
+
+                // Simulate API call (replace with actual AJAX call)
+                setTimeout(() => {
+                    // Reset button state
+                    $(this).html('<i class="fas fa-cloud-download-alt"></i> Fetch from TMDB').attr('disabled', false);
+
+                    // Show success message
+                    alert('Movie data fetched successfully!');
+                }, 1500);
             });
 
             // Trailer preview button
             $('#previewTrailerBtn').click(function() {
-                var trailerUrl = $('#trailer_url').val();
-                if (trailerUrl) {
-                    // Extract video ID from YouTube URL
-                    var videoId = '';
-                    if (trailerUrl.includes('youtube.com') || trailerUrl.includes('youtu.be')) {
-                        // Extract YouTube video ID
-                        var regExp =
-                            /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-                        var match = trailerUrl.match(regExp);
-                        videoId = (match && match[7].length == 11) ? match[7] : false;
+                const trailerUrl = $('#trailer_url').val();
+                if (!trailerUrl) {
+                    alert('Please enter a trailer URL');
+                    return;
+                }
 
-                        if (videoId) {
-                            // Create YouTube embed
-                            var embedHtml = '<div class="embed-responsive embed-responsive-16by9">' +
-                                '<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/' +
-                                videoId + '?autoplay=1" allowfullscreen></iframe></div>';
+                // Check if it's a YouTube URL
+                const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+                const match = trailerUrl.match(youtubeRegex);
 
-                            Swal.fire({
-                                title: 'Trailer Preview',
-                                html: embedHtml,
-                                width: 800,
-                                showCloseButton: true,
-                                showConfirmButton: false
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Could not extract video ID from the provided URL.',
-                                icon: 'error'
-                            });
-                        }
-                    } else {
-                        // For other video services, just open in new tab
-                        window.open(trailerUrl, '_blank');
-                    }
+                if (match && match[1]) {
+                    // It's a YouTube video, show in modal
+                    const videoId = match[1];
+                    $('#trailer-iframe').attr('src', `https://www.youtube.com/embed/${videoId}`);
+                    $('#trailer-modal').modal('show');
                 } else {
-                    // For other video services, just open in new tab
+                    // Not a YouTube URL, open in new tab
                     window.open(trailerUrl, '_blank');
-            }
-        });
+                }
+            });
+
+            // Close trailer modal and stop video
+            $('#trailer-modal').on('hidden.bs.modal', function() {
+                $('#trailer-iframe').attr('src', '');
+            });
 
             // Form validation
             $('#movieForm').submit(function(e) {
-                var requiredFields = ['title', 'type', 'status'];
-                var isValid = true;
+                const requiredFields = ['title', 'type', 'status'];
+                let isValid = true;
 
-                requiredFields.forEach(function(field) {
-                    if (!$('#' + field).val()) {
+                requiredFields.forEach(field => {
+                    if (!$(`#${field}`).val()) {
                         isValid = false;
-                        $('#' + field).addClass('is-invalid');
+                        $(`#${field}`).addClass('is-invalid');
                     } else {
-                        $('#' + field).removeClass('is-invalid');
+                        $(`#${field}`).removeClass('is-invalid');
                     }
                 });
 
                 if (!isValid) {
                     e.preventDefault();
-                    Swal.fire({
-                        title: 'Validation Error!',
-                        text: 'Please fill in all required fields.',
-                        icon: 'error'
-                    });
+                    alert('Please fill out all required fields');
+                    return false;
                 }
             });
-
-            // Initialize arrays to store selected items
-            window.selectedActors = [];
-            window.selectedDirectors = [];
-            window.selectedGenres = [];
-
-            // Initialize with existing data
-            @foreach ($movie->actors as $actor)
-                selectedActors.push({
-                    id: {{ $actor->id }},
-                    name: "{{ $actor->name }}",
-                    profile_photo: "{{ $actor->profile_photo ?: '' }}",
-                    character: "{{ $actor->pivot->character ?: '' }}"
-                });
-            @endforeach
-
-            @foreach ($movie->directors as $director)
-                selectedDirectors.push({
-                    id: {{ $director->id }},
-                    name: "{{ $director->name }}",
-                    profile_photo: "{{ $director->profile_photo ?: '' }}",
-                    job: "{{ $director->pivot->job ?: '' }}"
-                });
-            @endforeach
-
-            @foreach ($movie->genres as $genre)
-                selectedGenres.push({
-                    id: {{ $genre->id }},
-                    name: "{{ $genre->name }}"
-                });
-            @endforeach
-
-            // Handle remove actor button clicks
-            $(document).on('click', '.remove-actor', function() {
-                var actorId = $(this).data('id');
-                removeSelectedActor(actorId);
-                return false; // Prevent form submission
-            });
-
-            // Handle remove director button clicks
-            $(document).on('click', '.remove-director', function() {
-                var directorId = $(this).data('id');
-                var job = $(this).data('job');
-                removeSelectedDirector(directorId, job);
-                return false; // Prevent form submission
-            });
-
-            // Handle remove genre button clicks
-            $(document).on('click', '.remove-genre', function() {
-                var genreId = $(this).data('id');
-                removeSelectedGenre(genreId);
-                return false; // Prevent form submission
-            });
-
-            // Function to remove actor
-            function removeSelectedActor(actorId) {
-                window.selectedActors = window.selectedActors.filter(function(actor) {
-                    return actor.id !== actorId;
-                });
-                updateSelectedActorsList();
-            }
-
-            // Function to remove director
-            function removeSelectedDirector(directorId, job) {
-                window.selectedDirectors = window.selectedDirectors.filter(function(director) {
-                    return !(director.id === directorId && director.job === job);
-                });
-                updateSelectedDirectorsList();
-            }
-
-            // Function to remove genre
-            function removeSelectedGenre(genreId) {
-                window.selectedGenres = window.selectedGenres.filter(function(genre) {
-                    return genre.id !== genreId;
-                });
-                updateSelectedGenresList();
-            }
-
-            // Function to update actors list in the view
-            function updateSelectedActorsList() {
-                var container = $('#selected-actors-list');
-                container.empty();
-
-                if (window.selectedActors.length === 0) {
-                    $('#no-selected-actors').removeClass('d-none');
-                    return;
-                }
-
-                $('#no-selected-actors').addClass('d-none');
-
-                $.each(window.selectedActors, function(index, actor) {
-                    var profileUrl = actor.profile_photo || '{{ asset("backend/assets/image/no-profile.png") }}';
-                    var html = `
-                        <div class="col-md-3 mb-4">
-                            <div class="card h-100">
-                                <img src="${profileUrl}" class="card-img-top" alt="${actor.name}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">${actor.name}</h5>
-                                    <p class="card-text text-muted">${actor.character ? 'as ' + actor.character : ''}</p>
-                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-actor" data-id="${actor.id}">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                    <input type="hidden" name="actors[${index}][id]" value="${actor.id}">
-                                    <input type="hidden" name="actors[${index}][name]" value="${actor.name}">
-                                    <input type="hidden" name="actors[${index}][profile_photo]" value="${actor.profile_photo || ''}">
-                                    <input type="hidden" name="actors[${index}][character]" value="${actor.character || ''}">
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.append(html);
-                });
-            }
-
-            // Function to update directors list in the view
-            function updateSelectedDirectorsList() {
-                var container = $('#selected-directors-list');
-                container.empty();
-
-                if (window.selectedDirectors.length === 0) {
-                    $('#no-selected-directors').removeClass('d-none');
-                    return;
-                }
-
-                $('#no-selected-directors').addClass('d-none');
-
-                $.each(window.selectedDirectors, function(index, director) {
-                    var profileUrl = director.profile_photo || '{{ asset("backend/assets/image/no-profile.png") }}';
-                    var html = `
-                        <div class="col-md-3 mb-4 director-item" data-id="${director.id}" data-job="${director.job}">
-                            <div class="card h-100">
-                                <img src="${profileUrl}" class="card-img-top" alt="${director.name}" style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title">${director.name}</h5>
-                                    <p class="card-text text-muted">${director.job}</p>
-                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-director" data-id="${director.id}" data-job="${director.job}">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                    <input type="hidden" name="directors[${index}][id]" value="${director.id}">
-                                    <input type="hidden" name="directors[${index}][name]" value="${director.name}">
-                                    <input type="hidden" name="directors[${index}][profile_photo]" value="${director.profile_photo || ''}">
-                                    <input type="hidden" name="directors[${index}][job]" value="${director.job}">
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.append(html);
-                });
-            }
-
-            // Function to update genres list in the view
-            function updateSelectedGenresList() {
-                var container = $('#selected-genres-list');
-                container.empty();
-
-                if (window.selectedGenres.length === 0) {
-                    $('#no-selected-genres').removeClass('d-none');
-                    return;
-                }
-
-                $('#no-selected-genres').addClass('d-none');
-
-                $.each(window.selectedGenres, function(index, genre) {
-                    var html = `
-                        <div class="col-md-3 mb-4 genre-item" data-id="${genre.id}">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">${genre.name}</h5>
-                                    <button type="button" class="btn btn-sm btn-danger w-100 remove-genre" data-id="${genre.id}">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                    <input type="hidden" name="genres[${index}][id]" value="${genre.id}">
-                                    <input type="hidden" name="genres[${index}][name]" value="${genre.name}">
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.append(html);
-                });
-            }
-
-            // Initialize the lists
-            updateSelectedActorsList();
-                    updateSelectedDirectorsList();
-            updateSelectedGenresList();
         });
     </script>
 @endpush

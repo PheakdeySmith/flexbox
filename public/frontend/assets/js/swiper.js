@@ -21,37 +21,48 @@
       .each(function (index) {
         let slider = jQuery(this);
 
-        var sliderAutoplay = slider.data("autoplay");
+        const slide = slider.data("slide") || 1;
+        const laptop = slider.data("laptop") || 1;
+        const tab = slider.data("tab") || 1;
+        const mobile = slider.data("mobile") || 1;
+        const mobileSm = slider.data("mobile-sm") || 1;
+        const autoplay = slider.data("autoplay") || false;
+        const loop = slider.data("loop") !== undefined ? slider.data("loop") : false;
+        const centered = slider.data("center") || false;
+        const pagination = slider.data("pagination") || false;
+        const navigation = slider.data("navigation") || false;
+        const dynamicBullets = slider.data("dynamic-bullets") || false;
+        const space = slider.data("space") || 30;
         var swiper;
 
         var breakpoint = {
           // when window width is >= 0px
           0: {
-            slidesPerView: slider.data("mobile-sm"),
+            slidesPerView: mobileSm,
             spaceBetween: 0,
           },
           576: {
-            slidesPerView: slider.data("mobile"),
+            slidesPerView: mobile,
             spaceBetween: 0,
           },
           // when window width is >= 768px
           768: {
-            slidesPerView: slider.data("tab"),
+            slidesPerView: tab,
             spaceBetween: 0,
           },
           // when window width is >= 1025px
           1025: {
-            slidesPerView: slider.data("laptop"),
+            slidesPerView: laptop,
             spaceBetween: 0,
           },
           // when window width is >= 1500px
           1500: {
-            slidesPerView: slider.data("slide"),
+            slidesPerView: slide,
             spaceBetween: 0,
           },
         };
 
-        if (slider.data("navigation")) {
+        if (navigation) {
           var navigationVal = {
             nextEl: slider.find(".swiper-button-next")[0],
             prevEl: slider.find(".swiper-button-prev")[0],
@@ -60,24 +71,24 @@
           var navigationVal = false;
         }
 
-        if (slider.data("pagination")) {
+        if (pagination) {
           var paginationVal = {
             el: slider.find(".swiper-pagination")[0],
-            dynamicBullets: true,
+            dynamicBullets: dynamicBullets,
             clickable: true,
           };
         } else {
           var paginationVal = false;
         }
 
-        var sw_config = {
-          loop: slider.data("loop"),
+        const sw_config = {
+          loop: loop,
           speed: 1000,
-          spaceBetween: 0,
-          slidesPerView: slider.data("slide"),
-          centeredSlides: slider.data("center"),
+          spaceBetween: space,
+          slidesPerView: slide,
+          centeredSlides: centered,
           mousewheel: slider.data("mousewheel"),
-          autoplay: sliderAutoplay,
+          autoplay: autoplay,
           effect: slider.data("effect"),
           navigation: navigationVal,
           pagination: paginationVal,

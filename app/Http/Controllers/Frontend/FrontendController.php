@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
 use App\Models\Playlist;
-use App\Models\Watchlis;
+use App\Models\Watchlist;
 use App\Models\SubscriptionPlan;
 use App\Models\Order;
 use App\Models\Subscription;
@@ -102,9 +102,79 @@ class FrontendController extends Controller
         return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies'));
     }
 
-    public function viewAll()
+    public function viewAll(Request $request)
     {
-        return view('frontend.filter.index');
+        $section = $request->query('section', 'all');
+        $genreId = $request->query('genre_id');
+        $actorId = $request->query('actor_id');
+        $title = 'All Movies';
+        $movies = [];
+
+        // Base query
+        $query = Movie::where('status', 'active');
+
+        // Filter by section
+        switch ($section) {
+            case 'recommended':
+                $title = 'Recommended Movies';
+                $query->where(function($q) {
+                    $q->where('is_free', true)
+                      ->orWhere('imdb_rating', '>=', 7);
+                });
+                break;
+
+            case 'latest':
+                $title = 'Latest Movies';
+                $query->orderBy('release_date', 'desc');
+                break;
+
+            case 'popular':
+                $title = 'Popular Movies';
+                $query->orderBy('release_date', 'desc');
+                break;
+
+            case 'top_rated':
+                $title = 'Top Rated Movies';
+                $query->orderBy('imdb_rating', 'desc');
+                break;
+
+            case 'free':
+                $title = 'Free Movies';
+                $query->where('is_free', true);
+                break;
+
+            case 'genre':
+                if ($genreId) {
+                    $genre = Genre::findOrFail($genreId);
+                    $title = $genre->name . ' Movies';
+                    $query->whereHas('genres', function($q) use ($genreId) {
+                        $q->where('genres.id', $genreId);
+                    });
+                }
+                break;
+
+            case 'actor':
+                if ($actorId) {
+                    $actor = Actor::findOrFail($actorId);
+                    $title = 'Movies with ' . $actor->name;
+                    $query->whereHas('actors', function($q) use ($actorId) {
+                        $q->where('actors.id', $actorId);
+                    });
+                }
+                break;
+
+            default:
+                // All movies, already set up
+                break;
+        }
+
+        // Get the movies with pagination
+        $movies = $query->paginate(20);
+
+        // Get all genres for the filter sidebar
+        $genres = Genre::orderBy('name')->get();
+
+        return view('frontend.filter.index', compact('movies', 'genres', 'title', 'section', 'genreId', 'actorId'));
     }
 
     public function watchlist()
@@ -162,6 +232,26 @@ class FrontendController extends Controller
             $actor = Actor::findOrFail($id);
         }
         return view('frontend.actor.actor-detail', compact('actor'));
+    }
+
+    /**
+     * Search for movies by title
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $title = 'Search Results for "' . $query . '"';
+        $section = 'search';
+
+        // Search for movies that match the query in their title
+        $movies = Movie::where('status', 'active')
+            ->where('title', 'LIKE', '%' . $query . '%')
+            ->paginate(20);
+
+        // Get all genres for the filter sidebar
+        $genres = Genre::orderBy('name')->get();
+
+        return view('frontend.filter.index', compact('movies', 'genres', 'title', 'section', 'query'));
     }
 
     public function error404()
