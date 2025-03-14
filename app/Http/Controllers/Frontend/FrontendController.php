@@ -102,12 +102,22 @@ class FrontendController extends Controller
         return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies'));
     }
 
+    public function viewAll()
+    {
+        return view('frontend.filter.index');
+    }
+
     public function watchlist()
     {
         $watchlists =  Watchlist::all();
         $movies = Movie::all();
         $playlists = Playlist::all();
         return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists'));
+    }
+
+    public function playlistDetail()
+    {
+        return view('frontend.watchlist.playlist_detail');
     }
 
 

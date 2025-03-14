@@ -38,7 +38,9 @@ Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre
 Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor');
 Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->name('frontend.actorDetail');
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
+Route::get('/view-all', [FrontendController::class, 'viewAll'])->name('frontend.viewAll');
 
+Route::get('/playlist-detail', [FrontendController::class, 'playlistDetail'])->name('frontend.playlistDetail');
 
 
 Route::middleware(['auth'])->group(function () {
