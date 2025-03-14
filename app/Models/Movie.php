@@ -58,8 +58,8 @@ class Movie extends Model
     public function directors()
     {
         return $this->belongsToMany(Director::class, 'movie_director')
-                    ->withPivot('job')
-                    ->withTimestamps();
+            ->withPivot('job')
+            ->withTimestamps();
     }
 
     /**
@@ -68,7 +68,7 @@ class Movie extends Model
     public function actors()
     {
         return $this->belongsToMany(Actor::class, 'movie_actor')
-                    ->withPivot('character');
+            ->withPivot('character');
     }
 
     /**
@@ -77,7 +77,7 @@ class Movie extends Model
     public function genres()
     {
         return $this->belongsToMany(Genre::class, 'movie_genre')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     /**

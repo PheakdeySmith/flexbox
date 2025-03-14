@@ -27,9 +27,9 @@
                                 </div>
                                 <ul class="p-0 mt-2 list-inline d-flex flex-wrap movie-tag">
                                     @foreach ($movie->genres as $genre)
-                                    <li class="trending-list"><a class="text-primary"
-                                            href="">{{ $genre->name }}</a>
-                                    </li>
+                                        <li class="trending-list"><a class="text-primary"
+                                                href="">{{ $genre->name }}</a>
+                                        </li>
                                     @endforeach
                                 </ul>
                                 <div class="d-flex flex-wrap align-items-center text-white text-detail flex-wrap mb-4">
@@ -42,23 +42,43 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
-                                        <form id="watchlist-form-{{ $movie->id }}" action="{{ route('watchlist.store') }}" method="POST">
+                                        <form id="watchlist-form-{{ $movie->id }}"
+                                            action="{{ route('watchlist.store') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                                             <input type="hidden" name="movie_id" value="{{ $movie->id }}">
                                             <input type="hidden" name="source" value="frontend">
                                         </form>
 
-                                        <li onclick="document.getElementById('watchlist-form-{{ $movie->id }}').submit()" style="cursor: pointer;">
-                                            <span><i class="fa-solid fa-plus"></i></span>
+                                        <li onclick="document.getElementById('watchlist-form-{{ $movie->id }}').submit()"
+                                            class="watchlist-btn" data-bs-toggle="tooltip" title="Add to Watchlist">
+                                            <span class="btn-inner">
+                                                <i class="fa-solid fa-bookmark"></i>
+                                            </span>
                                         </li>
-                                        <li onclick="document.getElementById('watchlist-form-{{ $movie->id }}').submit()" style="cursor: pointer;">
-                                            <span><i class="fa-solid fa-plus"></i></span>
+
+                                    </ul>
+                                    <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
+                                        <form id="playlist-form-{{ $movie->id }}" action="{{ route('playlist.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                            <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+                                            <input type="hidden" name="source" value="frontend">
+                                        </form>
+
+                                        <li onclick="document.getElementById('playlist-form-{{ $movie->id }}').submit()"
+                                            class="watchlist-btn" data-bs-toggle="tooltip" title="Add to playlist"
+                                            style="cursor: pointer;">
+                                            <span class="btn-inner">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </span>
                                         </li>
                                     </ul>
 
+
                                     <div class="iq-button">
-                                        <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                        <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm"
+                                            id="button-addon2">Add to Cart</a>
                                     </div>
 
                                     {{-- <div class="movie-detail-select">

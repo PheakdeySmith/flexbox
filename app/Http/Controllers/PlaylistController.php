@@ -34,25 +34,29 @@ class PlaylistController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'movies' => 'required|array', // Ensure movies is an array
-            'movies.*' => 'exists:movies,id', // Ensure each movie exists
         ]);
+
+        // Assign authenticated user if user_id is missing
+        $user_id = auth()->id();
 
         // Create the playlist
         $playlist = Playlist::create([
-            'user_id' => $request->user_id,
+            'user_id' => $user_id,
             'name' => $request->name,
             'description' => $request->description,
         ]);
 
-        // Attach selected movies to the playlist
-        $playlist->movies()->attach($request->movies);
+        // Redirect based on the source of the request
+        if ($request->source === 'frontend') {
+            return redirect()->route('frontend.watchlist')->with('success', 'Playlist created successfully.');
+        }
 
-        return redirect()->route('playlist.index')->with('success', 'Playlist created successfully');
+        return redirect()->route('playlist.index')->with('success', 'Playlist created successfully.');
     }
+
+
 
     /**
      * Display the specified resource.
@@ -66,10 +70,10 @@ class PlaylistController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Playlist $playlist)
     {
-        $playlist = Playlist::findOrFail($id);
-        return view('backend.playlist.edit', compact('playlist'));
+        $movies = Movie::orderBy('title')->get();
+        return view('backend.playlist.edit', compact('playlist', 'movies'));
     }
 
     /**
@@ -77,8 +81,24 @@ class PlaylistController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'movies' => 'required|array',
+            'movies.*' => 'exists:movies,id',
+        ]);
+
         $playlist = Playlist::findOrFail($id);
-        $playlist->update($request->all());
+
+        // Update the basic playlist information
+        $playlist->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+
+        // Sync the movies (this will update the pivot table)
+        $playlist->movies()->sync($request->movies);
+
         return redirect()->route('playlist.index')->with('success', 'Playlist updated successfully');
     }
 

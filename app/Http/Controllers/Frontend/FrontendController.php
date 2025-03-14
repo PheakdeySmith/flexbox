@@ -7,6 +7,7 @@ use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
+use App\Models\Playlist;
 use App\Models\Watchlist;
 
 class FrontendController extends Controller
@@ -100,7 +101,8 @@ class FrontendController extends Controller
     {
         $watchlists =  Watchlist::all();
         $movies = Movie::all();
-        return view('frontend.watchlist.index', compact('watchlists', 'movies'));
+        $playlists = Playlist::all();
+        return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists'));
     }
 
 
