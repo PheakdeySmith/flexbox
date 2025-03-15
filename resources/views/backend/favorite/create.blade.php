@@ -7,13 +7,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Add Review</h1>
+                    <h1>Add Favorite Entry</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('backend.dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('review.index') }}">Reviews</a></li>
-                        <li class="breadcrumb-item active">Add Review</li>
+                        <li class="breadcrumb-item"><a href="{{ route('favorite.index') }}">Favorites</a></li>
+                        <li class="breadcrumb-item active">Add Favorite Entry</li>
                     </ol>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Add New Review</h3>
+                            <h3 class="card-title">Add New Favorite Entry</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -39,7 +39,7 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('review.store') }}" method="POST">
+                                <form action="{{ route('favorite.store') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="user_id">User</label>
@@ -72,38 +72,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="rating">Rating (1-5)</label>
-                                    <input type="number" name="rating" id="rating" class="form-control @error('rating') is-invalid @enderror" min="1" max="10" value="{{ old('rating') }}" required>
-                                    @error('rating')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="comment">Comment</label>
-                                    <textarea name="comment" id="comment" class="form-control @error('comment') is-invalid @enderror" rows="5">{{ old('comment') }}</textarea>
-                                    @error('comment')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="contains_spoilers" name="contains_spoilers" value="1" {{ old('contains_spoilers') ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="contains_spoilers">Contains Spoilers</label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="is_approved" name="is_approved" value="1" {{ old('is_approved', true) ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="is_approved">Approved</label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="{{ route('review.index') }}" class="btn btn-secondary">Cancel</a>
+                                    <a href="{{ route('favorite.index') }}" class="btn btn-secondary">Cancel</a>
                                 </div>
                             </form>
                         </div>

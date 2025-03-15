@@ -163,4 +163,8 @@ class User extends Authenticatable
 
         return $hasPurchased;
     }
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

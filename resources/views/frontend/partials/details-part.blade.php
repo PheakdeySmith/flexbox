@@ -80,7 +80,7 @@
                                         </li>
                                     </ul>
 
-                                    @if(auth()->check())
+                                    @if (auth()->check())
                                         @php
                                             $user = auth()->user();
                                             $hasBoughtMovie = false;
@@ -97,8 +97,7 @@
                                             }
                                         @endphp
 
-                                        @if(!$hasBoughtMovie && !$movie->is_free)
-
+                                        @if (!$hasBoughtMovie && !$movie->is_free)
                                             <div class="iq-button">
                                                 <a href="{{ route('frontend.addToCart', $movie->id) }}"
                                                     class="btn btn-sm" id="button-addon2">Add to Cart</a>
@@ -117,9 +116,10 @@
                                             </div>
                                         @endif
                                     @else
-                                        @if(!$movie->is_free)
+                                        @if (!$movie->is_free)
                                             <div class="iq-button">
-                                                <a href="{{ route('frontend.addToCart', $movie->id) }}" class="btn btn-sm" id="button-addon2">Add to Cart</a>
+                                                <a href="{{ route('frontend.addToCart', $movie->id) }}"
+                                                    class="btn btn-sm" id="button-addon2">Add to Cart</a>
                                             </div>
                                         @else
                                             <div class="iq-button">
@@ -194,84 +194,76 @@
                                     </div>
                                     <div class="review_form">
                                         <div class="comment-respond">
-                                            <h3 class="fw-500 my-2">
-                                                Be the first to review "{{ $movie->title }}"
-                                            </h3>
+                                            <h3 class="fw-500 my-2">Be the first to review "{{ $movie->title }}"</h3>
                                             <p class="comment-notes"><span>Your email address will not be
-                                                    published.</span><span> Required fields are marked<span
-                                                        class="required"> * </span></span>
+                                                    published.</span>
+                                                <span>Required fields are marked <span class="required">*</span></span>
                                             </p>
-                                            <div class="d-flex align-items-center mb-4"><label>Your
-                                                    rating</label>
-                                                <div class="star ms-4 text-primary"><span><i
-                                                            class="fa-regular fa-star"></i></span> <span><i
-                                                            class="fa-regular fa-star"></i></span> <span><i
-                                                            class="fa-regular fa-star"></i></span>
-                                                    <span><i class="fa-regular fa-star"></i></span> <span><i
-                                                            class="fa-regular fa-star"></i></span>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label class="mb-2">
-                                                            Your review
-                                                            <span class="required">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <textarea class="form-control" name="comment" cols="5" rows="8" required=""></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="mb-2">
-                                                            Name
-                                                            <span class="required">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <input class="form-control" name="author" type="text"
-                                                            value="" size="30" required="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="mb-2">
-                                                            Email&nbsp;
-                                                            <span class="required">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <input class="form-control" name="email" type="email"
-                                                            value="" size="30" required="">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="mt-3 mt-3 d-flex gap-2 align-items-center">
-                                                        <input class="form-check-input mt-0" type="checkbox"
-                                                            value="" id="check1" checked="">
-                                                        <label class="form-check-label" for="check1">
-                                                            Save my name, email, and website in this browser for the
-                                                            next time I comment.
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="form-submit mt-4">
-                                                        <div class="iq-button">
-                                                            <button name="submit" type="submit" id="submit"
-                                                                class="btn text-uppercase position-relative"
-                                                                value="Submit">
-                                                                <span class="button-text">Submit</span>
-                                                                <i class="fa-solid fa-play"></i>
-                                                            </button>
+
+                                            <form action="{{ route('review.store') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="source" value="frontend">
+                                                <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                                <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+
+                                                <!-- Rating -->
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <label>Your rating</label>
+                                                    <div class="star-rating ms-4">
+                                                        <input type="hidden" name="rating" id="selected-rating"
+                                                            required>
+                                                        <div class="stars">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <i class="fa-regular fa-star star-item"
+                                                                    data-rating="{{ $i }}"></i>
+                                                            @endfor
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+
+                                                <!-- Comment -->
+                                                <div class="form-group">
+                                                    <label class="mb-2">Your Comment <span
+                                                            class="required">*</span></label>
+                                                    <textarea class="form-control" name="comment" cols="5" rows="8" required></textarea>
+                                                </div>
+
+                                                <!-- Name -->
+                                                <div class="form-group">
+                                                    <label class="mb-2">Name</label>
+                                                    <input class="form-control" type="text"
+                                                        value="{{ auth()->user()->name ?? '' }}" readonly>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div class="form-group">
+                                                    <label class="mb-2">Email <span
+                                                            class="required">*</span></label>
+                                                    <input class="form-control" type="email"
+                                                        value="{{ auth()->user()->email ?? '' }}" readonly>
+                                                </div>
+
+                                                <!-- Hidden Fields -->
+                                                <input type="hidden" name="contains_spoilers" value="0">
+                                                <input type="hidden" name="is_approved" value="1">
+
+                                                <div class="form-submit mt-4">
+                                                    <button type="submit" class="btn btn-primary">Submit
+                                                        Review</button>
+                                                </div>
+                                            </form>
+
+                                            @if (session('error'))
+                                                <div class="alert alert-danger">{{ session('error') }}</div>
+                                            @endif
+
+                                            @if (session('success'))
+                                                <div class="alert alert-success">{{ session('success') }}</div>
+                                            @endif
+
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -304,6 +296,10 @@
                     @csrf
                     <input type="hidden" name="source" value="frontend">
                     <input type="hidden" name="movie_id" value="{{ $movie->id }}"> <!-- Add this line -->
+                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                    <input type="hidden" name="contains_spoilers" value="0">
+                    <input type="hidden" name="is_approved" value="1">
+
 
                     <!-- Playlists with checkboxes -->
                     <div class="form-group">
@@ -312,25 +308,28 @@
                         </div>
                         <div class="playlist-list">
                             @foreach ($playlists as $playlist)
-                            @php
-                                $exists = DB::table('movie_playlist')
-                                    ->where('movie_id', $movie->id)
-                                    ->where('playlist_id', $playlist->id)
-                                    ->exists();
-                            @endphp
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="playlists[]" value="{{ $playlist->id }}" id="playlist{{ $playlist->id }}" {{ $exists ? 'disabled' : '' }}>
-                                <label class="form-check-label" for="playlist{{ $playlist->id }}">
-                                    {{ $playlist->name }} {{ $exists ? '(Already added)' : '' }}
-                                </label>
-                            </div>
-                        @endforeach
+                                @php
+                                    $exists = DB::table('movie_playlist')
+                                        ->where('movie_id', $movie->id)
+                                        ->where('playlist_id', $playlist->id)
+                                        ->exists();
+                                @endphp
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="playlists[]"
+                                        value="{{ $playlist->id }}" id="playlist{{ $playlist->id }}"
+                                        {{ $exists ? 'disabled' : '' }}>
+                                    <label class="form-check-label" for="playlist{{ $playlist->id }}">
+                                        {{ $playlist->name }} {{ $exists ? '(Already added)' : '' }}
+                                    </label>
+                                </div>
+                            @endforeach
 
                         </div>
                     </div>
 
                     <div class="form-group d-flex align-items-center gap-3 mt-4">
-                        <button type="button" class="btn btn-sm btn-light text-uppercase fw-medium" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-sm btn-light text-uppercase fw-medium"
+                            data-bs-dismiss="modal">
                             Cancel
                         </button>
                         <button type="submit" class="btn btn-sm btn-primary text-uppercase fw-medium">
@@ -343,3 +342,64 @@
         </div>
     </div>
 </div>
+
+<style>
+    .star-rating {
+        display: inline-block;
+    }
+
+    .star-rating .stars {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .star-rating .star-item {
+        font-size: 24px;
+        color: #ddd;
+        cursor: pointer;
+        margin: 0 2px;
+        transition: color 0.2s;
+    }
+
+    .star-rating .star-item:hover,
+    .star-rating .star-item.active {
+        color: #ffc107;
+    }
+
+    /* This ensures only stars up to the hovered one are highlighted */
+    .star-rating .star-item.hover~.star-item {
+        color: #ddd;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star-item');
+        const ratingInput = document.getElementById('selected-rating');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                let rating = this.getAttribute('data-rating');
+                stars.forEach(s => s.style.color = s.getAttribute('data-rating') <= rating ?
+                    '#ffc107' : '#ddd');
+            });
+
+            star.addEventListener('click', function() {
+                let rating = this.getAttribute('data-rating');
+                ratingInput.value = rating;
+
+                stars.forEach(s => {
+                    s.classList.remove('fa-regular', 'fa-solid');
+                    s.classList.add(s.getAttribute('data-rating') <= rating ?
+                        'fa-solid' : 'fa-regular');
+                });
+            });
+        });
+
+        document.querySelector('.stars').addEventListener('mouseleave', function() {
+            let selected = ratingInput.value;
+            stars.forEach(star => star.style.color = star.getAttribute('data-rating') <= selected ?
+                '#ffc107' : '#ddd');
+        });
+    });
+</script>
