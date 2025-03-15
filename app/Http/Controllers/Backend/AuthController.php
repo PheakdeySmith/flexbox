@@ -88,7 +88,15 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect(route('backend.dashboard'));
+            // Assign default 'user' role to newly registered users
+            $user->assignRole('user');
+
+            // Redirect based on user role
+            if ($user->hasRole('admin')) {
+                return redirect(route('backend.dashboard'));
+            }
+
+            return redirect(route('frontend.home'));
         } catch (\Exception $e) {
             info('Registration failed', [
                 'message' => $e->getMessage(),

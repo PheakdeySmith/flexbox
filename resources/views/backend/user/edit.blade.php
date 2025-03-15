@@ -78,10 +78,10 @@
                 // Show the current profile image
                 if (userProfilePhoto) {
                     document.getElementById('editProfileImage').src =
-                        `/storage/${userProfilePhoto}`;
+                        `${userProfilePhoto}`;
                 } else {
                     document.getElementById('editProfileImage').src =
-                        '/images/default-avatar.png'; // Placeholder image
+                        '{{ asset('AdminLTE') }}/dist/img/user2-160x160.jpg';
                 }
             });
         });

@@ -195,7 +195,7 @@ class FrontendController extends Controller
 
     public function playlistStore(Request $request)
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         $movieId = $request->movie_id;
         $playlistIds = $request->playlists;
 

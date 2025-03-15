@@ -225,7 +225,7 @@ class PaymentController extends Controller
         // Top paying users
         $topUsers = Payment::where('status', 'completed')
             ->select('user_id', DB::raw('SUM(amount) as total'))
-            ->with('user:id,name,email')
+            ->with('user:id,name,email,user_profile')
             ->groupBy('user_id')
             ->orderBy('total', 'desc')
             ->take(5)

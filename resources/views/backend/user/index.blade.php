@@ -74,10 +74,10 @@
 
                                                 <td>
                                                     @if ($user->user_profile)
-                                                        <img src="{{ asset('storage/' . $user->user_profile) }}"
+                                                        <img src="{{ asset($user->user_profile) }}"
                                                             width="50" alt="Profile Photo">
                                                     @else
-                                                        No Image
+                                                    <img src="{{ asset('AdminLTE') }}/dist/img/user2-160x160.jpg" width="50" class="img-circle elevation-2" alt="User Image">
                                                     @endif
                                                 </td>
                                                 <td>{{ $user->created_at->format('Y-m-d') }}</td>

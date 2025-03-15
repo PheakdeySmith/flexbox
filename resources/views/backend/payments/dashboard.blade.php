@@ -327,8 +327,8 @@ use Illuminate\Support\Facades\Schema;
                                     @forelse ($topUsers ?? [] as $user)
                                     <tr>
                                         <td>
-                                            <img src="{{ asset('backend/assets/image/user2-160x160.jpg') }}" alt="User Image" class="img-circle img-size-32 mr-2">
-                                            {{ $user->user->name }}
+                                            <img src="{{ asset($user->user->profile_photo ?? 'AdminLTE/dist/img/user2-160x160.jpg') }}" alt="User Image" class="img-circle img-size-32 mr-2">
+                                        {{ $user->user->name }}
                                         </td>
                                         <td>${{ number_format($user->total, 2) }}</td>
                                         <td>
@@ -431,7 +431,10 @@ use Illuminate\Support\Facades\Schema;
                                 @forelse($recentPayments as $payment)
                                 <tr>
                                     <td><a href="{{ route('payment.show', $payment) }}">#{{ $payment->id }}</a></td>
-                                    <td>{{ $payment->user->name }}</td>
+                                    <td>
+                                        <img src="{{ asset($payment->user->profile_photo ?? 'AdminLTE/dist/img/user2-160x160.jpg') }}" alt="{{ $payment->user->name }}" class="img-circle img-size-32 mr-2">
+                                        {{ $payment->user->name }}
+                                    </td>
                                     <td>
                                         @if (Schema::hasColumn('payments', 'payment_type'))
                                             @if ($payment->payment_type == 'subscription')
