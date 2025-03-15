@@ -147,4 +147,8 @@ class Movie extends Model
     {
         return $query->where('type', 'tv_series');
     }
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

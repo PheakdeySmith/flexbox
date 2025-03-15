@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\SubscriptionPlanController;
 use App\Http\Controllers\Backend\SubscriptionController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Backend\FavoriteController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CheckoutController;
@@ -112,6 +113,8 @@ Route::middleware('auth')->group(function () {
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);
         Route::post('watchlist/toggle/{movie}', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');
+        // Favorite routes
+        Route::resource('favorite', FavoriteController::class);
         // Review routes
         Route::resource('review', ReviewController::class);
         Route::post('review/toggle-approval/{review}', [ReviewController::class, 'toggleApproval'])->name('review.toggle-approval');

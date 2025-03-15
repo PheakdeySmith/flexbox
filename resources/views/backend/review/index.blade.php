@@ -59,28 +59,30 @@
                                     @forelse($reviews as $review)
                                         <tr>
                                             <td>{{ $review->id }}</td>
-                                            <td>{{ $review->user->name }}</td>
+                                            <td>
+                                                {{ $review->user ? $review->user->name : $review->guest_name }}
+                                                @if(!$review->user)
+                                                    <span class="badge badge-secondary">Guest</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $review->movie->title }}</td>
                                             <td>
                                                 <div class="text-warning">
-                                                    @for($i = 1; $i <= 10; $i++)
-                                                        @if($i <= $review->rating)
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $review->rating)
                                                             <i class="fas fa-star"></i>
                                                         @else
                                                             <i class="far fa-star"></i>
                                                         @endif
                                                     @endfor
-                                                    ({{ $review->rating }}/10)
+                                                    ({{ $review->rating }}/5)
                                                 </div>
                                             </td>
                                             <td>
-                                                @if($review->is_approved)
+                                                @if ($review->is_approved)
                                                     <span class="badge badge-success">Approved</span>
                                                 @else
                                                     <span class="badge badge-warning">Pending</span>
-                                                @endif
-                                                @if($review->contains_spoilers)
-                                                    <span class="badge badge-danger">Spoilers</span>
                                                 @endif
                                             </td>
                                             <td>{{ $review->created_at->format('M d, Y') }}</td>
@@ -113,6 +115,7 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+
                             </table>
                         </div>
                         <!-- /.card-body -->

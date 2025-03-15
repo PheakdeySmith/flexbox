@@ -62,6 +62,13 @@ class ReviewController extends Controller
             'is_approved' => $request->is_approved ?? true,
         ]);
 
+        // Check if request is from frontend
+        if ($request->has('source') && $request->source === 'frontend') {
+            return redirect()->route('frontend.movie', $request->movie_id)
+                ->with('success', 'Your review has been submitted successfully.');
+        }
+
+        // Default backend redirect
         return redirect()->route('review.index')->with('success', 'Review created successfully.');
     }
 
@@ -149,38 +156,42 @@ class ReviewController extends Controller
     {
         $request->validate([
             'rating' => 'required|integer|min:1|max:10',
-            'comment' => 'nullable|string',
+            'comment' => 'required|string|min:10',
             'contains_spoilers' => 'boolean',
+            'name' => 'required_if:guest,1|string|max:255',
+            'email' => 'required_if:guest,1|email|max:255',
         ]);
+
+        // Check if user is logged in
+        if (!Auth::check()) {
+            // Handle guest review or redirect to login
+            return redirect()->route('login')
+                ->with('error', 'Please login to submit a review.');
+        }
 
         $user = Auth::user();
 
-        // Check if the user has already reviewed this movie
+        // Check if user has already reviewed this movie
         $existingReview = Review::where('user_id', $user->id)
             ->where('movie_id', $movie->id)
             ->first();
 
         if ($existingReview) {
-            $existingReview->update([
-                'rating' => $request->rating,
-                'comment' => $request->comment,
-                'contains_spoilers' => $request->contains_spoilers ?? false,
-            ]);
-
-            $message = 'Your review has been updated.';
-        } else {
-            Review::create([
-                'user_id' => $user->id,
-                'movie_id' => $movie->id,
-                'rating' => $request->rating,
-                'comment' => $request->comment,
-                'contains_spoilers' => $request->contains_spoilers ?? false,
-                'is_approved' => true, // Auto-approve for now
-            ]);
-
-            $message = 'Your review has been submitted.';
+            return redirect()->back()
+                ->with('error', 'You have already reviewed this movie.');
         }
 
-        return redirect()->back()->with('success', $message);
+        // Create the review
+        Review::create([
+            'user_id' => $user->id,
+            'movie_id' => $movie->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+            'contains_spoilers' => $request->has('contains_spoilers'),
+            'is_approved' => false, // Set to false by default, requiring admin approval
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Thank you! Your review has been submitted and is awaiting approval.');
     }
 }

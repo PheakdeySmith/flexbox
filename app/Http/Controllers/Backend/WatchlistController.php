@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Watchlist;
 use App\Models\Movie;
+use App\Models\Playlist;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,7 @@ class WatchlistController extends Controller
         }
 
         // Redirect to the playlist page
-        return redirect()->route('frontend.playlist')->with('success', 'Movie added to your playlist successfully.');
+        return redirect()->route('frontend.watchlist')->with('success', 'Movie added to your playlist successfully.');
     }
 
 

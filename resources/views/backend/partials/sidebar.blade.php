@@ -211,6 +211,24 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-heart"></i> <!-- Changed to heart icon for Favorite -->
+                                <p>
+                                    Favorite
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('favorite.index') }}" class="nav-link">
+                                        <i class="far fa-heart nav-icon"></i> <!-- Changed to heart outline icon for Favorite Table -->
+                                        <p>Favorite Table</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
 
 
 
