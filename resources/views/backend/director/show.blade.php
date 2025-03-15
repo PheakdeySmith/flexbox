@@ -33,14 +33,9 @@
                                 Director Information
                             </h3>
                             <div class="card-tools">
-                                <button type="button" class="btn btn-primary btn-sm edit-btn"
-                                    data-toggle="modal" data-target="#editDirectorModal"
-                                    data-id="{{ $director->id }}"
-                                    data-name="{{ $director->name }}"
-                                    data-biography="{{ $director->biography }}"
-                                    data-profile-photo="{{ $director->profile_photo }}">
+                                <a href="{{ route('director.edit', $director->id) }}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-edit mr-1"></i> Edit
-                                </button>
+                                </a>
                                 <a href="{{ route('director.index') }}" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-list mr-1"></i> Back to List
                                 </a>
@@ -180,7 +175,4 @@
         </div>
     </section>
 </div>
-
-<!-- Include Edit Modal -->
-@include('backend.director.edit')
 @endsection

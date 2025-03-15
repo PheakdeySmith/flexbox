@@ -14,21 +14,25 @@
                                         {{ $movie->title }}
                                     </h2>
                                     <div class="slider-ratting d-flex align-items-center ms-lg-3 ms-0">
-                                        <ul
-                                            class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left">
-                                            <li><i class="fa fa-star" aria-hidden="true"></i></li>
-                                            <li><i class="fa fa-star" aria-hidden="true"></i></li>
-                                            <li><i class="fa fa-star" aria-hidden="true"></i></li>
-                                            <li><i class="fa fa-star" aria-hidden="true"></i></li>
-                                            <li><i class="fa fa-star-half" aria-hidden="true"></i></li>
+                                        <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left">
+                                            @for ($i = 1; $i <= 10; $i++)
+                                                @if ($movie->imdb_rating >= $i)
+                                                    <li><i class="fa fa-star" aria-hidden="true"></i></li> <!-- Full Star -->
+                                                @elseif ($movie->imdb_rating >= $i - 0.5)
+                                                    <li><i class="fa fa-star-half" aria-hidden="true"></i></li> <!-- Half Star -->
+                                                @else
+                                                    <li><i class="fa fa-star-o" aria-hidden="true"></i></li> <!-- Empty Star -->
+                                                @endif
+                                            @endfor
                                         </ul>
-                                        <span class="text-white ms-2">{{ $movie->imdb_rating }} (imdb)</span>
+                                        <span class="text-white ms-2">{{ $movie->imdb_rating }} (IMDB)</span>
+
                                     </div>
                                 </div>
                                 <ul class="p-0 mt-2 list-inline d-flex flex-wrap movie-tag">
                                     @foreach ($movie->genres as $genre)
                                         <li class="trending-list"><a class="text-primary"
-                                                href="">{{ $genre->name }}</a>
+                                                href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}">{{ $genre->name }}</a>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -126,32 +130,18 @@
                                         @endif
                                     @endif
 
-                                    {{-- <div class="movie-detail-select">
-                                        <select name="movieselect"
-                                        class="form-control movie-select select2-basic-single js-states select2-hidden-accessible"
-                                        data-select2-id="select2-data-1-p70u" tabindex="-1" aria-hidden="true" data-sharkid="__0">
-                                        <option value="1" data-select2-id="select2-data-3-rrt2">Playlist</option>
-                                        <option value="2">Zombie Island</option>
-                                        <option value="3">Sand Dust</option>
-                                        <option value="4">Jumbo Queen</option>
-                                        </select>
-                                    </div> --}}
-
                                 </div>
                                 <ul class="iq-blogtag list-unstyled d-flex flex-wrap align-items-center gap-3 p-0">
                                     <li class="iq-tag-title text-primary mb-0">
                                         <i class="fa fa-tags" aria-hidden="true"></i>
-                                        Tags:
+                                        Genres:
                                     </li>
-                                    <li><a class="title"
-                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html">Action</a><span
-                                            class="text-secondary">,</span></li>
-                                    <li><a class="title"
-                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html">Adventure</a><span
-                                            class="text-secondary">,</span></li>
-                                    <li><a class="title"
-                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/view-all-movie.html">Drama</a><span
-                                            class="text-secondary">,</span></li>
+                                    @foreach ($movie->genres as $genre)
+                                    <li>
+                                        <a class="title" href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}">{{ $genre->name }}</a>
+                                        <span class="text-secondary">,</span>
+                                    </li>
+                                    @endforeach
                                 </ul>
                             </div>
                             <div class="trailor-video col-md-3 col-12 mt-lg-0 mt-4 mb-md-0 mb-1 text-lg-right">

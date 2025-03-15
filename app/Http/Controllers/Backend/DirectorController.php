@@ -7,18 +7,32 @@ use App\Models\Director;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class DirectorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $directors = Director::all();
+        $query = Director::query();
+
+        // Search functionality (optional)
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where('name', 'LIKE', "%{$searchTerm}%");
+        }
+
+        $directors = $query->with('movies')->latest()->get();
         $movies = Movie::all();
-        return view('backend.director.index',compact('directors', 'movies'));
+
+        // If it's an AJAX request, return JSON
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json($directors);
+        }
+
+        return view('backend.director.index', compact('directors', 'movies'));
     }
 
     /**
@@ -26,7 +40,8 @@ class DirectorController extends Controller
      */
     public function create()
     {
-        return view('backend.director.create');
+        $movies = Movie::all();
+        return view('backend.director.create', compact('movies'));
     }
 
     /**
@@ -34,7 +49,7 @@ class DirectorController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -42,6 +57,14 @@ class DirectorController extends Controller
             'movies.*' => 'exists:movies,id',
         ]);
 
+        if ($validator->fails()) {
+            return redirect()->route('director.index')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'There were errors in your submission.');
+        }
+
+        // Handle the profile photo upload
         $profilePhotoPath = null;
         if ($request->hasFile('profile_photo')) {
             $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
@@ -54,19 +77,17 @@ class DirectorController extends Controller
         ]);
 
         // Attach movies if selected
-        if ($request->has('movies') && is_array($request->movies)) {
-            foreach ($request->movies as $movieId) {
-                $director->movies()->attach($movieId, ['job' => 'Director']);
-            }
+        if ($request->has('movies')) {
+            $director->movies()->attach($request->movies);
         }
 
-        return redirect()->route('director.index')->with('success', 'Director added successfully.');
+        return redirect()->route('director.index')->with('success', 'Director created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $director = Director::with('movies')->findOrFail($id);
         return view('backend.director.show', compact('director'));
@@ -75,72 +96,71 @@ class DirectorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        // Find the director by ID
         $director = Director::findOrFail($id);
-
-        // Return the edit view with the director's data
-        return view('backend.director.edit', compact('director'));
+        $movies = Movie::all();
+        return view('backend.director.edit', compact('director', 'movies'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        // Validate the incoming request data
-        $request->validate([
+        $director = Director::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'movies' => 'nullable|array',
+            'movies.*' => 'exists:movies,id',
         ]);
 
-        // Find the director by ID
-        $director = Director::findOrFail($id);
-
-        // Handle the profile photo upload, if a new file is uploaded
-        if ($request->hasFile('profile_photo')) {
-            // Delete the old profile photo if it exists and is not an external URL
-            if ($director->profile_photo && !Str::startsWith($director->profile_photo, ['http://', 'https://'])) {
-                Storage::disk('public')->delete($director->profile_photo);
-            }
-
-            // Store the new profile photo
-            $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
-        } else {
-            // Keep the existing profile photo if no new file is uploaded
-            $profilePhotoPath = $director->profile_photo;
+        if ($validator->fails()) {
+            return redirect()->route('director.index')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'There were errors in your submission.');
         }
 
-        // Update the director record
+        // Handle the profile photo update
+        $profilePhotoPath = $director->profile_photo;
+        if ($request->hasFile('profile_photo')) {
+            if ($director->profile_photo) {
+                Storage::disk('public')->delete($director->profile_photo);
+            }
+            $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+        }
+
         $director->update([
             'name' => $request->name,
             'biography' => $request->biography,
             'profile_photo' => $profilePhotoPath,
         ]);
 
-        // Redirect to the directors list with a success message
+        // Sync movies if provided
+        if ($request->has('movies')) {
+            $director->movies()->sync($request->movies);
+        }
+
         return redirect()->route('director.index')->with('success', 'Director updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        // Find the director by ID
         $director = Director::findOrFail($id);
 
-        // Delete the profile photo if it exists and is not an external URL
-        if ($director->profile_photo && !Str::startsWith($director->profile_photo, ['http://', 'https://'])) {
+        // Delete the profile photo if it exists
+        if ($director->profile_photo) {
             Storage::disk('public')->delete($director->profile_photo);
         }
 
-        // Delete the director record
         $director->delete();
-
-        // Redirect to the directors list with a success message
         return redirect()->route('director.index')->with('success', 'Director deleted successfully.');
     }
 }

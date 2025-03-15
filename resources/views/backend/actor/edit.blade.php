@@ -1,6 +1,48 @@
 @extends('backend.layouts.app')
 
 @section('content')
+<style>
+    /* Remove the max-height constraint */
+    #movie-search {
+        padding: 20px 0;
+    }
+
+    /* Improve the actor results container styling */
+    #actor-results-container {
+        margin-top: 30px;
+        border-top: 1px solid #dee2e6;
+        padding-top: 30px;
+    }
+
+    /* Improve card styling */
+    .movie-card, .actor-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+    }
+
+    .movie-card:hover, .actor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Improve image containers */
+    .poster-container {
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .profile-container {
+        height: 250px;
+        overflow: hidden;
+    }
+
+    /* Loading indicator styling */
+    .loading-container {
+        padding: 40px;
+        text-align: center;
+    }
+</style>
+
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -49,78 +91,6 @@
                             </div>
                             @endif
 
-                            <div class="modal fade" id="editActorModal">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary">
-                                            <h4 class="modal-title text-white"><i class="fas fa-edit mr-2"></i>Edit Actor</h4>
-                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form id="editActorForm" action="{{ route('actor.update', ':id') }}" method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" id="edit_id" name="actor_id">
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-8">
-                                                        <div class="form-group">
-                                                            <label for="edit_name"><i class="fas fa-user mr-1"></i>Name <span class="text-danger">*</span></label>
-                                                            <input type="text" class="form-control" id="edit_name" name="name" placeholder="Enter actor's name" required>
-                                                            <small class="form-text text-muted">Enter the full name of the actor</small>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="edit_biography"><i class="fas fa-book mr-1"></i>Biography</label>
-                                                            <textarea class="form-control" id="edit_biography" name="biography" rows="5" placeholder="Enter actor's biography"></textarea>
-                                                            <small class="form-text text-muted">Provide a detailed biography of the actor</small>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="edit_birth_date"><i class="fas fa-calendar-alt mr-1"></i>Birth Date</label>
-                                                            <input type="date" class="form-control" id="edit_birth_date" name="birth_date">
-                                                            <small class="form-text text-muted">Enter the actor's date of birth</small>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="edit_profile_photo"><i class="fas fa-image mr-1"></i>Profile Photo URL</label>
-                                                            <input type="text" class="form-control" id="edit_profile_photo" name="profile_photo" placeholder="https://example.com/photo.jpg">
-                                                            <small class="form-text text-muted">Enter a URL for the actor's profile photo</small>
-                                                        </div>
-
-                                                        <div class="text-center mt-3">
-                                                            <div class="img-preview">
-                                                                <img id="edit_preview_image" src="" class="img-fluid rounded border" alt="Actor Profile">
-                                                            </div>
-                                                            <small class="d-block mt-2 text-muted">Current profile photo</small>
-                                                        </div>
-
-                                                        <div class="form-group mt-3">
-                                                            <label><i class="fas fa-film mr-1"></i>Search Actor</label>
-                                                            <button type="button" class="btn btn-outline-primary btn-block" id="edit-search-tmdb-btn">
-                                                                <i class="fas fa-search mr-1"></i> Search TMDB
-                                                            </button>
-                                                            <small class="form-text text-muted">Search for actor information from TMDB</small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer justify-content-between bg-light">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">
-                                                    <i class="fas fa-times mr-1"></i>Cancel
-                                                </button>
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-save mr-1"></i>Save Changes
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
                             <form action="{{ route('actor.update', $actor->id) }}" method="POST" id="actorForm">
                                 @csrf
                                 @method('PUT')
@@ -166,7 +136,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div id="movie-search-loading" class="text-center p-3 d-none">
+                                                <div id="movie-search-loading" class="loading-container d-none">
                                                     <div class="spinner-border text-primary" role="status">
                                                         <span class="sr-only">Loading...</span>
                                                     </div>
@@ -187,10 +157,22 @@
 
                                                 <!-- Actor Results Section -->
                                                 <div id="actor-results-container" class="mt-4 d-none">
-                                                    <h4 class="mb-3">Actors in <span id="selected-movie-title"></span></h4>
+                                                    <h4 class="mb-3">
+                                                        <i class="fas fa-users mr-2"></i>
+                                                        Actors in <span id="selected-movie-title" class="text-primary"></span>
+                                                    </h4>
+
+                                                    <div id="actor-loading" class="loading-container d-none">
+                                                        <div class="spinner-border text-primary" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                        <p class="mt-2">Loading actors...</p>
+                                                    </div>
+
                                                     <div id="actor-results" class="row">
                                                         <!-- Actor results will be displayed here -->
                                                     </div>
+
                                                     <div id="no-actors-message" class="alert alert-info d-none">
                                                         <i class="fas fa-info-circle mr-1"></i> No actors found for this movie.
                                                     </div>
@@ -291,52 +273,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Handle modal show event
-        $('#editActorModal').on('show.bs.modal', function(event) {
-            const button = $(event.relatedTarget);
-            const { id, name, biography, birthDate, profilePhoto } = button.data();
-
-            const modal = $(this);
-
-            // Update the form action URL
-            modal.find('#editActorForm').attr('action', `/backend/actor/${id}`);
-            modal.find('#edit_id').val(id);
-            modal.find('#edit_name').val(name);
-            modal.find('#edit_biography').val(biography);
-            modal.find('#edit_birth_date').val(birthDate);
-            modal.find('#edit_profile_photo').val(profilePhoto);
-
-            // Set profile photo preview
-            const preview = modal.find('#edit_preview_image');
-
-            if (profilePhoto) {
-                preview.attr('src', profilePhoto);
-            } else {
-                preview.attr('src', 'https://via.placeholder.com/200x200?text=No+Image');
-            }
-        });
-
         // Preview profile photo when URL changes
-        document.getElementById('edit_profile_photo').addEventListener('input', function() {
+        document.getElementById('profile_photo').addEventListener('input', function() {
             const photoUrl = this.value.trim();
-            const previewImg = document.getElementById('edit_preview_image');
+            const previewContainer = document.getElementById('profile-photo-preview');
+            const previewImg = previewContainer.querySelector('img');
 
             if (photoUrl) {
                 previewImg.src = photoUrl;
+                previewContainer.style.display = 'block';
             } else {
-                previewImg.src = 'https://via.placeholder.com/200x200?text=No+Image';
+                previewImg.src = '';
+                previewContainer.style.display = 'none';
             }
-        });
-
-        // Open TMDB search modal for edit
-        document.getElementById('edit-search-tmdb-btn').addEventListener('click', function() {
-            $('#tmdbSearchModal').modal('show');
-            $('#editActorModal').modal('hide');
-
-            // Add event to handle returning to edit modal after TMDB search
-            $('#tmdbSearchModal').on('hidden.bs.modal', function() {
-                $('#editActorModal').modal('show');
-            });
         });
 
         // Search movies when clicking the search button
@@ -404,13 +353,15 @@
                 var releaseYear = movie.release_date ? movie.release_date.substring(0, 4) : 'Unknown';
 
                 var html = '<div class="col-md-3 mb-4">' +
-                    '<div class="card h-100">' +
-                    '<img src="' + posterUrl + '" class="card-img-top" alt="' + movie.title + '" style="height: 300px; object-fit: cover;">' +
+                    '<div class="card movie-card shadow-sm">' +
+                    '<div class="poster-container">' +
+                    '<img src="' + posterUrl + '" class="card-img-top" alt="' + movie.title + '" style="width: 100%; height: 100%; object-fit: cover;">' +
+                    '</div>' +
                     '<div class="card-body">' +
-                    '<h5 class="card-title">' + movie.title + '</h5>' +
-                    '<p class="card-text text-muted">' + releaseYear + '</p>' +
+                    '<h5 class="card-title text-primary">' + movie.title + '</h5>' +
+                    '<p class="card-text text-muted"><i class="far fa-calendar-alt mr-1"></i>' + releaseYear + '</p>' +
                     '<button type="button" class="btn btn-sm btn-success w-100 select-movie" data-id="' + movie.id + '" data-title="' + movie.title + '">' +
-                    '<i class="fas fa-check"></i> Select' +
+                    '<i class="fas fa-check mr-1"></i> Select' +
                     '</button>' +
                     '</div>' +
                     '</div>' +
@@ -434,9 +385,7 @@
             $('#actor-results').empty();
             $('#no-actors-message').addClass('d-none');
             $('#actor-results-container').removeClass('d-none');
-
-            // Show loading in actor results
-            $('#actor-results').html('<div class="col-12 text-center p-3"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div><p class="mt-2">Loading actors...</p></div>');
+            $('#actor-loading').removeClass('d-none');
 
             $.ajax({
                 url: 'https://api.themoviedb.org/3/movie/' + movieId + '/credits',
@@ -447,7 +396,7 @@
                 },
                 success: function(data) {
                     console.log('Movie credits:', data);
-                    $('#actor-results').empty();
+                    $('#actor-loading').addClass('d-none');
 
                     if (data.cast && data.cast.length > 0) {
                         displayActors(data.cast);
@@ -457,6 +406,7 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('Failed to fetch movie credits:', error);
+                    $('#actor-loading').addClass('d-none');
                     $('#actor-results').html('<div class="col-12"><div class="alert alert-danger">Failed to load actors. Please try again.</div></div>');
                 }
             });
@@ -475,16 +425,18 @@
                     : '{{ asset('backend/assets/image/no-profile.png') }}';
 
                 var html = '<div class="col-md-3 mb-4">' +
-                    '<div class="card h-100">' +
-                    '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="height: 250px; object-fit: cover;">' +
+                    '<div class="card actor-card shadow-sm">' +
+                    '<div class="profile-container">' +
+                    '<img src="' + profileUrl + '" class="card-img-top" alt="' + actor.name + '" style="width: 100%; height: 100%; object-fit: cover;">' +
+                    '</div>' +
                     '<div class="card-body">' +
-                    '<h5 class="card-title">' + actor.name + '</h5>' +
-                    '<p class="card-text text-muted">' + (actor.character ? 'as ' + actor.character : '') + '</p>' +
+                    '<h5 class="card-title text-primary">' + actor.name + '</h5>' +
+                    '<p class="card-text text-muted">' + (actor.character ? '<i class="fas fa-theater-masks mr-1"></i>' + actor.character : '') + '</p>' +
                     '<button type="button" class="btn btn-sm btn-primary w-100 select-actor" ' +
                     'data-name="' + actor.name + '" ' +
                     'data-profile="' + profileUrl + '" ' +
                     'data-id="' + actor.id + '">' +
-                    '<i class="fas fa-check"></i> Select' +
+                    '<i class="fas fa-check mr-1"></i> Select' +
                     '</button>' +
                     '</div>' +
                     '</div>' +

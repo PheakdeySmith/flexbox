@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -42,9 +43,44 @@ class PaymentController extends Controller
             }
         }
 
+        // Get all necessary data with a single query to improve performance
         $payments = $query->latest()->paginate(10);
 
-        return view('backend.payments.index', compact('payments'));
+        // We need the counts of payments by status for the stat boxes
+        $paymentCounts = Payment::select('status', DB::raw('count(*) as count'))
+                        ->groupBy('status')
+                        ->pluck('count', 'status')
+                        ->toArray();
+
+        // Get total revenue from completed payments
+        $totalRevenue = Payment::where('status', 'completed')->sum('amount');
+
+        // Calculate current month's revenue
+        $currentMonthRevenue = Payment::where('status', 'completed')
+                              ->whereMonth('created_at', now()->month)
+                              ->whereYear('created_at', now()->year)
+                              ->sum('amount');
+
+        // Calculate previous month's revenue
+        $previousMonthRevenue = Payment::where('status', 'completed')
+                               ->whereMonth('created_at', now()->subMonth()->month)
+                               ->whereYear('created_at', now()->subMonth()->year)
+                               ->sum('amount');
+
+        // Calculate revenue growth percentage
+        $revenueGrowth = 0;
+        if ($previousMonthRevenue > 0) {
+            $revenueGrowth = (($currentMonthRevenue - $previousMonthRevenue) / $previousMonthRevenue) * 100;
+        }
+
+        return view('backend.payments.index', compact(
+            'payments',
+            'paymentCounts',
+            'totalRevenue',
+            'currentMonthRevenue',
+            'previousMonthRevenue',
+            'revenueGrowth'
+        ));
     }
 
     /**
@@ -119,6 +155,24 @@ class PaymentController extends Controller
         // Total revenue
         $totalRevenue = Payment::where('status', 'completed')->sum('amount');
 
+        // Current month revenue
+        $currentMonthRevenue = Payment::where('status', 'completed')
+                              ->whereMonth('created_at', now()->month)
+                              ->whereYear('created_at', now()->year)
+                              ->sum('amount');
+
+        // Previous month revenue
+        $previousMonthRevenue = Payment::where('status', 'completed')
+                               ->whereMonth('created_at', now()->subMonth()->month)
+                               ->whereYear('created_at', now()->subMonth()->year)
+                               ->sum('amount');
+
+        // Calculate revenue growth percentage
+        $revenueGrowth = 0;
+        if ($previousMonthRevenue > 0) {
+            $revenueGrowth = (($currentMonthRevenue - $previousMonthRevenue) / $previousMonthRevenue) * 100;
+        }
+
         // Check if payment_type column exists
         $hasPaymentTypeColumn = Schema::hasColumn('payments', 'payment_type');
 
@@ -143,38 +197,53 @@ class PaymentController extends Controller
                 ->sum('amount');
         }
 
+        // Payment counts by status
+        $paymentStatusCounts = Payment::select('status', DB::raw('count(*) as count'))
+                              ->groupBy('status')
+                              ->pluck('count', 'status')
+                              ->toArray();
+
         // Recent payments
         $recentPayments = Payment::with(['user', 'detail.payable'])
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
-        // Monthly revenue chart data
-        $monthlyRevenue = Payment::where('status', 'completed')
-            ->select(
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('SUM(amount) as total')
-            )
-            ->groupBy('year', 'month')
-            ->orderBy('year')
-            ->orderBy('month')
-            ->take(12)
-            ->get();
+        // Monthly revenue chart data for the last 12 months
+        $monthlyRevenue = $this->getMonthlyRevenueData();
+
+        // Weekly revenue for the last 7 days
+        $weeklyRevenue = $this->getWeeklyRevenueData();
 
         // Payment method distribution
         $paymentMethods = Payment::where('status', 'completed')
-            ->select('payment_method', DB::raw('COUNT(*) as count'))
+            ->select('payment_method', DB::raw('COUNT(*) as count'), DB::raw('SUM(amount) as amount'))
             ->groupBy('payment_method')
+            ->orderBy('amount', 'desc')
+            ->get();
+
+        // Top paying users
+        $topUsers = Payment::where('status', 'completed')
+            ->select('user_id', DB::raw('SUM(amount) as total'))
+            ->with('user:id,name,email')
+            ->groupBy('user_id')
+            ->orderBy('total', 'desc')
+            ->take(5)
             ->get();
 
         return view('backend.payments.dashboard', compact(
             'totalRevenue',
+            'currentMonthRevenue',
+            'previousMonthRevenue',
+            'revenueGrowth',
             'subscriptionRevenue',
             'moviePurchaseRevenue',
+            'paymentStatusCounts',
             'recentPayments',
             'monthlyRevenue',
-            'paymentMethods'
+            'weeklyRevenue',
+            'paymentMethods',
+            'topUsers'
         ));
     }
 
@@ -188,6 +257,103 @@ class PaymentController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('backend.payments.user-history', compact('user', 'payments'));
+        // Get total spent by user
+        $totalSpent = Payment::where('user_id', $user->id)
+                     ->where('status', 'completed')
+                     ->sum('amount');
+
+        // Get user's payment methods
+        $userPaymentMethods = Payment::where('user_id', $user->id)
+                            ->select('payment_method', DB::raw('COUNT(*) as count'))
+                            ->groupBy('payment_method')
+                            ->orderBy('count', 'desc')
+                            ->get();
+
+        return view('backend.payments.user-history', compact(
+            'user',
+            'payments',
+            'totalSpent',
+            'userPaymentMethods'
+        ));
+    }
+
+    /**
+     * Get monthly revenue data for the last 12 months
+     */
+    private function getMonthlyRevenueData()
+    {
+        $data = [];
+        $startDate = Carbon::now()->subMonths(11)->startOfMonth();
+
+        $revenues = Payment::where('status', 'completed')
+            ->where('created_at', '>=', $startDate)
+            ->select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(amount) as total')
+            )
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        // Initialize all months with zero
+        for ($i = 0; $i < 12; $i++) {
+            $monthDate = Carbon::now()->subMonths(11-$i)->startOfMonth();
+            $yearMonth = $monthDate->format('Y-m');
+            $data[$yearMonth] = [
+                'month' => $monthDate->format('M Y'),
+                'total' => 0
+            ];
+        }
+
+        // Fill in actual data
+        foreach ($revenues as $revenue) {
+            $monthKey = sprintf('%04d-%02d', $revenue->year, $revenue->month);
+            if (isset($data[$monthKey])) {
+                $data[$monthKey]['total'] = $revenue->total;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get weekly revenue data for the last 7 days
+     */
+    private function getWeeklyRevenueData()
+    {
+        $data = [];
+        $startDate = Carbon::now()->subDays(6)->startOfDay();
+
+        $revenues = Payment::where('status', 'completed')
+            ->where('created_at', '>=', $startDate)
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(amount) as total')
+            )
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Initialize all days with zero
+        for ($i = 0; $i < 7; $i++) {
+            $day = Carbon::now()->subDays(6-$i)->startOfDay();
+            $dayKey = $day->format('Y-m-d');
+            $data[$dayKey] = [
+                'day' => $day->format('D'),
+                'date' => $day->format('M d'),
+                'total' => 0
+            ];
+        }
+
+        // Fill in actual data
+        foreach ($revenues as $revenue) {
+            if (isset($data[$revenue->date])) {
+                $data[$revenue->date]['total'] = $revenue->total;
+            }
+        }
+
+        return $data;
     }
 }

@@ -81,7 +81,7 @@
                           <ul class="p-0 mb-0 list-inline d-flex flex-wrap align-items-center movie-tag">
                             @foreach($movie->genres as $genre)
                             <li class="position-relative text-capitalize font-size-14 letter-spacing-1">
-                              <a href="#" class="text-decoration-none">{{ $genre->name }}</a>
+                              <a href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}" class="text-decoration-none">{{ $genre->name }}</a>
                             </li>
                             @endforeach
                           </ul>
@@ -106,13 +106,13 @@
                           <span class="font-size-14 fw-500">{{ floor($movie->duration / 60) }}hr : {{ $movie->duration % 60 }}mins</span>
                           <div class="text-primary font-size-14 fw-500 text-capitalize">genres:
                             @foreach($movie->genres as $index => $genre)
-                              <a href="#" class="text-decoration-none {{ $index > 0 ? 'ms-1' : '' }}">{{ $genre->name }}</a>{{ $index < count($movie->genres) - 1 ? ',' : '' }}
+                              <a href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}" class="text-decoration-none {{ $index > 0 ? 'ms-1' : '' }}">{{ $genre->name }}</a>{{ $index < count($movie->genres) - 1 ? ',' : '' }}
                             @endforeach
                           </div>
                           @if($movie->actors->count() > 0)
-                          <div class="text-primary font-size-14 fw-500 text-capitalize">Starting:
+                          <div class="text-primary font-size-14 fw-500 text-capitalize">Directed by:
                             @foreach($movie->actors->take(2) as $index => $actor)
-                              <a href="#" class="text-decoration-none {{ $index > 0 ? 'ms-1' : '' }}">{{ $actor->name }}</a>{{ $index < min(1, $movie->actors->count() - 1) ? ',' : '' }}
+                              <a href="{{ route('frontend.actorDetail', ['id' => $actor->id]) }}" class="text-decoration-none {{ $index > 0 ? 'ms-1' : '' }}">{{ $actor->name }}</a>{{ $index < min(1, $movie->actors->count() - 1) ? ',' : '' }}
                             @endforeach
                           </div>
                           @endif
@@ -179,7 +179,7 @@
                             @endforeach
                           </div>
                           @if($movie->actors->count() > 0)
-                          <div class="text-primary font-size-14 fw-500 text-capitalize">Starting:
+                          <div class="text-primary font-size-14 fw-500 text-capitalize">Directed by:
                             @foreach($movie->actors->take(2) as $index => $actor)
                               <a href="#" class="text-decoration-none {{ $index > 0 ? 'ms-1' : '' }}">{{ $actor->name }}</a>{{ $index < min(1, $movie->actors->count() - 1) ? ',' : '' }}
                             @endforeach
