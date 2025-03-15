@@ -74,18 +74,18 @@
 
                                                 <td>
                                                     @if ($user->user_profile)
-                                                        <img src="{{ asset($user->user_profile) }}"
-                                                            width="50" alt="Profile Photo">
+                                                        <img src="{{ asset($user->user_profile) }}" width="50"
+                                                            alt="Profile Photo">
                                                     @else
-                                                    <img src="{{ asset('AdminLTE') }}/dist/img/user2-160x160.jpg" width="50" class="img-circle elevation-2" alt="User Image">
+                                                        <img src="{{ asset('AdminLTE') }}/dist/img/user2-160x160.jpg"
+                                                            width="50" class="img-circle elevation-2" alt="User Image">
                                                     @endif
                                                 </td>
                                                 <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                         data-toggle="modal" data-target="#editModal"
-                                                        data-id="{{ $user->id }}"
-                                                        data-name="{{ $user->name }}"
+                                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}"
                                                         data-email="{{ $user->email }}"
                                                         data-profile-photo="{{ $user->user_profile }}"
                                                         data-role="{{ optional($user->roles->first())->id ?? '' }}"
@@ -94,11 +94,11 @@
                                                     </button>
 
 
-                                                        <button type="button" class="btn btn-danger btn-sm delete-btn"
-                                                            data-id="{{ $user->id }}"
-                                                            data-url="{{ route('user.destroy', $user->id) }}">
-                                                            <i class="fas fa-trash"></i> Delete
-                                                        </button>
+                                                    <button type="button" class="btn btn-danger btn-sm delete-btn"
+                                                        data-id="{{ $user->id }}"
+                                                        data-url="{{ route('user.destroy', $user->id) }}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach

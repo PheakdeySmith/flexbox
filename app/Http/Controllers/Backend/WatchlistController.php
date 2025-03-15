@@ -107,9 +107,13 @@ class WatchlistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Watchlist $watchlist)
+    public function destroy(Watchlist $watchlist, Request $request)
     {
         $watchlist->delete();
+        if ($request->has('source') && $request->source === 'frontend') {
+            return redirect()->route('frontend.watchlist')
+                ->with('success', 'Watchlist entry removed successfully.');
+        }
         return redirect()->route('watchlist.index')->with('success', 'Watchlist entry removed successfully.');
     }
 

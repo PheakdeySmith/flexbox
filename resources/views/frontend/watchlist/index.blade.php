@@ -147,13 +147,14 @@
                                                                             class="text-body fw-semibold text-capitalize">{{ $watchlist->movie->duration }}</span>
                                                                     </div>
                                                                 </div>
-
-                                                                <div>
-                                                                    <button class="btn-remove"
-                                                                        data-movie-id="{{ $watchlist->movie->id }}"
-                                                                        data-playlist-id="{{ $watchlist->id }}">
+                                                                <div class="ms-auto">
+                                                                    <a href="#" class="btn-remove"
+                                                                        data-id="{{ $watchlist->id }}"
+                                                                        data-url="{{ route('watchlist.destroy', $watchlist->id) }}"
+                                                                        data-source="frontend">
                                                                         <i class="fa-regular fa-trash-can"></i>
-                                                                    </button>
+                                                                    </a>
+
                                                                 </div>
                                                             </div>
                                                         </div>

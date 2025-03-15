@@ -12,11 +12,11 @@
                             <div>
                                 <h4 class="fw-500">{{ $playlist->name }}</h4>
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="d-flex align-items-center gap-1 font-size-12">
+                                    {{-- <div class="d-flex align-items-center gap-1 font-size-12">
                                         <i class="fa-solid fa-star text-primary"></i>
                                         <span
                                             class="text-body fw-semibold text-capitalize">{{ $playlist->movies->first()->created_at }}</span>
-                                    </div>
+                                    </div> --}}
 
                                     <div class="d-flex align-items-center gap-1 font-size-12">
                                         <i class="fa-regular fa-clock text-primary"></i>
@@ -60,10 +60,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button class="btn-remove" data-movie-id="{{ $movie->id }}"
-                                                data-playlist-id="{{ $playlist->id }}">
-                                                <i class="fa-regular fa-trash-can"></i>
+                                            <button href="#" class="btn-remove"
+                                            data-id="{{ $movie->id }}"
+                                            data-url="{{ route('playlist.removeMovie', ['playlist' => $playlist->id, 'movie' => $movie->id]) }}"
+                                            data-source="frontend">
+                                            <i class="fa-regular fa-trash-can"></i>
                                             </button>
+
                                         </div>
                                     @endforeach
                                 </div>
@@ -106,22 +109,74 @@
     }
 </style>
 
-@push('scripts')
+
     <script>
-        document.querySelectorAll('.btn-remove').forEach(button => {
-            button.addEventListener('click', function() {
-                const movieId = this.dataset.movieId;
-                const playlistId = this.dataset.playlistId;
-                const item = this.closest('.block-images');
+        // document.querySelectorAll('.btn-remove').forEach(button => {
+        //     button.addEventListener('click', function() {
+        //         const movieId = this.dataset.movieId;
+        //         const playlistId = this.dataset.playlistId;
+        //         const item = this.closest('.block-images');
 
-                item.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                item.style.opacity = '0';
-                item.style.transform = 'scale(0.95)';
+        //         item.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        //         item.style.opacity = '0';
+        //         item.style.transform = 'scale(0.95)';
 
-                setTimeout(() => {
-                    window.location.href = `/playlist/${playlistId}/remove/${movieId}`;
-                }, 400);
+
+        //     });
+        // });
+        document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-remove').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const movieId = this.getAttribute('data-movie-id');
+            const playlistId = this.getAttribute('data-playlist-id');
+            const deleteUrl = this.getAttribute('data-url');
+            const source = this.getAttribute('data-source'); // Get source value
+            const item = this.closest('.block-images');
+
+            Swal.fire({
+                title: 'Remove Movie?',
+                text: 'Are you sure you want to remove this movie from the playlist?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Create a form dynamically
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = deleteUrl;
+                    form.style.display = 'none';
+
+                    // CSRF Token and DELETE Method
+                    form.appendChild(createInput('_token', '{{ csrf_token() }}'));
+                    form.appendChild(createInput('_method', 'DELETE'));
+                    form.appendChild(createInput('source', source)); // Send source
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    // Remove item visually
+                    item.style.transition = 'all 0.4s ease';
+                    item.style.opacity = '0';
+                    setTimeout(() => item.remove(), 400);
+                }
             });
         });
+    });
+});
+
+// Function to create hidden input elements
+function createInput(name, value) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    return input;
+}
+
     </script>
-@endpush
+
