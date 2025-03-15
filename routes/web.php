@@ -20,10 +20,8 @@ use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\SubscriptionController as FrontendSubscriptionController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Frontend\OrderHistoryController;
-use App\Http\Controllers\PlaylistController;
+use App\Http\Controllers\Backend\PlaylistController;
 
 Route::get('/', [FrontendController::class, 'index'])->name('frontend.home');
 Route::get('/detail/{id?}', [FrontendController::class, 'detail'])->name('frontend.detail');
