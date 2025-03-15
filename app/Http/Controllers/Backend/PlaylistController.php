@@ -112,4 +112,21 @@ class PlaylistController extends Controller
         $playlist->delete();
         return redirect()->route('playlist.index')->with('success', 'Playlist deleted successfully');
     }
+
+    public function removeMovie($playlistId, $movieId, Request $request)
+    {
+        try {
+            $playlist = Playlist::findOrFail($playlistId);
+            $playlist->movies()->detach($movieId); // Remove the movie from the playlist
+
+            if ($request->has('source') && $request->source === 'frontend') {
+                return redirect()->route('frontend.playlistDetail', $playlistId)
+                    ->with('success', 'Movie removed from playlist.');
+            }
+
+            return redirect()->route('playlist.index')->with('success', 'Movie removed from playlist.');
+        } catch (\Exception $e) {
+            return redirect()->route('playlist.index')->with('error', 'Failed to remove movie: ' . $e->getMessage());
+        }
+    }
 }

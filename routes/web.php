@@ -108,6 +108,9 @@ Route::middleware('auth')->group(function () {
 
         // Playlist routes
         Route::resource('playlist', PlaylistController::class);
+        Route::delete('/playlist/{playlist}/movie/{movie}', [PlaylistController::class, 'removeMovie'])
+            ->name('playlist.removeMovie');
+
         // Watchlist routes
         Route::resource('watchlist', WatchlistController::class);
         Route::post('watchlist/toggle/{movie}', [WatchlistController::class, 'toggle'])->name('watchlist.toggle');

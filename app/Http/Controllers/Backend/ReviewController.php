@@ -64,7 +64,7 @@ class ReviewController extends Controller
 
         // Check if request is from frontend
         if ($request->has('source') && $request->source === 'frontend') {
-            return redirect()->route('frontend.movie', $request->movie_id)
+            return redirect()->route('frontend.detail', $request->movie_id)
                 ->with('success', 'Your review has been submitted successfully.');
         }
 
