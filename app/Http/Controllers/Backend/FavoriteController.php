@@ -16,7 +16,9 @@ class FavoriteController extends Controller
     public function index()
     {
         $favorites = Favorite::all();
-        return view('backend.favorite.index', compact('favorites'));
+        $movies = Movie::all();
+        $users = User::all();
+        return view('backend.favorite.index', compact('favorites', 'movies', 'users'));
     }
 
     /**
@@ -47,11 +49,11 @@ class FavoriteController extends Controller
         if ($favorite) {
             // Remove from favorites if already added
             $favorite->delete();
-            return response()->json(['message' => 'Removed from favorites', 'favorited' => false]);
+            return redirect()->route('favorite.index')->with('success', 'Removed from favorites successfully.');
         } else {
             // Add to favorites
             Favorite::create($request->all());
-            return response()->json(['message' => 'Added to favorites', 'favorited' => true]);
+            return redirect()->route('favorite.index')->with('success', 'Added to favorites successfully.');
         }
     }
 
@@ -96,11 +98,15 @@ class FavoriteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         try {
             $favorite = Favorite::findOrFail($id);
             $favorite->delete();
+            if ($request->has('source') && $request->source === 'frontend') {
+                return redirect()->route('frontend.watchlist')
+                    ->with('success', 'Favorite deleted successfully.');
+            }
             return redirect()->route('favorite.index')->with('success', 'Favorite deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('favorite.index')->with('error', 'Failed to delete favorite: ' . $e->getMessage());

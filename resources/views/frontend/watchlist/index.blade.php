@@ -148,9 +148,10 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="d-flex align-items-center gap-1 font-size-12">
+                                                                <div>
                                                                     <button class="btn-remove"
-                                                                        data-watchlist-id="{{ $watchlist->id }}">
+                                                                        data-movie-id="{{ $watchlist->movie->id }}"
+                                                                        data-playlist-id="{{ $watchlist->id }}">
                                                                         <i class="fa-regular fa-trash-can"></i>
                                                                     </button>
                                                                 </div>
@@ -172,38 +173,48 @@
                                         </h5>
                                     </div>
                                     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4">
-                                        <div class="col mb-4">
-                                            <div class="watchlist-warpper card-hover-style-two">
-                                                <div class="block-images position-relative w-100">
-                                                    <div class="img-box">
-                                                        <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
-                                                            class="position-absolute top-0 bottom-0 start-0 end-0"></a>
-                                                        <img src="{{ asset('frontend/assets') }}/images/01.webp"
-                                                            alt="movie-card"
-                                                            class="img-fluid object-cover w-100 d-block border-0" />
-                                                    </div>
-                                                    <div class="card-description">
-                                                        <h5 class="text-capitalize fw-500">
-                                                            <a
-                                                                href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">Play
-                                                                List 1</a>
-                                                        </h5>
-                                                        <div class="d-flex align-items-center gap-3">
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-solid fa-earth-americas text-primary"></i>
-                                                                <span
-                                                                    class="text-body fw-semibold text-capitalize">Public</span>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-1 font-size-12">
-                                                                <i class="fa-regular fa-eye text-primary"></i>
-                                                                <span class="text-body fw-semibold text-capitalize">3
-                                                                    Views</span>
+                                        @foreach ($favorites as $favorite)
+                                            <div class="col mb-4">
+                                                <div class="watchlist-warpper card-hover-style-two">
+                                                    <div class="block-images position-relative w-100">
+                                                        <div class="img-box">
+                                                            <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
+                                                                class="position-absolute top-0 bottom-0 start-0 end-0"></a>
+                                                            <img src="{{ $favorite->movie->backdrop_url }}"
+                                                                alt="movie-card"
+                                                                class="img-fluid object-cover w-100 d-block border-0" />
+                                                        </div>
+                                                        <div class="card-description">
+                                                            <h5 class="text-capitalize fw-500">
+                                                                <a
+                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">{{ $favorite->movie->title }}</a>
+                                                            </h5>
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                <div class="d-flex align-items-center gap-1 font-size-12">
+                                                                    <i class="fa-solid fa-star text-primary"></i>
+                                                                    <span
+                                                                        class="text-body fw-semibold text-capitalize">{{ $favorite->movie->imdb_rating }}</span>
+                                                                </div>
+                                                                <div class="d-flex align-items-center gap-1 font-size-12">
+                                                                    <i class="fa-regular fa-clock text-primary"></i>
+                                                                    <span
+                                                                        class="text-body fw-semibold text-capitalize">{{ $favorite->movie->duration }}</span>
+                                                                </div>
+                                                                <div class="ms-auto">
+                                                                    <a href="#" class="btn-remove"
+                                                                        data-id="{{ $favorite->id }}"
+                                                                        data-url="{{ route('favorite.destroy', $favorite->id) }}"
+                                                                        data-source="frontend">
+                                                                        <i class="fa-regular fa-trash-can"></i>
+                                                                    </a>
+
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -267,17 +278,26 @@
 <style>
     .btn-remove {
         background: transparent;
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff;
-        font-size: 12px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
         cursor: pointer;
         padding: 0;
-        position: relative;
-        z-index: 2;
+        flex-shrink: 0;
+        transform: translateY(-5px);
+        align-self: flex-start;
     }
 
     .btn-remove i {
+        font-size: 14px;
         transition: all 0.2s ease;
+    }
+
+    .btn-remove:hover {
+        border-color: rgba(255, 77, 77, 0.5);
+        background: rgba(255, 77, 77, 0.1);
     }
 
     .btn-remove:hover i {
@@ -285,3 +305,56 @@
         transform: scale(1.1);
     }
 </style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.btn-remove');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const favoriteId = this.getAttribute('data-id');
+            const deleteUrl = this.getAttribute('data-url');
+            const source = this.getAttribute('data-source'); // Get source value
+
+            Swal.fire({
+                title: 'Delete Favorite?',
+                text: 'Are you sure you want to remove this favorite?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Create a form dynamically
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = deleteUrl;
+                    form.style.display = 'none';
+
+                    // CSRF Token and DELETE Method
+                    form.appendChild(createInput('_token', '{{ csrf_token() }}'));
+                    form.appendChild(createInput('_method', 'DELETE'));
+                    form.appendChild(createInput('source', source)); // Send the source parameter
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+
+// Function to create hidden input elements
+function createInput(name, value) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    return input;
+}
+
+</script>

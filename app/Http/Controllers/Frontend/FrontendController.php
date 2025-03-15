@@ -7,6 +7,7 @@ use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Actor;
+use App\Models\Favorite;
 use App\Models\Playlist;
 use App\Models\watchlist;
 use App\Models\SubscriptionPlan;
@@ -184,7 +185,8 @@ class FrontendController extends Controller
         $watchlists =  Watchlist::all();
         $movies = Movie::all();
         $playlists = Playlist::all();
-        return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists'));
+        $favorites = Favorite::all();
+        return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists', 'favorites'));
     }
 
     public function playlistDetail($id)
