@@ -50,7 +50,7 @@ class UserController extends Controller
         $imagePath = null;
         if ($request->hasFile('user_profile')) {
             // Store the image in the public disk
-            $imagePath = $request->file('user_profile')->store('user_profile', 'public');
+            $imagePath = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
         }
 
         // Create the user record in the database
@@ -141,7 +141,7 @@ class UserController extends Controller
                     Storage::disk('public')->delete($user->user_profile);
                 }
 
-                $user->user_profile = $request->file('user_profile')->store('user_profile', 'public');
+                $user->user_profile = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
             }
 
             // Update basic user information

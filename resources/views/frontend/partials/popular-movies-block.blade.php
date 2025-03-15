@@ -34,7 +34,7 @@
                                                     <div class="d-flex align-items-center justify-content-between my-2">
                                                         <div class="movie-time">
                                                             <span
-                                                                class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
+                                                                class="movie-time-text font-normal">{{ $movie->duration }} mins</span>
                                                         </div>
                                                         <div class="watchlist">
                                                             <form action="{{ route('watchlist.store') }}"
