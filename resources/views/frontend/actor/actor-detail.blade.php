@@ -1,5 +1,36 @@
 @extends('frontend.layouts.app')
 
+@section('styles')
+<style>
+.movie-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.movie-time {
+    flex: 0 0 auto;
+}
+
+.watchlist {
+    flex: 0 0 auto;
+}
+
+.watch-list-not {
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.watchlist-label {
+    margin-left: 4px;
+}
+</style>
+@endsection
+
 @section('content')
 
     <div class="section-padding">
@@ -81,17 +112,20 @@
                                                                             {{ Str::limit($movie->title, 30, '...') }}
                                                                         </a>
                                                                     </h5>
-                                                                    <div class="d-flex align-items-center justify-content-between my-2">
+                                                                    <div class="movie-info-container">
                                                                         <div class="movie-time">
-                                                                            <span class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
+                                                                            <span class="movie-time-text font-normal">{{ $movie->duration }} mins</span>
                                                                         </div>
                                                                         <div class="watchlist">
-                                                                            <a class="watch-list-not" href="{{ route('frontend.watchlist') }}">
-                                                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-10">
-                                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                </svg>
-                                                                                <span class="watchlist-label"> Watchlist </span>
-                                                                            </a>
+                                                                            <form action="{{ route('watchlist.toggle', $movie->id) }}" method="POST" class="d-inline">
+                                                                                @csrf
+                                                                                <button type="submit" class="watch-list-not border-0 bg-transparent p-0">
+                                                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-10">
+                                                                                        <path d="M12 4V20M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                    </svg>
+                                                                                    <span class="watchlist-label">Watchlist</span>
+                                                                                </button>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -194,17 +228,20 @@
                                                                             {{ Str::limit($movie->title, 30, '...') }}
                                                                         </a>
                                                                     </h5>
-                                                                    <div class="d-flex align-items-center justify-content-between my-2">
+                                                                    <div class="movie-info-container">
                                                                         <div class="movie-time">
-                                                                            <span class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
+                                                                            <span class="movie-time-text font-normal">{{ $movie->duration }} mins</span>
                                                                         </div>
                                                                         <div class="watchlist">
-                                                                            <a class="watch-list-not" href="{{ route('frontend.watchlist') }}">
-                                                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-10">
-                                                                                    <path d="M12 4V20M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                </svg>
-                                                                                <span class="watchlist-label"> Watchlist </span>
-                                                                            </a>
+                                                                            <form action="{{ route('watchlist.toggle', $movie->id) }}" method="POST" class="d-inline">
+                                                                                @csrf
+                                                                                <button type="submit" class="watch-list-not border-0 bg-transparent p-0">
+                                                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-10">
+                                                                                        <path d="M12 4V20M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                    </svg>
+                                                                                    <span class="watchlist-label">Watchlist</span>
+                                                                                </button>
+                                                                            </form>
                                                                         </div>
                                                                     </div>
                                                                 </div>
