@@ -46,13 +46,9 @@
 
 @section('content')
 
-
-        <!-- Site Video -->
-        @include('frontend.partials.site-video')
-        <!-- Site Video -->
+    @include('frontend.partials.site-video')
 
     @include('frontend.partials.details-part')
-
 
     @include('frontend.partials.cast-tabs')
 

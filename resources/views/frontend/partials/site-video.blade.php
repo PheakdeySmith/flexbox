@@ -1,8 +1,6 @@
 @if (auth()->check())
-    {{-- Use the $canWatchMovie variable passed from the controller --}}
-    {{-- No PHP block here that would override it --}}
 
-    <div class="iq-main-slider site-video mt-5">
+    <div class="iq-main-slider site-video">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
