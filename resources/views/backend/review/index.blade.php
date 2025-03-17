@@ -19,6 +19,20 @@
         </div><!-- /.container-fluid -->
     </section>
 
+    <!-- Flash Message Display -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for flash messages
+            @if (session('success'))
+                showSuccessToast("{{ session('success') }}");
+            @endif
+
+            @if (session('error'))
+                showErrorToast("{{ session('error') }}");
+            @endif
+        });
+    </script>
+
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -35,23 +49,15 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            @if(session('success'))
-                                <div class="alert alert-success alert-dismissible">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <h5><i class="icon fas fa-check"></i> Success!</h5>
-                                    {{ session('success') }}
-                                </div>
-                            @endif
-
-                            <table class="table table-bordered table-striped">
+                            <table id="reviewsTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>User</th>
                                         <th>Movie</th>
                                         <th>Rating</th>
-                                        <th>Status</th>
-                                        <th>Created At</th>
+                                        <th>Comment</th>
+                                        <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -78,35 +84,20 @@
                                                     ({{ $review->rating }}/5)
                                                 </div>
                                             </td>
-                                            <td>
-                                                @if ($review->is_approved)
-                                                    <span class="badge badge-success">Approved</span>
-                                                @else
-                                                    <span class="badge badge-warning">Pending</span>
-                                                @endif
-                                            </td>
+                                            <td>{{ Str::limit($review->comment, 50) }}</td>
                                             <td>{{ $review->created_at->format('M d, Y') }}</td>
                                             <td>
                                                 <a href="{{ route('review.show', $review->id) }}" class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
-                                                <a href="{{ route('review.edit', $review->id) }}" class="btn btn-warning btn-sm">
+                                                <a href="{{ route('review.edit', $review->id) }}" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <form action="{{ route('review.toggle-approval', $review->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-{{ $review->is_approved ? 'secondary' : 'success' }} btn-sm">
-                                                        <i class="fas fa-{{ $review->is_approved ? 'times' : 'check' }}"></i>
-                                                        {{ $review->is_approved ? 'Unapprove' : 'Approve' }}
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('review.destroy', $review->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this review?')">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
+                                                <a href="#" class="btn btn-danger btn-sm delete-btn"
+                                                   data-id="{{ $review->id }}"
+                                                   data-url="{{ route('review.destroy', $review->id) }}">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -115,12 +106,22 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-
+                                <tfoot>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Movie</th>
+                                        <th>Rating</th>
+                                        <th>Comment</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
-                            {{ $reviews->links() }}
+                            <!-- Removed Laravel pagination links -->
                         </div>
                     </div>
                     <!-- /.card -->
@@ -133,4 +134,66 @@
     </section>
     <!-- /.content -->
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize DataTable
+        $("#reviewsTable").DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "pageLength": 15,
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#reviewsTable_wrapper .col-md-6:eq(0)');
+
+        // Delete button functionality
+        var deleteButtons = document.querySelectorAll('.delete-btn');
+
+        // Add click event listener to each button
+        deleteButtons.forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const reviewId = this.getAttribute('data-id');
+                const deleteUrl = this.getAttribute('data-url');
+
+                // Show SweetAlert2 confirmation
+                Swal.fire({
+                    title: 'Delete Review',
+                    text: 'Are you sure you want to delete this review?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Create a form element
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = deleteUrl;
+                        form.style.display = 'none';
+
+                        // Add CSRF token
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfToken);
+
+                        // Add method spoofing for DELETE
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+                        form.appendChild(methodField);
+
+                        // Append form to body, submit it, then remove it
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection

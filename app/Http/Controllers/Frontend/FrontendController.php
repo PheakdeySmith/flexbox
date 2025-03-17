@@ -98,11 +98,67 @@ class FrontendController extends Controller
             ->get();
 
         $movie = null;
+        $canWatchMovie = true; // Default to true
+        $restrictionMessage = null;
+
         if ($id) {
             $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
+
+            // If movie is free, anyone can watch it
+            if ($movie->is_free) {
+                $canWatchMovie = true;
+            }
+            // If user is not logged in and movie is not free
+            elseif (!Auth::check()) {
+                $canWatchMovie = false;
+                $restrictionMessage = 'Please log in to access this content.';
+            }
+            // If user is logged in but movie is not free
+            else {
+                $user = Auth::user();
+
+                // Check if user has purchased this movie individually
+                $hasPurchasedMovie = Order::where('user_id', $user->id)
+                    ->where('status', 'completed')
+                    ->whereHas('items', function ($query) use ($movie) {
+                        $query->where('movie_id', $movie->id);
+                    })
+                    ->exists();
+
+                // If user has purchased this movie, they can watch it
+                if ($hasPurchasedMovie) {
+                    $canWatchMovie = true;
+                }
+                // Otherwise, check if they have a valid subscription
+                else {
+                    // Get active subscription with completed payment
+                    $hasValidSubscription = Subscription::where('user_id', $user->id)
+                        ->where('status', 'active')
+                        ->where('end_date', '>', now())
+                        ->whereHas('payments', function($query) {
+                            $query->where('status', 'completed');
+                        })
+                        ->exists();
+
+                    // Set access based on subscription status
+                    if ($hasValidSubscription) {
+                        $canWatchMovie = true;
+                    } else {
+                        $canWatchMovie = false;
+                        $restrictionMessage = 'You need an active subscription with completed payment to access this content.';
+                    }
+                }
+            }
         }
 
-        return view('frontend.detail.index', compact('movie', 'recommendedMovies', 'popularMovies', 'playlists'));
+        return view('frontend.detail.index', compact(
+            'movie',
+            'recommendedMovies',
+            'popularMovies',
+            'playlists',
+            'canWatchMovie',
+            'restrictionMessage'
+        ));
     }
 
     public function viewAll(Request $request)
@@ -241,7 +297,8 @@ class FrontendController extends Controller
 
     public function restrictDetail()
     {
-        return view('frontend.detail.restrict_detail');
+        $message = session('error') ?? 'You do not have access to this content.';
+        return view('frontend.detail.restrict_detail', compact('message'));
     }
 
     public function genre()

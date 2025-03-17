@@ -116,26 +116,76 @@ class SubscriptionController extends Controller
                 'auto_renew' => true,
             ]);
 
-            // Create payment record (skip for free plans or during trial)
-            if ($plan->price > 0 && !$plan->has_trial) {
-                $payment = Payment::create([
-                    'user_id' => Auth::id(),
-                    'subscription_id' => $subscription->id,
-                    'payment_method' => $request->payment_method,
-                    'payment_type' => 'subscription',
-                    'transaction_id' => 'SUB-' . uniqid(),
-                    'amount' => $plan->price,
-                    'currency' => 'USD',
-                    'status' => 'completed',
-                    'notes' => 'Subscription payment for ' . $plan->name,
-                ]);
+            // Create payment records
+            if ($plan->price > 0) {
+                if ($plan->has_trial) {
+                    // For trial plans, create a payment record with the full price
+                    $payment = Payment::create([
+                        'user_id' => Auth::id(),
+                        'subscription_id' => $subscription->id,
+                        'payment_method' => $request->payment_method,
+                        'payment_type' => 'subscription',
+                        'transaction_id' => 'SUB-' . uniqid(),
+                        'amount' => $plan->price,
+                        'currency' => 'USD',
+                        'status' => 'completed',
+                        'notes' => 'Subscription to ' . $plan->name . ' plan (Trial active until ' .
+                                  $trialEndsAt->format('M d, Y') . ')',
+                    ]);
 
-                // Create payment detail
-                PaymentDetail::create([
-                    'payment_id' => $payment->id,
-                    'payable_id' => $subscription->id,
-                    'payable_type' => Subscription::class,
-                ]);
+                    // Log the created payment
+                    \Log::info('Payment created', [
+                        'payment_id' => $payment->id,
+                        'status' => $payment->status,
+                        'attributes' => $payment->getAttributes()
+                    ]);
+
+                    // Verify the payment was created with the correct status
+                    if (!$payment->status) {
+                        $payment->status = 'completed';
+                        $payment->save();
+                    }
+
+                    // Create payment detail
+                    PaymentDetail::create([
+                        'payment_id' => $payment->id,
+                        'payable_id' => $subscription->id,
+                        'payable_type' => Subscription::class,
+                    ]);
+                } else {
+                    // Regular paid subscription (no trial)
+                    $payment = Payment::create([
+                        'user_id' => Auth::id(),
+                        'subscription_id' => $subscription->id,
+                        'payment_method' => $request->payment_method,
+                        'payment_type' => 'subscription',
+                        'transaction_id' => 'SUB-' . uniqid(),
+                        'amount' => $plan->price,
+                        'currency' => 'USD',
+                        'status' => 'completed',
+                        'notes' => 'Subscription payment for ' . $plan->name,
+                    ]);
+
+                    // Log the created payment
+                    \Log::info('Payment created', [
+                        'payment_id' => $payment->id,
+                        'status' => $payment->status,
+                        'attributes' => $payment->getAttributes()
+                    ]);
+
+                    // Verify the payment was created with the correct status
+                    if (!$payment->status) {
+                        $payment->status = 'completed';
+                        $payment->save();
+                    }
+
+                    // Create payment detail
+                    PaymentDetail::create([
+                        'payment_id' => $payment->id,
+                        'payable_id' => $subscription->id,
+                        'payable_type' => Subscription::class,
+                    ]);
+                }
             }
 
             // Dispatch subscription created event
@@ -150,6 +200,10 @@ class SubscriptionController extends Controller
                 ->with('success', 'You have successfully subscribed to the ' . $plan->name . ' plan.');
 
         } catch (\Exception $e) {
+            \Log::error('Payment creation error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Failed to process subscription: ' . $e->getMessage());

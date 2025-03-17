@@ -265,47 +265,18 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('order.index') }}" class="nav-link {{ Route::is('order.index') ? 'active' : '' }}">
+                            <a href="{{ route('subscription-plan.index') }}" class="nav-link {{ Route::is('subscription-plan.index') ? 'active' : '' }}">
                                 <i class="fas fa-shopping-cart nav-icon"></i>
-                                <p>Orders</p>
+                                <p>Subscription Plans</p>
                             </a>
-                        </li>
-                        <li class="nav-item {{ Route::is('subscription-plan.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Route::is('subscription-plan.*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-tags"></i>
-                                <p>
-                                    Subscription Plans
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('subscription-plan.index') }}" class="nav-link {{ Route::is('subscription-plan.index') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Plans Table</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
 
-                        <li class="nav-item {{ Route::is('subscription.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ Route::is('subscription.*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-id-card"></i>
-                                <p>
-                                    Subscriptions
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                        <li class="nav-item">
+                            <a href="{{ route('subscription.index') }}" class="nav-link {{ Route::is('subscription.index') ? 'active' : '' }}">
+                                <i class="fas fa-shopping-cart nav-icon"></i>
+                                <p>Subscriptions</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('subscription.index') }}" class="nav-link {{ Route::is('subscription.index') ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Subscriptions Table</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-
 
                     </ul>
                 </li>

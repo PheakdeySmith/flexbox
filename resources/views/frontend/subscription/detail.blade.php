@@ -66,7 +66,7 @@
                                         {{ $subscription->end_date->format('M d, Y') }}
                                     @endif
                                 </p>
-                                @if($subscription->trial_ends_at)
+                                @if($subscription->trial_ends_at && $subscription->trial_ends_at->isFuture())
                                     <p><strong>Trial Ends:</strong> {{ $subscription->trial_ends_at->format('M d, Y') }}</p>
                                 @endif
                                 @if($subscription->canceled_at)
@@ -111,6 +111,7 @@
                                             <th>Amount</th>
                                             <th>Method</th>
                                             <th>Status</th>
+                                            <th>Notes</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -124,12 +125,15 @@
                                                         <span class="badge bg-success">Completed</span>
                                                     @elseif($payment->status === 'pending')
                                                         <span class="badge bg-warning">Pending</span>
+                                                    @elseif($payment->status === 'trial')
+                                                        <span class="badge bg-info">Trial</span>
                                                     @elseif($payment->status === 'failed')
                                                         <span class="badge bg-danger">Failed</span>
                                                     @else
                                                         <span class="badge bg-secondary">{{ ucfirst($payment->status) }}</span>
                                                     @endif
                                                 </td>
+                                                <td>{{ $payment->notes }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

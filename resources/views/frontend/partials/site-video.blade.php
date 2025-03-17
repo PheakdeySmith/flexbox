@@ -1,27 +1,6 @@
 @if (auth()->check())
-    @php
-        $user = auth()->user();
-        $hasBoughtMovie = false;
-        $isSubscriber = false;
-
-        // Check if user has bought this movie
-        if (isset($movie) && $movie) {
-            // Assuming you have a purchases or orders relationship on the User model
-            // that can be used to check if the user has purchased this movie
-            $hasBoughtMovie = $user->orders()
-                ->whereHas('items', function($query) use ($movie) {
-                    $query->where('movie_id', $movie->id);
-                })
-                ->where('status', 'completed')
-                ->exists();
-        }
-
-        // Check if user has subscriber role using Spatie Roles
-        $isSubscriber = $user->hasRole('subscriber');
-
-        // User can watch if they bought the movie, have a subscriber role, or if the movie is free
-        $canWatchMovie = $hasBoughtMovie || $isSubscriber || (isset($movie) && $movie->is_free);
-    @endphp
+    {{-- Use the $canWatchMovie variable passed from the controller --}}
+    {{-- No PHP block here that would override it --}}
 
     <div class="iq-main-slider site-video mt-5">
         <div class="container-fluid">
@@ -104,7 +83,7 @@
                             @elseif (isset($movie) && !$canWatchMovie)
                                 <div class="iq-content_restriction">
                                     <div class="iq-restriction_box">
-                                        <span class="subscribe-text">You need to subscribe or purchase this movie to watch it.</span>
+                                        <span class="subscribe-text">{{ $restrictionMessage ?? 'You need to subscribe or purchase this movie to watch it.' }}</span>
                                         <div class="iq-button">
                                             <a href="{{ route('frontend.subscription') }}" class="btn text-uppercase position-relative">
                                                 <span class="button-text">Subscribe Now</span>

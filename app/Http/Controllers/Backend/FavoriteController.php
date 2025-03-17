@@ -15,7 +15,7 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        $favorites = Favorite::all();
+        $favorites = Favorite::paginate(15);
         $movies = Movie::all();
         $users = User::all();
         return view('backend.favorite.index', compact('favorites', 'movies', 'users'));
