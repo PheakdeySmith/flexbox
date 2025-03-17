@@ -60,11 +60,7 @@
 
     @include('frontend.partials.related-movie-block')
 
-    @include('frontend.partials.video-block')
-
     @include('frontend.partials.popular-movies-block')
-
-    {{-- @include('frontend.partials.upcomimg-block') --}}
 
 @endsection
 

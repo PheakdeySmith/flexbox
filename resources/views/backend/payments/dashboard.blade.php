@@ -4,6 +4,41 @@
 use Illuminate\Support\Facades\Schema;
 @endphp
 
+@section('styles')
+<style>
+    .growth-indicator {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        margin-bottom: 5px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .growth-indicator.positive {
+        background-color: #28a745;
+    }
+
+    .growth-indicator.negative {
+        background-color: #dc3545;
+    }
+
+    .growth-value {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    .knob-label {
+        color: white;
+        font-weight: 500;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -30,7 +65,7 @@ use Illuminate\Support\Facades\Schema;
             <!-- Revenue Overview -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card bg-gradient-info">
+                    <div class="card bg-gradient-primary">
                         <div class="card-header border-0">
                             <h3 class="card-title">
                                 <i class="fas fa-chart-bar mr-1"></i>
@@ -39,6 +74,7 @@ use Illuminate\Support\Facades\Schema;
                             <div class="card-tools">
                                 <button type="button" class="btn btn-primary btn-sm daterange" data-toggle="tooltip" title="Date range">
                                     <i class="far fa-calendar-alt"></i>
+                                    <span>{{ $startDate->format('M d, Y') }} - {{ $endDate->format('M d, Y') }}</span>
                                 </button>
                                 <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
                                     <i class="fas fa-minus"></i>
@@ -48,30 +84,13 @@ use Illuminate\Support\Facades\Schema;
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <div class="d-flex">
-                                        <p class="d-flex flex-column">
-                                            <span class="text-white font-weight-bold">
-                                                Total Revenue: ${{ number_format($totalRevenue, 2) }}
-                                            </span>
-                                            <span class="text-white">
-                                                {{ now()->format('F Y') }}
-                                            </span>
-                                        </p>
-                                        <p class="ml-auto d-flex flex-column text-right">
-                                            <span class="text-white font-weight-bold">
-                                                @if(isset($revenueGrowth) && $revenueGrowth > 0)
-                                                    <i class="fas fa-arrow-up"></i> {{ round($revenueGrowth, 1) }}%
-                                                @elseif(isset($revenueGrowth) && $revenueGrowth < 0)
-                                                    <i class="fas fa-arrow-down"></i> {{ abs(round($revenueGrowth, 1)) }}%
-                                                @else
-                                                    0%
-                                                @endif
-                                            </span>
-                                            <span class="text-white">
-                                                Since last month
-                                            </span>
-                                        </p>
-                                    </div>
+                                    <p class="text-white">
+                                        <strong>Total Revenue: ${{ number_format($totalRevenue, 2) }}</strong>
+                                        <span class="float-right">
+                                            <i class="fas {{ $revenueGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                            {{ abs(round($revenueGrowth, 1)) }}%
+                                        </span>
+                                    </p>
                                     <div class="position-relative mb-4">
                                         <canvas id="revenue-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                                     </div>
@@ -105,15 +124,24 @@ use Illuminate\Support\Facades\Schema;
                                             </div>
                                             <div class="d-flex justify-content-around">
                                                 <div class="text-center">
-                                                    <input type="text" class="knob" value="{{ isset($revenueGrowth) ? min(max(round($revenueGrowth), 0), 100) : 0 }}" data-width="90" data-height="90" data-fgColor="#39CCCC" data-readonly="true">
+                                                    <div class="growth-indicator {{ $revenueGrowth >= 0 ? 'positive' : 'negative' }}">
+                                                        <span class="growth-value">{{ abs(round($revenueGrowth)) }}%</span>
+                                                        <i class="fas {{ $revenueGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                                    </div>
                                                     <div class="knob-label">Revenue</div>
                                                 </div>
                                                 <div class="text-center">
-                                                    <input type="text" class="knob" value="{{ isset($userGrowth) ? min(max(round($userGrowth), 0), 100) : 10 }}" data-width="90" data-height="90" data-fgColor="#39CCCC" data-readonly="true">
+                                                    <div class="growth-indicator {{ $userGrowth >= 0 ? 'positive' : 'negative' }}">
+                                                        <span class="growth-value">{{ abs(round($userGrowth)) }}%</span>
+                                                        <i class="fas {{ $userGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                                    </div>
                                                     <div class="knob-label">Users</div>
                                                 </div>
                                                 <div class="text-center">
-                                                    <input type="text" class="knob" value="{{ isset($transactionGrowth) ? min(max(round($transactionGrowth), 0), 100) : 5 }}" data-width="90" data-height="90" data-fgColor="#39CCCC" data-readonly="true">
+                                                    <div class="growth-indicator {{ $transactionGrowth >= 0 ? 'positive' : 'negative' }}">
+                                                        <span class="growth-value">{{ abs(round($transactionGrowth)) }}%</span>
+                                                        <i class="fas {{ $transactionGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}"></i>
+                                                    </div>
                                                     <div class="knob-label">Transactions</div>
                                                 </div>
                                             </div>
@@ -200,8 +228,8 @@ use Illuminate\Support\Facades\Schema;
                     <div class="info-box">
                         <span class="info-box-icon bg-info elevation-1"><i class="fas fa-money-bill-wave"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Current Month</span>
-                            <span class="info-box-number">${{ number_format($currentMonthRevenue ?? 0, 2) }}</span>
+                            <span class="info-box-text">Current Period</span>
+                            <span class="info-box-number">${{ number_format($currentPeriodRevenue ?? 0, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -209,8 +237,8 @@ use Illuminate\Support\Facades\Schema;
                     <div class="info-box mb-3">
                         <span class="info-box-icon bg-success elevation-1"><i class="fas fa-chart-line"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Previous Month</span>
-                            <span class="info-box-number">${{ number_format($previousMonthRevenue ?? 0, 2) }}</span>
+                            <span class="info-box-text">Previous Period</span>
+                            <span class="info-box-number">${{ number_format($previousPeriodRevenue ?? 0, 2) }}</span>
                         </div>
                     </div>
                 </div>
@@ -247,7 +275,7 @@ use Illuminate\Support\Facades\Schema;
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-calendar-week mr-1"></i>
-                                Weekly Revenue
+                                Daily Revenue
                             </h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -260,7 +288,7 @@ use Illuminate\Support\Facades\Schema;
                         </div>
                         <div class="card-body">
                             <div class="chart">
-                                <canvas id="weekly-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                <canvas id="daily-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -320,7 +348,6 @@ use Illuminate\Support\Facades\Schema;
                                         <th>Customer</th>
                                         <th>Spending</th>
                                         <th>Orders</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -336,11 +363,6 @@ use Illuminate\Support\Facades\Schema;
                                                 <i class="fas fa-shopping-cart"></i>
                                             </small>
                                             {{ $user->order_count ?? rand(1, 10) }}
-                                        </td>
-                                        <td>
-                                            <a href="#" class="text-muted">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
                                         </td>
                                     </tr>
                                     @empty
@@ -505,9 +527,7 @@ $(function () {
         fgColor: '#00c0ef',
         thickness: 0.1,
         width: 90,
-        height: 90,
-        max: 100,
-        min: 0
+        height: 90
     });
 
     // Monthly Revenue Chart
@@ -596,19 +616,19 @@ $(function () {
         }
     });
 
-    // Weekly Revenue Chart
-    var weeklyChartCanvas = document.getElementById('weekly-chart').getContext('2d');
+    // Daily Revenue Chart
+    var weeklyChartCanvas = document.getElementById('daily-chart').getContext('2d');
 
-    // Extract weekly data from PHP
-    var weeklyRevenueData = @json($weeklyRevenue ?? []);
+    // Extract day labels and revenue data from PHP
+    var dailyRevenueData = @json($weeklyRevenue ?? []);
     var days = [];
     var weeklyData = [];
 
     // If we have actual data, use it
-    if (Object.keys(weeklyRevenueData).length > 0) {
-        for (var key in weeklyRevenueData) {
-            days.push(weeklyRevenueData[key].day);
-            weeklyData.push(weeklyRevenueData[key].total);
+    if (dailyRevenueData && dailyRevenueData.length > 0) {
+        for (var i = 0; i < dailyRevenueData.length; i++) {
+            days.push(dailyRevenueData[i].day);
+            weeklyData.push(parseFloat(dailyRevenueData[i].total));
         }
     } else {
         // Otherwise use dummy data
@@ -649,7 +669,7 @@ $(function () {
                     display: true,
                     scaleLabel: {
                         display: true,
-                        labelString: 'Day of Week'
+                        labelString: 'Day'
                     }
                 }],
                 yAxes: [{
@@ -661,7 +681,7 @@ $(function () {
                     ticks: {
                         beginAtZero: true,
                         callback: function(value, index, values) {
-                            return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            return '$' + value.toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
                         }
                     }
                 }]
@@ -779,11 +799,11 @@ $(function () {
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment()
+        startDate: moment("{{ $startDate->format('Y-m-d') }}"),
+        endDate: moment("{{ $endDate->format('Y-m-d') }}")
     }, function (start, end) {
-        // You can add an event handler here to refresh the data when date range changes
-        // This would require an AJAX call to fetch new data
+        // Refresh the data when date range changes
+        window.location.href = '{{ route("payment.dashboard") }}?start_date=' + start.format('YYYY-MM-DD') + '&end_date=' + end.format('YYYY-MM-DD');
     });
 });
 </script>

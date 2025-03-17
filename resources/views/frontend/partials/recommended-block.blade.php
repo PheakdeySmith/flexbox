@@ -33,9 +33,9 @@
                                                     <div class="d-flex align-items-center justify-content-between my-2">
                                                         <div class="movie-time">
                                                             <span
-                                                                class="movie-time-text font-normal">{{ $movie->duration }}mm</span>
+                                                                class="movie-time-text font-normal">{{ $movie->duration }}mins</span>
                                                         </div>
-                                                        <div class="watchlist">
+                                                        <div class="watchlist border-0 bg-transparent">
                                                             <form action="{{ route('watchlist.store') }}"
                                                                 method="POST">
                                                                 @csrf
@@ -44,7 +44,7 @@
                                                                 <input type="hidden" name="movie_id"
                                                                     value="{{ $movie->id }}">
                                                                 <input type="hidden" name="source" value="frontend">
-                                                                <button type="submit" class="watch-list-not">
+                                                                <button type="submit" class="watch-list-not border-0 bg-transparent">
                                                                     <svg width="10" height="10"
                                                                         viewBox="0 0 24 24" fill="none"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +64,7 @@
                                         </div>
                                         <div class="block-social-info align-items-center">
                                             <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                
+
                                                 <li
                                                     class="share position-relative d-flex align-items-center text-center mb-0">
                                                     <span class="w-100 h-100 d-inline-block bg-transparent">

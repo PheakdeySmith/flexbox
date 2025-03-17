@@ -36,7 +36,7 @@
                                                             <span
                                                                 class="movie-time-text font-normal">{{ $movie->duration }} mins</span>
                                                         </div>
-                                                        <div class="watchlist">
+                                                        <div class="watchlist border-0 bg-transparent">
                                                             <form action="{{ route('watchlist.store') }}"
                                                                 method="POST">
                                                                 @csrf
@@ -45,7 +45,7 @@
                                                                 <input type="hidden" name="movie_id"
                                                                     value="{{ $movie->id }}">
                                                                 <input type="hidden" name="source" value="frontend">
-                                                                <button type="submit" class="watch-list-not">
+                                                                <button type="submit" class="watch-list-not border-0 bg-transparent">
                                                                     <svg width="10" height="10"
                                                                         viewBox="0 0 24 24" fill="none"
                                                                         xmlns="http://www.w3.org/2000/svg"

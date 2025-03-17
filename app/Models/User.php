@@ -60,15 +60,31 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the watchlist items for the user.
+     * Get the watchlists for the user.
      */
-    public function watchlist()
+    public function watchlists()
     {
         return $this->hasMany(Watchlist::class);
     }
 
     /**
-     * Get the reviews written by the user.
+     * Get the favorites for the user.
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Get the orders for the user.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the reviews for the user.
      */
     public function reviews()
     {
@@ -89,14 +105,6 @@ class User extends Authenticatable
     public function payments()
     {
         return $this->hasMany(Payment::class);
-    }
-
-    /**
-     * Get the orders for the user.
-     */
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
     }
 
     /**

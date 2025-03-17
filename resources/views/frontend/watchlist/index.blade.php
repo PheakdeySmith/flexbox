@@ -10,15 +10,14 @@
                             <div class="account-logo d-flex align-items-center position-relative">
                                 <img src="{{ Auth::user()->user_profile ? asset(Auth::user()->user_profile) : asset('frontend/assets/images/default-profile.png') }}"
                                     class="img-fluid" alt="User Profile" loading="lazy">
-                                {{-- <i class="fa-regular fa-pen-to-square"></i> --}}
                             </div>
                             <div>
                                 <a href="{{ route('frontend.account') }}" class="text-white">
                                     <h6 class="font-size-18 text-capitalize text-white fw-500">
-                                        {{ Auth::user()->name }} <!-- This will display the user's name -->
+                                        {{ Auth::user()->name }}
                                     </h6>
                                     <span class="font-size-14 text-white fw-500">
-                                        {{ Auth::user()->email }} <!-- This will display the user's email -->
+                                        {{ Auth::user()->email }}
                                     </span>
                             </div>
                         </div>
@@ -144,7 +143,7 @@
                                                                         class="d-flex align-items-center gap-1 font-size-12">
                                                                         <i class="fa-regular fa-clock text-primary"></i>
                                                                         <span
-                                                                            class="text-body fw-semibold text-capitalize">{{ $watchlist->movie->duration }}</span>
+                                                                            class="text-body fw-semibold">{{ $watchlist->movie->duration }} mins</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="ms-auto">
@@ -199,7 +198,7 @@
                                                                 <div class="d-flex align-items-center gap-1 font-size-12">
                                                                     <i class="fa-regular fa-clock text-primary"></i>
                                                                     <span
-                                                                        class="text-body fw-semibold text-capitalize">{{ $favorite->movie->duration }}</span>
+                                                                        class="text-body fw-semibold">{{ $favorite->movie->duration }} mins</span>
                                                                 </div>
                                                                 <div class="ms-auto">
                                                                     <a href="#" class="btn-remove"

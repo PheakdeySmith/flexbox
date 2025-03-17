@@ -38,10 +38,9 @@
                                 </ul>
                                 <div class="d-flex flex-wrap align-items-center text-white text-detail flex-wrap mb-4">
                                     {{-- <span class="badge bg-secondary">{{ $movie->genres->first()->name }}</span> --}}
-                                    <span class="ms-3 font-Weight-500 genres-info me-1">{{ $movie->duration }}
-                                        mins</span>
+                                    <span class="ms-3 font-Weight-500 genres-info me-1">Playtime: {{ $movie->duration }} mins, </span>
                                     <span class="trending-year trending-year-list font-Weight-500 genres-info">
-                                        {{ $movie->release_date }}
+                                        Release Date: {{ \Carbon\Carbon::parse($movie->release_date)->format('F j, Y') }}
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-4">

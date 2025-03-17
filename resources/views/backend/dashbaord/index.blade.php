@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">FLEX BOX Dashboard</h1>
+            <h1 class="m-0">StreamIT Dashboard</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -186,7 +186,7 @@
                 @forelse($recentReviews as $review)
                 <div class="post">
                   <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="{{ asset('backend/assets/image/user2-160x160.jpg') }}" alt="User Image">
+                    <img class="img-circle img-bordered-sm" src="{{ $review->user->user_profile ?? asset('AdminLTE/dist/img/user2-160x160.jpg') }}" alt="User Image">
                     <span class="username">
                       <a href="#">{{ $review->user->name }}</a>
                     </span>
@@ -235,7 +235,7 @@
                   @forelse($recentOrders as $order)
                   <li class="item">
                     <div class="product-img">
-                      <img src="{{ asset('backend/assets/image/user2-160x160.jpg') }}" alt="User Image" class="img-size-50">
+                      <img src="{{ $order->user->user_profile ?? asset('AdminLTE/dist/img/user2-160x160.jpg') }}" alt="User Image" class="img-size-50">
                     </div>
                     <div class="product-info">
                       <a href="javascript:void(0)" class="product-title">

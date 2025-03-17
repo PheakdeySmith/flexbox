@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="col-8 block-description starring-desc ">
                                         <h6 class="iq-title">
-                                            <a href="{{ route('frontend.actorDetail', ['id' => $director->id]) }}"
+                                            <a href="{{ route('frontend.directorDetail', ['id' => $director->id]) }}"
                                                 tabindex="0">{{ $director->name }}</a>
                                         </h6>
                                         <div class="video-time d-flex align-items-center my-2">

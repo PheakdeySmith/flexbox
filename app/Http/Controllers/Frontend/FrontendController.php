@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Director;
 
 
 class FrontendController extends Controller
@@ -100,9 +101,52 @@ class FrontendController extends Controller
         $movie = null;
         $canWatchMovie = true; // Default to true
         $restrictionMessage = null;
+        $relatedMovies = collect(); // Initialize empty collection for related movies
 
         if ($id) {
             $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
+
+            // Fetch related movies based on genres
+            if ($movie->genres->isNotEmpty()) {
+                $genreIds = $movie->genres->pluck('id')->toArray();
+
+                $relatedMovies = Movie::where('id', '!=', $movie->id) // Exclude current movie
+                    ->where('status', 'active')
+                    ->whereHas('genres', function($query) use ($genreIds) {
+                        $query->whereIn('genres.id', $genreIds);
+                    })
+                    ->take(10)
+                    ->get();
+
+                // If we don't have enough related movies by genre, add some based on actors
+                if ($relatedMovies->count() < 5 && $movie->actors->isNotEmpty()) {
+                    $actorIds = $movie->actors->pluck('id')->toArray();
+
+                    $actorRelatedMovies = Movie::where('id', '!=', $movie->id)
+                        ->where('status', 'active')
+                        ->whereHas('actors', function($query) use ($actorIds) {
+                            $query->whereIn('actors.id', $actorIds);
+                        })
+                        ->whereNotIn('id', $relatedMovies->pluck('id')->toArray()) // Exclude already added movies
+                        ->take(10 - $relatedMovies->count())
+                        ->get();
+
+                    $relatedMovies = $relatedMovies->concat($actorRelatedMovies);
+                }
+            }
+
+            // If still not enough related movies, add some recent ones from the same type (movie/series)
+            if ($relatedMovies->count() < 5) {
+                $typeRelatedMovies = Movie::where('id', '!=', $movie->id)
+                    ->where('status', 'active')
+                    ->where('type', $movie->type)
+                    ->whereNotIn('id', $relatedMovies->pluck('id')->toArray())
+                    ->orderBy('release_date', 'desc')
+                    ->take(10 - $relatedMovies->count())
+                    ->get();
+
+                $relatedMovies = $relatedMovies->concat($typeRelatedMovies);
+            }
 
             // If movie is free, anyone can watch it
             if ($movie->is_free) {
@@ -157,7 +201,8 @@ class FrontendController extends Controller
             'popularMovies',
             'playlists',
             'canWatchMovie',
-            'restrictionMessage'
+            'restrictionMessage',
+            'relatedMovies'
         ));
     }
 
@@ -238,11 +283,13 @@ class FrontendController extends Controller
 
     public function watchlist()
     {
-        $watchlists =  Watchlist::all();
-        $movies = Movie::all();
-        $playlists = Playlist::all();
-        $favorites = Favorite::all();
-        return view('frontend.watchlist.index', compact('watchlists', 'movies', 'playlists', 'favorites'));
+        $userId = Auth::id();
+
+        $watchlists = Watchlist::where('user_id', $userId)->get();
+        $playlists = Playlist::where('user_id', $userId)->get();
+        $favorites = Favorite::where('user_id', $userId)->get();
+
+        return view('frontend.watchlist.index', compact('watchlists', 'playlists', 'favorites'));
     }
 
     public function playlistDetail($id)
@@ -307,9 +354,16 @@ class FrontendController extends Controller
         return view('frontend.genre.index', compact('genres'));
     }
 
+    public function director()
+    {
+        $directors = Director::orderBy('name')->get();
+        return view('frontend.actor.index', compact('directors'));
+    }
+
     public function actor()
     {
-        return view('frontend.actor.index');
+        $actors = Actor::orderBy('name')->get();
+        return view('frontend.actor.index', compact('actors'));
     }
 
     public function actorDetail($id = null)
@@ -319,6 +373,28 @@ class FrontendController extends Controller
             $actor = Actor::findOrFail($id);
         }
         return view('frontend.actor.actor-detail', compact('actor'));
+    }
+
+    /**
+     * Display the director detail page
+     */
+    public function directorDetail($id = null)
+    {
+        $director = null;
+        if ($id) {
+            $director = Director::findOrFail($id);
+        }
+
+        // Get movies directed by this director
+        $movies = [];
+        if ($director) {
+            $movies = $director->movies()->get();
+        }
+
+        // Use actors variable name to reuse the favourite-person-block view
+        $actors = collect([$director]);
+
+        return view('frontend.actor.actor-detail', compact('director', 'actors', 'movies'));
     }
 
     /**

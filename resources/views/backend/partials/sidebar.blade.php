@@ -1,10 +1,4 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-        <img src="{{ asset('AdminLTE') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
-            class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">FLEX BOX</span>
-    </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -281,7 +275,6 @@
                     </ul>
                 </li>
 
-
                 <li class="nav-item {{ Route::is('payment.*') || Route::is('order.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('payment.*') || Route::is('order.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-money-bill"></i>
@@ -306,71 +299,47 @@
                     </ul>
                 </li>
 
-                {{-- <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-circle nav-icon"></i>
-                        <p>Level 1</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-circle"></i>
+                <li class="nav-item {{ Route::is('reports.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('reports.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-chart-bar"></i>
                         <p>
-                            Level 1
-                            <i class="right fas fa-angle-left"></i>
+                            Reports
+                            <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Level 2</p>
+                            <a href="{{ route('reports.index') }}" class="nav-link {{ Route::is('reports.index') ? 'active' : '' }}">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <p>Reports Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Level 2
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                            <a href="{{ route('reports.movie-revenue') }}" class="nav-link {{ Route::is('reports.movie-revenue') ? 'active' : '' }}">
+                                <i class="fas fa-dollar-sign nav-icon"></i>
+                                <p>Movie Revenue</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Level 3</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Level 3</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Level 3</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Level 2</p>
+                            <a href="{{ route('reports.subscription-analytics') }}" class="nav-link {{ Route::is('reports.subscription-analytics') ? 'active' : '' }}">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Subscription Analytics</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reports.user-activity') }}" class="nav-link {{ Route::is('reports.user-activity') ? 'active' : '' }}">
+                                <i class="fas fa-user-clock nav-icon"></i>
+                                <p>User Activity</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reports.content-performance') }}" class="nav-link {{ Route::is('reports.content-performance') ? 'active' : '' }}">
+                                <i class="fas fa-film nav-icon"></i>
+                                <p>Content Performance</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-circle nav-icon"></i>
-                        <p>Level 1</p>
-                    </a>
-                </li> --}}
 
             </ul>
         </nav>

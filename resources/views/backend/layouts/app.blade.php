@@ -77,6 +77,7 @@
             justify-content: space-between;
         }
     </style>
+    @yield('styles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

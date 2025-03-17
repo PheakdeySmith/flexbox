@@ -34,8 +34,10 @@ Route::get('/frontend/register', function () {
 })->name('frontend.register');
 Route::get('/restrict-detail', [FrontendController::class, 'restrictDetail'])->name('frontend.restrictDetail');
 Route::get('/genre', [FrontendController::class, 'genre'])->name('frontend.genre');
+Route::get('/director', [FrontendController::class, 'director'])->name('frontend.director');
 Route::get('/actor', [FrontendController::class, 'actor'])->name('frontend.actor');
 Route::get('/actor-detail/{id?}', [FrontendController::class, 'actorDetail'])->name('frontend.actorDetail');
+Route::get('/director-detail/{id?}', [FrontendController::class, 'directorDetail'])->name('frontend.directorDetail');
 Route::get('/404', [FrontendController::class, 'error404'])->name('frontend.404');
 Route::get('/view-all', [FrontendController::class, 'viewAll'])->name('frontend.viewAll');
 Route::get('/search', [FrontendController::class, 'search'])->name('frontend.search');
@@ -127,6 +129,20 @@ Route::middleware('auth')->group(function () {
         Route::resource('subscription', SubscriptionController::class);
         Route::post('subscription/cancel/{subscription}', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
         Route::post('subscription/extend/{subscription}', [SubscriptionController::class, 'extend'])->name('subscription.extend');
+
+        // Reports routes
+        Route::get('reports', [App\Http\Controllers\Backend\ReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/movie-revenue', [App\Http\Controllers\Backend\ReportController::class, 'movieRevenue'])->name('reports.movie-revenue');
+        Route::get('reports/subscription-analytics', [App\Http\Controllers\Backend\ReportController::class, 'subscriptionAnalytics'])->name('reports.subscription-analytics');
+        Route::get('reports/user-activity', [App\Http\Controllers\Backend\ReportController::class, 'userActivity'])->name('reports.user-activity');
+        Route::get('reports/content-performance', [App\Http\Controllers\Backend\ReportController::class, 'contentPerformance'])->name('reports.content-performance');
+
+        // Print reports routes
+        Route::get('reports/print/movie-revenue', [App\Http\Controllers\Backend\ReportController::class, 'printMovieRevenue'])->name('reports.print.movie-revenue');
+        Route::get('reports/print/subscription-analytics', [App\Http\Controllers\Backend\ReportController::class, 'printSubscriptionAnalytics'])->name('reports.print.subscription-analytics');
+        Route::get('reports/print/user-activity', [App\Http\Controllers\Backend\ReportController::class, 'printUserActivity'])->name('reports.print.user-activity');
+        Route::get('reports/print/content-performance', [App\Http\Controllers\Backend\ReportController::class, 'printContentPerformance'])->name('reports.print.content-performance');
+
         // Payment routes
         Route::resource('payment', PaymentController::class);
         Route::post('payment/refund/{payment}', [PaymentController::class, 'refund'])->name('payment.refund');

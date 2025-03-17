@@ -2,8 +2,14 @@
     <div class="container-fluid">
         <section class="overflow-hidden">
             <div class="d-flex align-items-center justify-content-between px-md-3 px-1 my-4">
-                <h5 class="main-title text-capitalize mb-0">favourite person</h5>
-                <a href="{{ route('frontend.actor') }}"
+                <h5 class="main-title text-capitalize mb-0">
+                    @if(isset($director))
+                        directors
+                    @else
+                        favourite person
+                    @endif
+                </h5>
+                <a href="{{ isset($director) ? route('frontend.director') : route('frontend.actor') }}"
                     class="text-primary iq-view-all text-decoration-none">View All</a>
             </div>
             <div class="position-relative swiper swiper-card swiper-initialized swiper-horizontal swiper-pointer-events"
@@ -12,18 +18,20 @@
                 <ul class="p-0 swiper-wrapper m-0  list-inline personality-card" id="swiper-wrapper-ab2e2fa1a69a5a08"
                     aria-live="polite" style="transform: translate3d(-1199.09px, 0px, 0px); transition-duration: 0ms;">
 
-                    @foreach($actors as $actor)
+                    @foreach($actors as $person)
                     <li class="swiper-slide" role="group" aria-label="{{ $loop->iteration }} / {{ count($actors) }}"
                         data-swiper-slide-index="{{ $loop->index }}" style="width: 119.909px;">
-                        <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-profile.png') }}" alt="{{ $actor->name }}"
+                        <img src="{{ $person->profile_photo ? $person->profile_photo : asset('frontend/assets/images/default-profile.png') }}" alt="{{ $person->name }}"
                             class="img-fluid object-cover mb-4 rounded">
                         <div class="text-center">
                             <h6 class="mb-0">
-                                <a href="{{ route('frontend.actorDetail', ['id' => $actor->id]) }}"
-                                    class="font-size-14 text-decoration-none cast-title text-capitalize">{{ $actor->name }}</a>
+                                <a href="{{ isset($director) ? route('frontend.directorDetail', ['id' => $person->id]) : route('frontend.actorDetail', ['id' => $person->id]) }}"
+                                    class="font-size-14 text-decoration-none cast-title text-capitalize">{{ $person->name }}</a>
                             </h6>
                             <a href="#"
-                                class="font-size-14 text-decoration-none text-capitalize text-body">actor</a>
+                                class="font-size-14 text-decoration-none text-capitalize text-body">
+                                {{ isset($director) ? 'director' : 'actor' }}
+                            </a>
                         </div>
                     </li>
                     @endforeach

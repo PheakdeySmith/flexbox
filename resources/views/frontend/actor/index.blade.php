@@ -7,11 +7,10 @@
         <div class="row align-items-center">
           <div class="col-sm-12">
             <nav aria-label="breadcrumb" class="text-center">
-              <h2 class="title">Cast</h2>
+              <h2 class="title">{{ isset($directors) ? 'Directors' : 'Cast' }}</h2>
               <ol class="breadcrumb justify-content-center">
-                <li class="breadcrumb-item"><a
-                    href="https://templates.iqonic.design/streamit-dist/frontend/html/index.html">Home</a></li>
-                <li class="breadcrumb-item active">Cast</li>
+                <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}">Home</a></li>
+                <li class="breadcrumb-item active">{{ isset($directors) ? 'Directors' : 'Cast' }}</li>
               </ol>
             </nav>
           </div>
@@ -22,207 +21,60 @@
     <section class="section-padding">
       <div class="container-fluid">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 row-cols-xl-6">
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/01.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Debbi
-                    Bossi
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Production
-                </span>
+          @if(isset($directors) && count($directors) > 0)
+            @foreach($directors as $director)
+              <div class="col">
+                <div class="iq-cast">
+                  <img src="{{ $director->profile_photo ? $director->profile_photo : asset('frontend/assets/images/default-profile.png') }}" class="img-fluid" alt="{{ $director->name }}">
+                  <div class="card-img-overlay iq-cast-body">
+                    <h6 class="cast-title fw-500">
+                      <a href="{{ route('frontend.directorDetail', ['id' => $director->id]) }}">
+                        {{ $director->name }}
+                      </a>
+                    </h6>
+                    <span class="cast-subtitle">
+                      Director
+                    </span>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          @elseif(isset($actors) && count($actors) > 0)
+            @foreach($actors as $actor)
+              <div class="col">
+                <div class="iq-cast">
+                  <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-profile.png') }}" class="img-fluid" alt="{{ $actor->name }}">
+                  <div class="card-img-overlay iq-cast-body">
+                    <h6 class="cast-title fw-500">
+                      <a href="{{ route('frontend.actorDetail', ['id' => $actor->id]) }}">
+                        {{ $actor->name }}
+                      </a>
+                    </h6>
+                    <span class="cast-subtitle">
+                      Actor
+                    </span>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          @else
+            <div class="col-12">
+              <div class="alert alert-info">
+                No {{ isset($directors) ? 'directors' : 'actors' }} found.
               </div>
             </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/02.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Karen
-                    Gilchrist
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Production
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/03.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    James
-                    Chinlund
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Art
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/04.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Brenda
-                    Chapman
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Writing
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/05.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Mark
-                    Livolsi
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Editing
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/06.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Caleb
-                    Deschannel
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Camera
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/02.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Hans
-                    Zimmer
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Sound
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/01.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    John
-                    Bartnicki
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Production
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/04.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Jeffrey
-                    Silver
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Production
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/05.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Linda
-                    Wolverton
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Writing
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/06.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Johnathon
-                    Roberts
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Writing
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="iq-cast">
-              <img src="{{ asset('frontend/assets') }}/images/01.webp" class="img-fluid" alt="castImg">
-              <div class="card-img-overlay iq-cast-body">
-                <h6 class="cast-title fw-500">
-                  <a href="https://templates.iqonic.design/streamit-dist/frontend/html/person-detail.html">
-                    Irene
-                    Mecchi
-                  </a>
-                </h6>
-                <span class="cast-subtitle">
-                  Writing
-                </span>
-              </div>
-            </div>
-          </div>
+          @endif
         </div>
-        <div class="text-center">
-          <div class="iq-button">
-            <a href="javascript:void(0)" class="btn text-uppercase position-relative">
-              <span class="button-text">load more</span>
-              <i class="fa-solid fa-play"></i>
-            </a>
+        @if((isset($directors) && count($directors) > 12) || (isset($actors) && count($actors) > 12))
+          <div class="text-center">
+            <div class="iq-button">
+              <a href="javascript:void(0)" class="btn text-uppercase position-relative">
+                <span class="button-text">load more</span>
+                <i class="fa-solid fa-play"></i>
+              </a>
+            </div>
           </div>
-        </div>
+        @endif
       </div>
     </section>
 @endsection
