@@ -88,10 +88,10 @@
                                                                         class="text-body fw-semibold text-capitalize">{{ $playlist->created_at->diffForHumans() }}</span>
                                                                 </div>
                                                                 <button href="#" class="btn-remove-playlist"
-                                                                data-id="{{ $playlist->id }}    "
-                                                                data-url="{{ route('playlist.destroy', $playlist->id) }}"
-                                                                data-source="frontend">
-                                                                <i class="fa-regular fa-trash-can"></i>
+                                                                    data-id="{{ $playlist->id }}    "
+                                                                    data-url="{{ route('playlist.destroy', $playlist->id) }}"
+                                                                    data-source="frontend">
+                                                                    <i class="fa-regular fa-trash-can"></i>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -383,7 +383,7 @@
                         form.appendChild(createInput('_token', '{{ csrf_token() }}'));
                         form.appendChild(createInput('_method', 'DELETE'));
                         form.appendChild(createInput('source',
-                        source)); // Send the source parameter
+                            source)); // Send the source parameter
 
                         document.body.appendChild(form);
                         form.submit();
@@ -420,7 +420,7 @@
                         form.appendChild(createInput('_token', '{{ csrf_token() }}'));
                         form.appendChild(createInput('_method', 'DELETE'));
                         form.appendChild(createInput('source',
-                        source)); // Send the source parameter
+                            source)); // Send the source parameter
 
                         document.body.appendChild(form);
                         form.submit();
@@ -438,4 +438,5 @@
         input.value = value;
         return input;
     }
+
 </script>
