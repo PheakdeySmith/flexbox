@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -16,7 +16,7 @@
                     </ol>
                 </div>
             </div>
-        </div><!-- /.container-fluid -->
+        </div>
     </section>
 
     <!-- Main content -->
@@ -158,7 +158,6 @@
 </div>
 
 @push('scripts')
-<!-- Include bs-custom-file-input to make the file input show the selected filename -->
 <script src="{{ asset('AdminLTE/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <script>
     $(document).ready(function () {
