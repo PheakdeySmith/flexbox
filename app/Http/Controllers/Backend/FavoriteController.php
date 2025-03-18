@@ -7,6 +7,7 @@ use App\Models\Favorite;
 use App\Models\User;
 use App\Models\Movie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
@@ -36,26 +37,28 @@ class FavoriteController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'movie_id' => 'required|exists:movies,id',
         ]);
 
-        // Check if the movie is already favorited
-        $favorite = Favorite::where('user_id', $request->user_id)
-            ->where('movie_id', $request->movie_id)
+        $userId = Auth::id();
+        $movieId = $request->movie_id;
+
+        // Check if the movie is already in favorites
+        $favorite = Favorite::where('user_id', $userId)
+            ->where('movie_id', $movieId)
             ->first();
 
-        if ($favorite) {
-            // Remove from favorites if already added
-            $favorite->delete();
-            return redirect()->route('favorite.index')->with('success', 'Removed from favorites successfully.');
-        } else {
-            // Add to favorites
-            Favorite::create($request->all());
-            return redirect()->route('favorite.index')->with('success', 'Added to favorites successfully.');
-        }
+
+
+        return response()->json(['message' => 'Added to favorites', 'status' => 'added', 'favorite_id' => $newFavorite->id], 201);
     }
+
 
 
     /**
