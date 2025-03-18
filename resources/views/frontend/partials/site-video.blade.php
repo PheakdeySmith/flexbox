@@ -71,7 +71,7 @@
                                     <div class="iq-restriction_box">
                                         <span class="subscribe-text">This movie hasn't been added yet.</span>
                                         <div class="iq-button">
-                                            <a href="{{ route('frontend.movie') }}" class="btn text-uppercase position-relative">
+                                            <a href="{{ route('frontend.home') }}" class="btn text-uppercase position-relative">
                                                 <span class="button-text">Browse Other Movies</span>
                                                 <i class="fa-solid fa-film"></i>
                                             </a>

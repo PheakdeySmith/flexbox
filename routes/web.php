@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/subscription', [FrontendController::class, 'subscription'])->name('frontend.subscription');
     // Redirect /dashboard to backend/dashboard
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function () { 
         return redirect()->route('backend.dashboard');
     });
     // Backend routes
