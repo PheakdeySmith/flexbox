@@ -106,10 +106,17 @@ class PlaylistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $playlist = Playlist::findOrFail($id);
         $playlist->delete();
+
+        if ($request->has('source') && $request->source === 'frontend') {
+            return redirect()->route('frontend.watchlist')
+                ->with('success', 'Playlist deleted successfully');
+        }
+
+
         return redirect()->route('playlist.index')->with('success', 'Playlist deleted successfully');
     }
 
@@ -119,14 +126,18 @@ class PlaylistController extends Controller
             $playlist = Playlist::findOrFail($playlistId);
             $playlist->movies()->detach($movieId); // Remove the movie from the playlist
 
+            // Check if the request is coming from the frontend
             if ($request->has('source') && $request->source === 'frontend') {
                 return redirect()->route('frontend.playlistDetail', $playlistId)
                     ->with('success', 'Movie removed from playlist.');
             }
 
+            // Redirect to the backend playlist index if not from frontend
             return redirect()->route('playlist.index')->with('success', 'Movie removed from playlist.');
         } catch (\Exception $e) {
-            return redirect()->route('playlist.index')->with('error', 'Failed to remove movie: ' . $e->getMessage());
+            // Redirect back to frontend on error
+            return redirect()->route('frontend.playlistDetail', $playlistId)
+                ->with('error', 'Failed to remove movie: ' . $e->getMessage());
         }
     }
 }
