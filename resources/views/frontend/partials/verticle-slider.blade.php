@@ -33,7 +33,7 @@
                                         <h6 class="iq-title"><a href="{{ route('frontend.detail', $movie->id) }}">{{ $movie->title }}</a>
                                         </h6>
                                         <div class="movie-time d-flex align-items-center my-2">
-                                                <span class="text-body">{{ $movie->duration }}</span>
+                                                <span class="text-body">{{ $movie->duration }} mins</span>
                                     </div>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@
                                         @if(isset($movie->genres))
                                             @foreach($movie->genres as $genre)
                                         <li class="position-relative text-capitalize font-size-14 letter-spacing-1">
-                                                <a href=""
+                                                <a href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}"
                                                     class="text-white text-decoration-none">{{ $genre->name }}</a>
                                         </li>
                                             @endforeach
@@ -108,9 +108,9 @@
                                                     <i class="fa fa-star" aria-hidden="true"></i>
                                                 </li>
                                             </ul>
-                                            <span class="text-white ms-2 font-size-14 fw-500">{{ $movie->rating ?? '4.3' }}/5</span>
+                                            <span class="text-white ms-2 font-size-14 fw-500">{{ $movie->imdb_rating ?? '4.3' }}/10</span>
                                         </div>
-                                        <span class="text-body">{{ $movie->duration }}</span>
+                                        <span class="text-body">{{ $movie->duration }} mins</span>
                                     </div>
                                     <p class="mt-0 mb-3 line-count-2">{{ $movie->description ?? 'No description available' }}</p>
                                     <div class="iq-button">

@@ -16,8 +16,16 @@
                     <!--Logo -->
                     <div class="logo-default">
                         <a class="navbar-brand text-primary" href="{{ route('frontend.home') }}">
+                            @if(\App\Models\Setting::get('logo'))
+                            <img class="img-fluid logo" src="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}"
+                                loading="lazy" alt="{{ \App\Models\Setting::get('site_name') ?? 'streamit' }}">
+                            @else
                             <img class="img-fluid logo" src="{{ asset('frontend/assets') }}/images/logo.webp"
                                 loading="lazy" alt="streamit">
+                            @if(\App\Models\Setting::get('site_name'))
+                            <span style="color: red; font-size: 32px; font-weight: bold">{{ \App\Models\Setting::get('site_name') }}</span>
+                            @endif
+                            @endif
                         </a>
                     </div>
                     <div class="logo-hotstar">
@@ -51,9 +59,16 @@
                                 <!--Logo -->
                                 <div class="logo-default">
                                     <a class="navbar-brand text-primary" href="{{ route('frontend.home') }}">
-                                        <img class="img-fluid logo"
-                                            src="{{ asset('frontend/assets') }}/images/logo.webp" loading="lazy"
-                                            alt="streamit">
+                                        @if(\App\Models\Setting::get('logo'))
+                                        <img class="img-fluid logo" src="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}"
+                                            loading="lazy" alt="{{ \App\Models\Setting::get('site_name') ?? 'streamit' }}">
+                                        @else
+                                        <img class="img-fluid logo" src="{{ asset('frontend/assets') }}/images/logo.webp"
+                                            loading="lazy" alt="streamit">
+                                        @if(\App\Models\Setting::get('site_name'))
+                                        <span style="color: red; font-size: 32px; font-weight: bold">{{ \App\Models\Setting::get('site_name') }}</span>
+                                        @endif
+                                        @endif
                                     </a>
                                 </div>
                                 <div class="logo-hotstar">
@@ -108,20 +123,6 @@
                                             <span class="d-inline-block ">Home Page</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link p-0 " href="{{ route('frontend.movie') }}">
-                                            <img src="{{ asset('frontend/assets') }}/images/movie.webp"
-                                                alt="img" class="img-fluid d-xl-block d-none">
-                                            <span class="d-inline-block ">Movie</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link p-0 " href="{{ route('frontend.tvSerie') }}">
-                                            <img src="{{ asset('frontend/assets') }}/images/tv-show.webp"
-                                                alt="img" class="img-fluid d-xl-block d-none">
-                                            <span class="d-inline-block ">TV Show</span>
-                                        </a>
-                                    </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
@@ -144,11 +145,6 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link " href="{{ route('frontend.actor') }}"> Cast </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link "
-                                            href="https://templates.iqonic.design/streamit-dist/frontend/html/tags.html">
-                                            Tags </a>
                                     </li>
                                 </ul>
                             </li>

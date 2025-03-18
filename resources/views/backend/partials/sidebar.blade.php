@@ -341,6 +341,15 @@
                     </ul>
                 </li>
 
+                <li class="nav-item {{ Route::is('settings.edit') ? 'active' : '' }}">
+                    <a href="{{ route('settings.edit') }}" class="nav-link {{ Route::is('settings.edit') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cogs"></i>
+                        <p>
+                            Business Settings
+                        </p>
+                    </a>
+                </li>
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

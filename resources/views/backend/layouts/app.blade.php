@@ -4,7 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Dashboard</title>
+    <title>{{ \App\Models\Setting::get('site_title') ?? 'AdminLTE 3 | Dashboard' }}</title>
+
+    <!-- Favicon -->
+    @if(\App\Models\Setting::get('favicon'))
+    <link rel="shortcut icon" href="{{ asset('storage/' . \App\Models\Setting::get('favicon')) }}">
+    @endif
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"

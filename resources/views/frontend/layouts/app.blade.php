@@ -6,13 +6,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>StreamIT | Responsive Bootstrap 5 Template</title>
+    <title>{{ \App\Models\Setting::get('site_title') ?? 'StreamIT' }}</title>
     <!-- Google Font Api KEY-->
     <meta name="google_font_api" content="AIzaSyBG58yNdAjc20_8jAvLNSVi9E4Xhwjau_k">
 
     <!-- Favicon -->
-    <link rel="shortcut icon"
-        href="https://templates.iqonic.design/streamit-dist/frontend/html/assets/images/favicon.ico">
+    @if(\App\Models\Setting::get('favicon'))
+    <link rel="shortcut icon" href="{{ asset('storage/' . \App\Models\Setting::get('favicon')) }}">
+    @else
+    <link rel="shortcut icon" href="https://templates.iqonic.design/streamit-dist/frontend/html/assets/images/favicon.ico">
+    @endif
 
     <!-- Library / Plugin Css Build -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/libs.min.css">
@@ -53,6 +56,8 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
+    <!-- Infinite Scroll CSS -->
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/infinite-scroll.css') }}">
 
     @stack('styles')
 </head>
@@ -82,6 +87,8 @@
     @include('frontend.partials.footer')
 
     {{-- @include('frontend.partials.customize') --}}
+
+    @stack('scripts')
 
     <!-- Wrapper End-->
     <!-- Library Bundle Script -->
@@ -187,7 +194,7 @@
                 showInfoToast("{{ session('info') }}");
             @endif
         });
-        
+
     </script>
 
 </body>

@@ -356,13 +356,67 @@ class FrontendController extends Controller
 
     public function director()
     {
-        $directors = Director::orderBy('name')->get();
+        $directors = Director::orderBy('name')->paginate(30);
+
+        if(request()->ajax() || request()->has('ajax')) {
+            // Small delay to make loading indicator visible
+            usleep(300000); // 300ms delay
+
+            // If no items on this page or beyond last page, return empty
+            if ($directors->count() === 0 || $directors->currentPage() > $directors->lastPage()) {
+                return response()->json([
+                    'status' => 'empty',
+                    'message' => 'No more directors to load',
+                    'page' => request()->get('page', 1),
+                    'total_pages' => $directors->lastPage()
+                ]);
+            }
+
+            // Get the rendered HTML for the items
+            $html = view('frontend.actor.partials.items', compact('directors'))->render();
+
+            // For debugging, if the test parameter is set
+            if (request()->has('test')) {
+                return response($html)->header('Content-Type', 'text/html');
+            }
+
+            // Return the HTML as a regular response
+            return response($html)->header('Content-Type', 'text/html');
+        }
+
         return view('frontend.actor.index', compact('directors'));
     }
 
     public function actor()
     {
-        $actors = Actor::orderBy('name')->get();
+        $actors = Actor::orderBy('name')->paginate(30);
+
+        if(request()->ajax() || request()->has('ajax')) {
+            // Small delay to make loading indicator visible
+            usleep(300000); // 300ms delay
+
+            // If no items on this page or beyond last page, return empty
+            if ($actors->count() === 0 || $actors->currentPage() > $actors->lastPage()) {
+                return response()->json([
+                    'status' => 'empty',
+                    'message' => 'No more actors to load',
+                    'page' => request()->get('page', 1),
+                    'total_pages' => $actors->lastPage()
+                ]);
+            }
+
+            // Get the rendered HTML for the items
+            $html = view('frontend.actor.partials.items', compact('actors'))->render();
+
+            // For debugging, if the test parameter is set
+            if (request()->has('test')) {
+                return response($html)->header('Content-Type', 'text/html');
+            }
+
+            // Return the HTML as a regular response
+            return response($html)->header('Content-Type', 'text/html');
+        }
+
         return view('frontend.actor.index', compact('actors'));
     }
 
@@ -479,5 +533,55 @@ class FrontendController extends Controller
             'activeSubscription',
             'subscriptions'
         ));
+    }
+
+    /**
+     * Display the demo page for actors with infinite scroll
+     */
+    public function actorDemo()
+    {
+        $actors = Actor::orderBy('name')->paginate(10); // Use smaller pagination for the demo
+
+        if(request()->ajax() || request()->has('ajax')) {
+            // If no items on this page or beyond last page, return empty
+            if ($actors->count() === 0 || $actors->currentPage() > $actors->lastPage()) {
+                return response()->json([
+                    'status' => 'empty',
+                    'message' => 'No more actors to load',
+                    'page' => request()->get('page', 1),
+                    'total_pages' => $actors->lastPage()
+                ]);
+            }
+
+            // Return just the actor items HTML
+            return view('frontend.actor.partials.demo-items', compact('actors'))->render();
+        }
+
+        return view('frontend.actor.demo', compact('actors'));
+    }
+
+    /**
+     * Display the demo page for directors with infinite scroll
+     */
+    public function directorDemo()
+    {
+        $directors = Director::orderBy('name')->paginate(10); // Use smaller pagination for the demo
+
+        if(request()->ajax() || request()->has('ajax')) {
+            // If no items on this page or beyond last page, return empty
+            if ($directors->count() === 0 || $directors->currentPage() > $directors->lastPage()) {
+                return response()->json([
+                    'status' => 'empty',
+                    'message' => 'No more directors to load',
+                    'page' => request()->get('page', 1),
+                    'total_pages' => $directors->lastPage()
+                ]);
+            }
+
+            // Return just the director items HTML
+            return view('frontend.actor.partials.demo-items', compact('directors'))->render();
+        }
+
+        return view('frontend.actor.demo', compact('directors'));
     }
 }

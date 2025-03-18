@@ -108,6 +108,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('order', OrderController::class);
         Route::resource('role', RoleController::class);
 
+        // Business Settings routes
+        Route::get('settings', [App\Http\Controllers\Backend\SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings', [App\Http\Controllers\Backend\SettingController::class, 'update'])->name('settings.update');
+
         // Playlist routes
         Route::resource('playlist', PlaylistController::class);
         Route::delete('/playlist/{playlist}/movie/{movie}', [PlaylistController::class, 'removeMovie'])
@@ -171,3 +175,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/movies/{movie}/watch', [App\Http\Controllers\Frontend\MovieController::class, 'watch'])
         ->name('frontend.movies.watch');
 });
+
+// Demo routes for infinite scroll
+Route::get('/actor-demo', [FrontendController::class, 'actorDemo'])->name('frontend.actorDemo');
+Route::get('/director-demo', [FrontendController::class, 'directorDemo'])->name('frontend.directorDemo');

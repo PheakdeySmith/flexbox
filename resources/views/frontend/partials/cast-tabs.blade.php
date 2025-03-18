@@ -4,12 +4,12 @@
             <ul class="iq-custom-tab tab-bg-fill d-flex nav nav-pills mb-5 " role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link active show" data-bs-toggle="pill"
-                        href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html#cast-1"
+                        href="#cast-1"
                         role="tab" aria-selected="true">Cast</a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-bs-toggle="pill"
-                        href="https://templates.iqonic.design/streamit-dist/frontend/html/movie-detail.html#crew-1"
+                        href="#crew-1"
                         role="tab" aria-selected="false" tabindex="-1">Crew</a>
                 </li>
             </ul>
@@ -25,7 +25,7 @@
                                 aria-label="1 / 2">
                                 <div class="cast-images m-0 row align-items-center position-relative">
                                     <div class="col-4 img-box p-0">
-                                        <img src="{{ $actor->profile_photo }}" class="img-fluid"
+                                        <img src="{{ $actor->profile_photo ? $actor->profile_photo : asset('frontend/assets/images/default-profile.png') }}" class="img-fluid"
                                             alt="image" loading="lazy">
                                     </div>
                                     <div class="col-8 block-description">

@@ -16,12 +16,31 @@ class UserController extends Controller
     /**
      * Display a listing of the users.
      */
-    public function index()
+    public function index(Request $request)
     {
-
         $roles = Role::all();
-        $users = User::all();
-        return view('backend.user.index', compact('users', 'roles'));
+
+        // Handle search functionality
+        $search = $request->input('search');
+
+        $usersQuery = User::query();
+
+        // Apply search filter if search parameter exists
+        if ($search) {
+            $usersQuery->where(function($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%")
+                      ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $users = $usersQuery->paginate(10);
+
+        // If search parameter exists, append it to the pagination links
+        if ($search) {
+            $users->appends(['search' => $search]);
+        }
+
+        return view('backend.user.index', compact('users', 'roles', 'search'));
     }
 
     /**
