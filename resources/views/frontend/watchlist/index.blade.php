@@ -87,6 +87,12 @@
                                                                     <span
                                                                         class="text-body fw-semibold text-capitalize">{{ $playlist->created_at->diffForHumans() }}</span>
                                                                 </div>
+                                                                <button href="#" class="btn-remove-playlist"
+                                                                data-id="{{ $playlist->id }}    "
+                                                                data-url="{{ route('playlist.destroy', $playlist->id) }}"
+                                                                data-source="frontend">
+                                                                <i class="fa-regular fa-trash-can"></i>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -118,7 +124,7 @@
                                                 <div class="watchlist-warpper card-hover-style-two">
                                                     <div class="block-images position-relative w-100">
                                                         <div class="img-box">
-                                                            <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
+                                                            <a href="{{ route('frontend.detail', $watchlist->movie->id) }}"
                                                                 class="position-absolute top-0 bottom-0 start-0 end-0"></a>
                                                             <img src="{{ $watchlist->movie->backdrop_url }}"
                                                                 alt="movie-card"
@@ -128,7 +134,7 @@
                                                         <div class="card-description">
                                                             <h5 class="text-capitalize fw-500">
                                                                 <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">{{ $watchlist->movie->title }}</a>
+                                                                    href="{{ route('frontend.detail', $watchlist->movie->id) }}">{{ $watchlist->movie->title }}</a>
                                                             </h5>
                                                             <div class="d-flex align-items-center justify-content-between">
                                                                 <div class="d-flex align-items-center gap-3">
@@ -143,12 +149,13 @@
                                                                         class="d-flex align-items-center gap-1 font-size-12">
                                                                         <i class="fa-regular fa-clock text-primary"></i>
                                                                         <span
-                                                                            class="text-body fw-semibold">{{ $watchlist->movie->duration }} mins</span>
+                                                                            class="text-body fw-semibold">{{ $watchlist->movie->duration }}
+                                                                            mins</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="ms-auto">
-                                                                    <a href="#" class="btn-remove"
-                                                                        data-id="{{ $watchlist->id }}"
+                                                                    <a href="{{ route('frontend.detail', $watchlist->movie->id) }}"
+                                                                        class="btn-remove" data-id="{{ $watchlist->id }}"
                                                                         data-url="{{ route('watchlist.destroy', $watchlist->id) }}"
                                                                         data-source="frontend">
                                                                         <i class="fa-regular fa-trash-can"></i>
@@ -198,7 +205,8 @@
                                                                 <div class="d-flex align-items-center gap-1 font-size-12">
                                                                     <i class="fa-regular fa-clock text-primary"></i>
                                                                     <span
-                                                                        class="text-body fw-semibold">{{ $favorite->movie->duration }} mins</span>
+                                                                        class="text-body fw-semibold">{{ $favorite->movie->duration }}
+                                                                        mins</span>
                                                                 </div>
                                                                 <div class="ms-auto">
                                                                     <a href="#" class="btn-remove"
@@ -304,57 +312,130 @@
         color: #ff4d4d;
         transform: scale(1.1);
     }
+
+
+
+
+
+    .btn-remove-playlist {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        flex-shrink: 0;
+        transform: translateY(-5px);
+        align-self: flex-start;
+    }
+
+    .btn-remove-playlist i {
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-playlist:hover {
+        border-color: rgba(255, 77, 77, 0.5);
+        background: rgba(255, 77, 77, 0.1);
+    }
+
+    .btn-remove-playlist:hover i {
+        color: #ff4d4d;
+        transform: scale(1.1);
+    }
 </style>
 
 
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const deleteButtons = document.querySelectorAll('.btn-remove');
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.btn-remove');
+        const deleteButtonsPlaylist = document.querySelectorAll('.btn-remove-playlist');
 
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
 
-            const favoriteId = this.getAttribute('data-id');
-            const deleteUrl = this.getAttribute('data-url');
-            const source = this.getAttribute('data-source'); // Get source value
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
 
-            Swal.fire({
-                title: 'Delete Favorite?',
-                text: 'Are you sure you want to remove this favorite?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    // Create a form dynamically
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = deleteUrl;
-                    form.style.display = 'none';
+                const favoriteId = this.getAttribute('data-id');
+                const deleteUrl = this.getAttribute('data-url');
+                const source = this.getAttribute('data-source'); // Get source value
 
-                    // CSRF Token and DELETE Method
-                    form.appendChild(createInput('_token', '{{ csrf_token() }}'));
-                    form.appendChild(createInput('_method', 'DELETE'));
-                    form.appendChild(createInput('source', source)); // Send the source parameter
+                Swal.fire({
+                    title: 'Delete Favorite?',
+                    text: 'Are you sure you want to remove this favorite?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        // Create a form dynamically
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = deleteUrl;
+                        form.style.display = 'none';
 
-                    document.body.appendChild(form);
-                    form.submit();
-                }
+                        // CSRF Token and DELETE Method
+                        form.appendChild(createInput('_token', '{{ csrf_token() }}'));
+                        form.appendChild(createInput('_method', 'DELETE'));
+                        form.appendChild(createInput('source',
+                        source)); // Send the source parameter
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        deleteButtonsPlaylist.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const playlistId = this.getAttribute('data-id');
+                const deleteUrl = this.getAttribute('data-url');
+                const source = this.getAttribute('data-source'); // Get source value
+
+                Swal.fire({
+                    title: 'Delete Playlist?',
+                    text: 'Are you sure you want to remove this playlist?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        // Create a form dynamically
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = deleteUrl;
+                        form.style.display = 'none';
+
+                        // CSRF Token and DELETE Method
+                        form.appendChild(createInput('_token', '{{ csrf_token() }}'));
+                        form.appendChild(createInput('_method', 'DELETE'));
+                        form.appendChild(createInput('source',
+                        source)); // Send the source parameter
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
             });
         });
     });
-});
 
-// Function to create hidden input elements
-function createInput(name, value) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = name;
-    input.value = value;
-    return input;
-}
-
+    // Function to create hidden input elements
+    function createInput(name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        return input;
+    }
 </script>

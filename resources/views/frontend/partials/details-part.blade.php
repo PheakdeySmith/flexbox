@@ -14,14 +14,18 @@
                                         {{ $movie->title }}
                                     </h2>
                                     <div class="slider-ratting d-flex align-items-center ms-lg-3 ms-0">
-                                        <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left">
+                                        <ul
+                                            class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left">
                                             @for ($i = 1; $i <= 10; $i++)
                                                 @if ($movie->imdb_rating >= $i)
-                                                    <li><i class="fa fa-star" aria-hidden="true"></i></li> <!-- Full Star -->
+                                                    <li><i class="fa fa-star" aria-hidden="true"></i></li>
+                                                    <!-- Full Star -->
                                                 @elseif ($movie->imdb_rating >= $i - 0.5)
-                                                    <li><i class="fa fa-star-half" aria-hidden="true"></i></li> <!-- Half Star -->
+                                                    <li><i class="fa fa-star-half" aria-hidden="true"></i></li>
+                                                    <!-- Half Star -->
                                                 @else
-                                                    <li><i class="fa fa-star-o" aria-hidden="true"></i></li> <!-- Empty Star -->
+                                                    <li><i class="fa fa-star-o" aria-hidden="true"></i></li>
+                                                    <!-- Empty Star -->
                                                 @endif
                                             @endfor
                                         </ul>
@@ -38,9 +42,11 @@
                                 </ul>
                                 <div class="d-flex flex-wrap align-items-center text-white text-detail flex-wrap mb-4">
                                     {{-- <span class="badge bg-secondary">{{ $movie->genres->first()->name }}</span> --}}
-                                    <span class="ms-3 font-Weight-500 genres-info me-1">Playtime: {{ $movie->duration }} mins, </span>
+                                    <span class="ms-3 font-Weight-500 genres-info me-1">Playtime: {{ $movie->duration }}
+                                        mins, </span>
                                     <span class="trending-year trending-year-list font-Weight-500 genres-info">
-                                        Release Date: {{ \Carbon\Carbon::parse($movie->release_date)->format('F j, Y') }}
+                                        Release Date:
+                                        {{ \Carbon\Carbon::parse($movie->release_date)->format('F j, Y') }}
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
@@ -62,17 +68,8 @@
 
                                     </ul>
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
-                                        <form id="playlist-form-{{ $movie->id }}"
-                                            action="{{ route('playlist.store') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-                                            <input type="hidden" name="movie_id" value="{{ $movie->id }}">
-                                            <input type="hidden" name="source" value="frontend">
-                                        </form>
-
                                         <li onclick="openModal()" class="watchlist-btn" data-bs-toggle="modal"
-                                            data-bs-target="#showPlaylist" title="Add to playlist"
-                                            style="cursor: pointer;">
+                                            data-bs-target="#showPlaylist" title="Add to Playlist">
                                             <span class="btn-inner">
                                                 <i class="fa-solid fa-plus"></i>
                                             </span>
@@ -136,10 +133,11 @@
                                         Genres:
                                     </li>
                                     @foreach ($movie->genres as $genre)
-                                    <li>
-                                        <a class="title" href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}">{{ $genre->name }}</a>
-                                        <span class="text-secondary">,</span>
-                                    </li>
+                                        <li>
+                                            <a class="title"
+                                                href="{{ route('frontend.viewAll', ['section' => 'genre', 'genre_id' => $genre->id]) }}">{{ $genre->name }}</a>
+                                            <span class="text-secondary">,</span>
+                                        </li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -368,6 +366,11 @@
     /* This ensures only stars up to the hovered one are highlighted */
     .star-rating .star-item.hover~.star-item {
         color: #ddd;
+    }
+
+    .watchlist-btn.active {
+        background-color: #007bff;
+        color: white;
     }
 </style>
 

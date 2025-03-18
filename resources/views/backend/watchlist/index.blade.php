@@ -82,8 +82,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5" class="text-center">No watchlist entries found.</td>
-                                        </tr>
+                                            <td colspan="5" class="text-center">No watchlist entries Mu playlist
                                     @endforelse
                                 </tbody>
                                 <tfoot>
