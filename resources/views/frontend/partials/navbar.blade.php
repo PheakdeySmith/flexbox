@@ -19,12 +19,12 @@
                             @if(\App\Models\Setting::get('logo'))
                             <img class="img-fluid logo" src="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}"
                                 loading="lazy" alt="{{ \App\Models\Setting::get('site_name') ?? 'streamit' }}">
+                                @if(\App\Models\Setting::get('site_name'))
+                                    <span style="color: red; font-size: 32px; font-weight: bold">{{ \App\Models\Setting::get('site_name') }}</span>
+                                @endif
                             @else
                             <img class="img-fluid logo" src="{{ asset('frontend/assets') }}/images/logo.webp"
                                 loading="lazy" alt="streamit">
-                            @if(\App\Models\Setting::get('site_name'))
-                            <span style="color: red; font-size: 32px; font-weight: bold">{{ \App\Models\Setting::get('site_name') }}</span>
-                            @endif
                             @endif
                         </a>
                     </div>
