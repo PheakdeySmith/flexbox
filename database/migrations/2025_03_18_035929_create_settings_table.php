@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('site_name')->default('StreamIT');
+            $table->string('site_name')->default('StreamIT')->nullable();
             $table->string('site_title')->default('StreamIT');
             $table->text('copyright_text')->nullable();
             $table->string('favicon')->nullable();
