@@ -28,7 +28,7 @@
                         <label for="editRole">Role</label>
                         <select id="editRole" name="role" class="form-control">
                             @foreach ($roles as $role)
-                                <option value="{{ $role->id }}" id="editRole">{{ $role->name }}</option>
+                                <option value="{{ $role->name }}" id="editRoleOption{{ $role->id }}">{{ $role->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -73,8 +73,15 @@
                 document.getElementById('editName').value = userName;
                 document.getElementById('editEmail').value = userEmail;
                 document.getElementById('editPassword').value = '';
-                document.getElementById('editRole').value = userRole;
-                // Password can be left blank
+
+                // Set the role
+                const roleSelect = document.getElementById('editRole');
+                Array.from(roleSelect.options).forEach(option => {
+                    if (option.textContent === userRole) {
+                        option.selected = true;
+                    }
+                });
+
                 // Show the current profile image
                 if (userProfilePhoto) {
                     document.getElementById('editProfileImage').src =

@@ -99,7 +99,7 @@ class DashboardController extends Controller
             Log::error('Dashboard error: ' . $e->getMessage());
 
             // Return view with empty data
-            return view('backend.dashbaord.index', [
+            return view('backend.dashboard.index', [
                 'totalUsers' => 0,
                 'totalMovies' => 0,
                 'totalRevenue' => 0,
