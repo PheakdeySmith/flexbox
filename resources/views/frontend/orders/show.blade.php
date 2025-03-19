@@ -32,7 +32,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">Order Information</h5>
                                 </div>
                                 <div class="card-body">
@@ -68,7 +68,7 @@
 
                         <div class="col-md-6">
                             <div class="card mb-4">
-                                <div class="card-header">
+                                <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0">Payment Information</h5>
                                 </div>
                                 <div class="card-body">
@@ -106,7 +106,7 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header bg-primary text-white">
                             <h5 class="mb-0">Order Items</h5>
                         </div>
                         <div class="card-body">

@@ -36,7 +36,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-primary text-white">
                         <h4>Your Subscriptions</h4>
                     </div>
                     <div class="card-body">
@@ -104,7 +104,7 @@
             <div class="col-lg-4">
                 @if($activeSubscription)
                     <div class="card mb-4">
-                        <div class="card-header">
+                        <div class="card-header bg-primary text-white">
                             <h4>Current Subscription</h4>
                         </div>
                         <div class="card-body">
@@ -127,7 +127,7 @@
                     </div>
                 @else
                     <div class="card mb-4">
-                        <div class="card-header">
+                        <div class="card-header bg-primary text-white">
                             <h4>No Active Subscription</h4>
                         </div>
                         <div class="card-body">
