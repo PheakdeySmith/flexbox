@@ -85,6 +85,9 @@
                                                 </div>
                                             </div>
                                             <div class="block-social-info align-items-center">
+                                                <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
+
+                                                </ul>
                                                 <div class="iq-button">
                                                     <a href="{{ route('frontend.detail', $movie->id) }}"
                                                         class="btn text-uppercase position-relative rounded-circle">
@@ -176,21 +179,6 @@
                                             </div>
                                             <div class="block-social-info align-items-center">
                                                 <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-                                                    {{-- @if (auth()->check())
-                                                        <li class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent favorite-btn"
-                                                                  data-movie-id="{{ $movie->id }}">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                        </li>
-                                                    @endif --}}
-
-                                                    <a href=""
-                                                        class="btn btn-primary btn-sm favorite-btn"
-                                                        data-movie-id="{{ $movie->id }}"
-                                                        style="padding: 2px 7px; font-size: 12px; margin-left: 103px;">
-                                                        <i class="fa-regular fa-heart"></i>
-                                                    </a>
 
                                                 </ul>
 
