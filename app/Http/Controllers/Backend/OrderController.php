@@ -21,6 +21,9 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $status = $request->input('status');
         $query = Order::with(['user', 'items.movie']);
 
@@ -38,6 +41,9 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $order->load(['user', 'items.movie', 'paymentDetail.payment']);
 
         return view('backend.orders.show', compact('order'));
@@ -48,6 +54,9 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, Order $order)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'status' => 'required|in:pending,completed,cancelled',
         ]);
@@ -80,6 +89,9 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Check if the order has a payment
         if ($order->paymentDetail && $order->paymentDetail->payment) {
             return redirect()->route('order.show', $order)

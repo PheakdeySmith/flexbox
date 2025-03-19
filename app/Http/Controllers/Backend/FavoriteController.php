@@ -16,6 +16,9 @@ class FavoriteController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $favorites = Favorite::paginate(15);
         $movies = Movie::all();
         $users = User::all();
@@ -27,6 +30,9 @@ class FavoriteController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.favorite.create', compact('users', 'movies'));
@@ -37,7 +43,6 @@ class FavoriteController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         if (!Auth::check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -54,8 +59,6 @@ class FavoriteController extends Controller
             ->where('movie_id', $movieId)
             ->first();
 
-
-
         return response()->json(['message' => 'Added to favorites', 'status' => 'added', 'favorite_id' => $newFavorite->id], 201);
     }
 
@@ -66,6 +69,9 @@ class FavoriteController extends Controller
      */
     public function show(string $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $favorite = Favorite::findOrFail($id);
         $user = User::findOrFail($favorite->user_id);
         $movie = Movie::findOrFail($favorite->movie_id);
@@ -77,6 +83,9 @@ class FavoriteController extends Controller
      */
     public function edit(string $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $favorite = Favorite::findOrFail($id);
         $users = User::all();
         $movies = Movie::all();
@@ -88,6 +97,9 @@ class FavoriteController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'movie_id' => 'required|exists:movies,id',

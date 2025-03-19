@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     // Password routes
     Route::put('/password', [App\Http\Controllers\Auth\PasswordController::class, 'update'])->name('password.update');
 
-    // Frontend Subscription Routes
+    // Frontend Subscription Routesf
     Route::get('/subscription', [FrontendSubscriptionController::class, 'index'])->name('frontend.subscription');
     Route::get('/subscription/checkout/{id}', [FrontendSubscriptionController::class, 'checkout'])->name('frontend.subscriptionCheckout');
     Route::post('/subscription/subscribe/{id}', [FrontendSubscriptionController::class, 'subscribe'])->name('frontend.subscribe');

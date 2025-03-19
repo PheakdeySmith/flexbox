@@ -16,6 +16,9 @@ class ReviewController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $reviews = Review::with(['user', 'movie'])->latest()->paginate(10);
         return view('backend.review.index', compact('reviews'));
     }
@@ -25,6 +28,9 @@ class ReviewController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.review.create', compact('users', 'movies'));
@@ -77,6 +83,9 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $review->load(['user', 'movie']);
         return view('backend.review.show', compact('review'));
     }
@@ -86,6 +95,9 @@ class ReviewController extends Controller
      */
     public function edit(Review $review)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.review.edit', compact('review', 'users', 'movies'));
@@ -96,6 +108,9 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'movie_id' => 'required|exists:movies,id',
@@ -132,6 +147,9 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $review->delete();
         return redirect()->route('review.index')->with('success', 'Review deleted successfully.');
     }
@@ -141,6 +159,9 @@ class ReviewController extends Controller
      */
     public function toggleApproval(Review $review)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $review->update([
             'is_approved' => !$review->is_approved,
         ]);
@@ -154,6 +175,9 @@ class ReviewController extends Controller
      */
     public function submitReview(Request $request, Movie $movie)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'rating' => 'required|integer|min:1|max:10',
             'comment' => 'required|string|min:10',

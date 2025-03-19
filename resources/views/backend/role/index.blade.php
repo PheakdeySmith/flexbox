@@ -94,7 +94,7 @@
     </div>
 
     <!-- Create Order Modal -->
-    @include('backend.order.create')
+    @include('order.create')
 @endsection
 
 @section('scripts')
