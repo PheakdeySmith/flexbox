@@ -128,7 +128,7 @@
                     @endif
                 </td>
                 <td>{{ $movie->title }}</td>
-                <td>{{ $movie->release_date->format('M d, Y') }}</td>
+                <td>{{ $movie->release_date ? $movie->release_date->format('M d, Y') : 'N/A' }}</td>
                 <td>${{ number_format($movie->price, 2) }}</td>
                 <td>{{ $movie->purchase_count }}</td>
                 <td>${{ number_format($movie->revenue, 2) }}</td>

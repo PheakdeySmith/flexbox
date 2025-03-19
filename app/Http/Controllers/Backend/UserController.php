@@ -74,25 +74,21 @@ class UserController extends Controller
             'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',  // Validate image
         ]);
 
-        // Handle profile image upload if it exists
         $imagePath = null;
         if ($request->hasFile('user_profile')) {
-            // Store the image in the public disk
             $imagePath = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
         }
 
-        // Create the user record in the database
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_profile' => $imagePath,  // Store image path if exists
+            'user_profile' => $imagePath,
         ]);
 
         $role = Role::findById($request->role);
         $user->assignRole($role->name);
 
-        // Redirect back with success message
         return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
 

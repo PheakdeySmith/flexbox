@@ -308,7 +308,7 @@
                                             <td>
                                                 <h6 class="mb-0">{{ $movie->title }}</h6>
                                             </td>
-                                            <td>{{ $movie->release_date->format('M d, Y') }}</td>
+                                            <td>{{ $movie->release_date ? $movie->release_date->format('M d, Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="rating-stars mr-2">
@@ -370,7 +370,7 @@
                                             <td>
                                                 <h6 class="mb-0">{{ $movie->title }}</h6>
                                             </td>
-                                            <td>{{ $movie->release_date->format('M d, Y') }}</td>
+                                            <td>{{ $movie->release_date ? $movie->release_date->format('M d, Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="progress flex-grow-1 mr-2" style="height: 8px;">
@@ -425,7 +425,7 @@
                                             <td>
                                                 <h6 class="mb-0">{{ $movie->title }}</h6>
                                             </td>
-                                            <td>{{ $movie->release_date->format('M d, Y') }}</td>
+                                            <td>{{ $movie->release_date ? $movie->release_date->format('M d, Y') : 'N/A' }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="progress flex-grow-1 mr-2" style="height: 8px;">
@@ -481,7 +481,7 @@
                                             <td>
                                                 <h6 class="mb-0">{{ $movie->title }}</h6>
                                             </td>
-                                            <td>{{ $movie->release_date->format('M d, Y') }}</td>
+                                            <td>{{ $movie->release_date ? $movie->release_date->format('M d, Y') : 'N/A' }}</td>
                                             <td>
                                                 <span class="badge badge-pill badge-warning">{{ $movie->purchase_count }}</span>
                                             </td>

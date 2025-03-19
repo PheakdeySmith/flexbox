@@ -208,6 +208,7 @@ class ReportController extends Controller
                 'users.name',
                 'users.email',
                 'users.user_profile',
+                'users.created_at',
                 DB::raw('COUNT(DISTINCT watchlists.id) as watchlist_count'),
                 DB::raw('COUNT(DISTINCT favorites.id) as favorite_count'),
                 DB::raw('COUNT(DISTINCT orders.id) as purchase_count'),
@@ -229,7 +230,7 @@ class ReportController extends Controller
                 $join->on('users.id', '=', 'reviews.user_id')
                     ->whereBetween('reviews.created_at', [$startDate, $endDate]);
             })
-            ->groupBy('users.id', 'users.name', 'users.email')
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.user_profile', 'users.created_at')
             ->orderBy('watchlist_count', 'desc')
             ->paginate(10);
 
