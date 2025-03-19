@@ -291,8 +291,7 @@
                         </div>
                         <div class="tab-pane fade" id="account-details" role="tabpanel">
                             <div class="p-4 text-body">
-                                <form action="{{ route('user.update', $user->id) }}" method="POST"
-                                    class="form-horizontal" enctype="multipart/form-data">
+                                <form action="{{ route('user.updateFrontend', ['id' => $user->id]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
 

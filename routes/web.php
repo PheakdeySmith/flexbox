@@ -63,6 +63,7 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::put('/user/update/{id}', [UserController::class, 'updateFrontend'])->name('user.updateFrontend');
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
     Route::get('/movie', [FrontendController::class, 'movie'])->name('frontend.movie');
     Route::get('/tv-serie', [FrontendController::class, 'tvSerie'])->name('frontend.tvSerie');

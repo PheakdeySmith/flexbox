@@ -194,6 +194,53 @@ class UserController extends Controller
         }
     }
 
+    public function updateFrontend(Request $request, $id)
+{
+    try {
+        // Find the user or fail
+        $user = User::findOrFail($id);
+
+        // Validate the input data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        // Check if current password is provided and new password fields are filled
+        if ($request->filled('password')) {
+            // Ensure both new_password and new_password_confirmation are filled
+            if (!$request->filled('new_password') || !$request->filled('new_password_confirmation')) {
+                return redirect()->back()->with('error', 'Both new password and confirmation are required.');
+            }
+
+            // Validate the current password
+            if (!Hash::check($request->password, $user->password)) {
+                return redirect()->back()->with('error', 'The current password is incorrect.');
+            }
+
+            // Validate new password and confirmation
+            $request->validate([
+                'new_password' => 'required|min:6',
+                'new_password_confirmation' => 'required|same:new_password',
+            ]);
+
+            $user->password = Hash::make($request->new_password);
+        }
+
+        // Update basic user information
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->route('frontend.account')->with('success', 'User updated successfully.');
+    } catch (\Exception $e) {
+        Log::error('Error updating user: ' . $e->getMessage());
+        return redirect()->back()->withErrors(['error' => 'An unexpected error occurred. Please try again.']);
+    }
+}
+
+
     public function destroy($id)
     {
         if (!auth()->user()->hasRole('admin')) {
