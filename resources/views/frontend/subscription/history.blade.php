@@ -139,17 +139,6 @@
                     </div>
                 @endif
 
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Need Help?</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>If you have any questions about your subscriptions, please contact our support team.</p>
-                        <div class="d-grid">
-                            <a href="#" class="btn btn-outline-primary">Contact Support</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
       </div>

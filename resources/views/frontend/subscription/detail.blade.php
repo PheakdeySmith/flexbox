@@ -145,18 +145,6 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h4>Need Help?</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>If you have any questions about your subscription, please contact our support team.</p>
-                        <div class="d-grid gap-2">
-                            <a href="#" class="btn btn-primary">Contact Support</a>
-                            <a href="{{ route('frontend.subscriptionHistory') }}" class="btn btn-outline-primary">View All Subscriptions</a>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
