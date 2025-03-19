@@ -18,6 +18,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $roles = Role::all();
 
         // Handle search functionality
@@ -48,6 +51,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         return view('backend.user.create');
     }
 
@@ -56,12 +62,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Validate the incoming data
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required|exists:roles,name',  // Validate role name exists in the roles table
+            'role' => 'required|exists:roles,id',  // Validate role ID exists in the roles table
             'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',  // Validate image
         ]);
 
@@ -69,7 +78,7 @@ class UserController extends Controller
         $imagePath = null;
         if ($request->hasFile('user_profile')) {
             // Store the image in the public disk
-            $imagePath = $request->file('user_profile')->store('profile-photos', 'public');
+            $imagePath = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
         }
 
         // Create the user record in the database
@@ -80,8 +89,8 @@ class UserController extends Controller
             'user_profile' => $imagePath,  // Store image path if exists
         ]);
 
-        // Assign the role to the user
-        $user->assignRole($request->role);
+        $role = Role::findById($request->role);
+        $user->assignRole($role->name);
 
         // Redirect back with success message
         return redirect()->route('user.index')->with('success', 'User created successfully.');
@@ -93,6 +102,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $user = User::findOrFail($id);
         return view('backend.user.show', compact('user'));
     }
@@ -135,7 +147,7 @@ class UserController extends Controller
             $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
-                'role' => 'required|exists:roles,name',
+                'role' => 'required|exists:roles,id',
                 'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
             ]);
 
@@ -160,7 +172,7 @@ class UserController extends Controller
                     Storage::disk('public')->delete($user->user_profile);
                 }
 
-                $user->user_profile = $request->file('user_profile')->store('profile-photos', 'public');
+                $user->user_profile = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
             }
 
             // Update basic user information
@@ -169,8 +181,10 @@ class UserController extends Controller
                 'email' => $request->email,
             ]);
 
-            // Update role
-            $user->syncRoles([$request->role]);
+            // Update role - first remove existing roles then assign new role
+            $user->syncRoles([]);  // Remove all current roles
+            $role = Role::findById($request->role);
+            $user->assignRole($role);
 
             $redirectRoute = $request->has('from_frontend') ? 'frontend.account' : 'user.index';
             return redirect()->route($redirectRoute)->with('success', 'User updated successfully.');
@@ -182,6 +196,9 @@ class UserController extends Controller
 
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $user = User::findOrFail($id);
 
         if ($user->user_profile) {

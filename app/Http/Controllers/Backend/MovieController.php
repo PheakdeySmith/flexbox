@@ -28,6 +28,9 @@ class MovieController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movies = Movie::latest()->get();
         return view('backend.movie.index', compact('movies'));
     }
@@ -39,6 +42,9 @@ class MovieController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         return view('backend.movie.create');
     }
 
@@ -50,6 +56,9 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $validator = Validator::make($request->all(), [
             'tmdb_id' => 'nullable|integer|unique:movies',
             'title' => 'required|string|max:255',
@@ -295,6 +304,9 @@ class MovieController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
         return view('backend.movie.show', compact('movie'));
     }
@@ -307,6 +319,9 @@ class MovieController extends Controller
      */
     public function edit($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movie = Movie::with(['actors', 'directors', 'genres'])->findOrFail($id);
 
         // Get counts for featured movies
@@ -335,6 +350,9 @@ class MovieController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movie = Movie::findOrFail($id);
 
         // Check featured limits only if the movie isn't already featured
@@ -399,6 +417,9 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movie = Movie::findOrFail($id);
         $movie->delete();
 

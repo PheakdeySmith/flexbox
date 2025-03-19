@@ -30,6 +30,10 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
+
         try {
             // Get counts for main stats with default values for empty DB
             $totalUsers = User::count() ?: 0;
@@ -126,6 +130,9 @@ class DashboardController extends Controller
      */
     private function getMonthlyData($model, $sumField = null, Carbon $startDate)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         try {
             $query = $model::query()
                 ->where('created_at', '>=', $startDate);
@@ -184,6 +191,9 @@ class DashboardController extends Controller
      */
     private function getSubscriptionPlanDistribution()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         try {
             $plans = SubscriptionPlan::withCount('subscriptions')->get();
 

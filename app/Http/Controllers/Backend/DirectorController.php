@@ -16,6 +16,9 @@ class DirectorController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $query = Director::query();
 
         // Search functionality (optional)
@@ -40,6 +43,9 @@ class DirectorController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movies = Movie::all();
         return view('backend.director.create', compact('movies'));
     }
@@ -49,6 +55,9 @@ class DirectorController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
@@ -89,6 +98,9 @@ class DirectorController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $director = Director::with('movies')->findOrFail($id);
         return view('backend.director.show', compact('director'));
     }
@@ -98,6 +110,9 @@ class DirectorController extends Controller
      */
     public function edit($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $director = Director::findOrFail($id);
         $movies = Movie::all();
         return view('backend.director.edit', compact('director', 'movies'));
@@ -108,6 +123,9 @@ class DirectorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $director = Director::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -153,6 +171,9 @@ class DirectorController extends Controller
      */
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $director = Director::findOrFail($id);
 
         // Delete the profile photo if it exists

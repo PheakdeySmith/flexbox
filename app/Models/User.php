@@ -50,23 +50,6 @@ class User extends Authenticatable
     }
 
     /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($user) {
-            // Assign default 'user' role to new users if they don't have a role
-            if (!$user->hasRole('admin') && !$user->hasRole('subscriber') && !$user->hasRole('member')) {
-                $user->assignRole('user');
-            }
-        });
-    }
-
-    /**
      * Get the user's profile photo URL.
      *
      * @return string|null

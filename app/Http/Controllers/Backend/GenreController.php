@@ -15,6 +15,9 @@ class GenreController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $genres = Genre::latest()->get();
         return view('backend.genre.index', compact('genres'));
     }
@@ -26,6 +29,9 @@ class GenreController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // This method is not needed as we're using a modal for creation
         return redirect()->route('genre.index');
     }
@@ -38,6 +44,9 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'name' => 'required|string|max:255|unique:genres',
             'slug' => 'required|string|max:255|unique:genres',
@@ -60,6 +69,9 @@ class GenreController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $genre = Genre::with('movies')->findOrFail($id);
         return view('backend.genre.show', compact('genre'));
     }
@@ -72,6 +84,9 @@ class GenreController extends Controller
      */
     public function edit($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // This method is not needed as we're using a modal for editing
         return redirect()->route('genre.index');
     }
@@ -85,6 +100,9 @@ class GenreController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $genre = Genre::findOrFail($id);
 
         $request->validate([
@@ -109,6 +127,9 @@ class GenreController extends Controller
      */
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $genre = Genre::findOrFail($id);
         $genre->delete();
 

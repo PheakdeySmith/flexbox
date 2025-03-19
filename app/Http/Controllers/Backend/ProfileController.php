@@ -18,6 +18,9 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $user = $request->user();
         return view('backend.profile.edit', [
             'user' => $user,
@@ -29,6 +32,9 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -45,6 +51,9 @@ class ProfileController extends Controller
      */
     public function updatePhoto(Request $request): RedirectResponse
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_profile' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
@@ -73,6 +82,9 @@ class ProfileController extends Controller
      */
     public function removePhoto(Request $request): RedirectResponse
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $user = $request->user();
 
         // Delete profile photo if exists
@@ -95,6 +107,9 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);

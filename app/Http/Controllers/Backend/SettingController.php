@@ -15,6 +15,9 @@ class SettingController extends Controller
      */
     public function edit()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $settings = Setting::getAllSettings();
         return view('backend.settings.edit', compact('settings'));
     }
@@ -24,6 +27,9 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         try {
             $request->validate([
                 'site_name' => 'nullable|string|max:255',
