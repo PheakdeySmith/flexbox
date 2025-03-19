@@ -84,7 +84,8 @@ class FrontendController extends Controller
 
     public function detail($id = null)
     {
-        $playlists = Playlist::all();
+        $userId = Auth::id();
+        $playlists = Playlist::where('user_id', $userId)->get();
         $recommendedMovies = Movie::where('status', 'active')
             ->where(function ($query) {
                 $query->where('is_free', true)
