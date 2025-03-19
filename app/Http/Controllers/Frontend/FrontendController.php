@@ -294,7 +294,7 @@ class FrontendController extends Controller
 
     public function playlistDetail($id)
     {
-        $playlist = Playlist::findOrFail($id);
+        $playlists = Playlist::where('user_id', $userId)->get();
         return view('frontend.watchlist.playlist_detail', compact('playlist'));
     }
 
