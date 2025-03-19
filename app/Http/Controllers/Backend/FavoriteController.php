@@ -59,6 +59,15 @@ class FavoriteController extends Controller
             ->where('movie_id', $movieId)
             ->first();
 
+        if ($favorite) {
+            return redirect()->route('favorite.create')->with('error', 'Movie already in favorites.');
+        }
+
+        $favorite = Favorite::create([
+            'user_id' => $userId,
+            'movie_id' => $movieId,
+        ]);
+
         return redirect()->route('favorite.index')->with('success', 'Favorite created successfully.');
     }
 
