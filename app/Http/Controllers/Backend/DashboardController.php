@@ -85,7 +85,7 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            return view('backend.dashbaord.index', compact(
+            return view('backend.dashboard.index', compact(
                 'totalUsers',
                 'totalMovies',
                 'totalRevenue',
