@@ -317,14 +317,7 @@
                                                                 value="{{ old('trailer_url', $movie->trailer_url) }}"
                                                                 placeholder="Enter trailer URL (YouTube, Vimeo, etc.)">
                                                         </div>
-                                                        @if ($movie->trailer_url)
-                                                            <div class="mt-2">
-                                                                <button type="button" class="btn btn-sm btn-outline-info"
-                                                                    id="previewTrailerBtn">
-                                                                    <i class="fas fa-play-circle mr-1"></i> Preview Trailer
-                                                                </button>
-                                                            </div>
-                                                        @endif
+                                                        
                                                     </div>
 
                                                 <div class="form-group">
@@ -339,13 +332,7 @@
                                                             value="{{ old('video_url', $movie->video_url) }}" placeholder="Enter full movie/episode URL (YouTube)">
                                                     </div>
                                                     <small class="form-text text-muted">Enter the full YouTube URL for streaming the movie</small>
-                                                    @if($movie->video_url)
-                                                    <div class="mt-2">
-                                                        <button type="button" class="btn btn-sm btn-outline-info" id="previewVideoBtn">
-                                                            <i class="fas fa-play-circle mr-1"></i> Preview Video
-                                                        </button>
-                                                    </div>
-                                                    @endif
+
                                                 </div>
                                             </div>
                                         </div>

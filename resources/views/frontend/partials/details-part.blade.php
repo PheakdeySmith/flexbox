@@ -50,7 +50,7 @@
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
-                                    <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
+                                    <ul class="list-inline p-0 share-icons music-play-lists mb-n2  me-2">
                                         <form id="watchlist-form-{{ $movie->id }}"
                                             action="{{ route('watchlist.store') }}" method="POST">
                                             @csrf
@@ -65,15 +65,15 @@
                                                 <i class="fa-solid fa-bookmark"></i>
                                             </span>
                                         </li>
+                                        <li><span><i class="fa-solid fa-heart"></i></span></li>
 
-                                    </ul>
-                                    <ul class="list-inline p-0 share-icons music-play-lists mb-n2 mx-n2">
                                         <li onclick="openModal()" class="watchlist-btn" data-bs-toggle="modal"
                                             data-bs-target="#showPlaylist" title="Add to Playlist">
                                             <span class="btn-inner">
                                                 <i class="fa-solid fa-plus"></i>
                                             </span>
                                         </li>
+
                                     </ul>
 
                                     @if (auth()->check())
