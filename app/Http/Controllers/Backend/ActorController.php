@@ -19,6 +19,9 @@ class ActorController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $query = Actor::query();
 
         // Search functionality
@@ -45,6 +48,9 @@ class ActorController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         return view('backend.actor.create');
     }
 
@@ -56,6 +62,9 @@ class ActorController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
@@ -98,6 +107,9 @@ class ActorController extends Controller
      */
     public function show($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $actor = Actor::with('movies')->findOrFail($id);
         return view('backend.actor.show', compact('actor'));
     }
@@ -110,6 +122,9 @@ class ActorController extends Controller
      */
     public function edit($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $actor = Actor::findOrFail($id);
         $movies = Movie::all();
         return view('backend.actor.edit', compact('actor', 'movies'));
@@ -124,6 +139,9 @@ class ActorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // If actor_id is provided in the request, use it instead of the route parameter
         $actorId = $request->actor_id ?? $id;
         $actor = Actor::findOrFail($actorId);
@@ -168,6 +186,9 @@ class ActorController extends Controller
      */
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $actor = Actor::findOrFail($id);
 
         // Delete the actor record

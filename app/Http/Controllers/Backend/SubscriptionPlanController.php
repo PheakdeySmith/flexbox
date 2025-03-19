@@ -14,6 +14,9 @@ class SubscriptionPlanController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $plans = SubscriptionPlan::latest()->paginate(10);
         return view('backend.subscription_plan.index', compact('plans'));
     }
@@ -23,6 +26,9 @@ class SubscriptionPlanController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         return view('backend.subscription_plan.create');
     }
 
@@ -85,6 +91,9 @@ class SubscriptionPlanController extends Controller
      */
     public function show(SubscriptionPlan $subscriptionPlan)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $subscriptionPlan->load(['subscriptions' => function($query) {
             $query->with('user')->latest()->take(10);
         }]);
@@ -104,6 +113,9 @@ class SubscriptionPlanController extends Controller
      */
     public function edit(SubscriptionPlan $subscriptionPlan)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Convert features array to string for textarea
         if (is_array($subscriptionPlan->features)) {
             $subscriptionPlan->features_text = implode("\n", $subscriptionPlan->features);
@@ -119,6 +131,9 @@ class SubscriptionPlanController extends Controller
      */
     public function update(Request $request, SubscriptionPlan $subscriptionPlan)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         try {
             $request->validate([
                 'name' => 'required|string|max:255',
@@ -173,6 +188,9 @@ class SubscriptionPlanController extends Controller
      */
     public function destroy(SubscriptionPlan $subscriptionPlan)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Check if the plan has active subscriptions
         $hasActiveSubscriptions = $subscriptionPlan->subscriptions()->active()->exists();
 
@@ -192,6 +210,9 @@ class SubscriptionPlanController extends Controller
      */
     public function toggleActive(SubscriptionPlan $subscriptionPlan)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $subscriptionPlan->update([
             'is_active' => !$subscriptionPlan->is_active,
         ]);
