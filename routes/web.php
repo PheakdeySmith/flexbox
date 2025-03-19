@@ -91,6 +91,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscription/cancel/{id}', [FrontendSubscriptionController::class, 'cancel'])->name('frontend.cancelSubscription');
     Route::get('/subscription/history', [FrontendSubscriptionController::class, 'history'])->name('frontend.subscriptionHistory');
 
+<<<<<<< HEAD
+=======
+// Custom Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+});
+
+
+
+    
+Route::middleware('auth')->group(function () {
+>>>>>>> origin/main
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/account', [FrontendController::class, 'account'])->name('frontend.account');
     Route::get('/watchlist', [FrontendController::class, 'watchlist'])->name('frontend.watchlist');
