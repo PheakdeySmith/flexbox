@@ -88,10 +88,11 @@
 
                         @if($subscription->status === 'active')
                             <div class="mt-4">
-                                <form action="{{ route('frontend.cancelSubscription', $subscription->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this subscription?');">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger">Cancel Subscription</button>
-                                </form>
+                                <button href="#" class="btn btn-primary btn-remove"
+                                    data-id="{{ $subscription->id }}"
+                                    data-url="{{ route('frontend.cancelSubscription', $subscription->id) }}">
+                                    Cancel Subscription
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -196,3 +197,55 @@
       </div>
     </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-remove').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const subscriptionId = this.getAttribute('data-id');
+                const cancelUrl = this.getAttribute('data-url');
+                const item = this.closest('.block-images');
+
+                Swal.fire({
+                    title: 'Cancel Subscription?',
+                    text: 'Are you sure you want to cancel this subscription?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        // Create a form dynamically
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = cancelUrl;
+                        form.style.display = 'none';
+
+                        // CSRF Token and Cancel Method
+                        form.appendChild(createInput('_token', '{{ csrf_token() }}'));
+                        form.appendChild(createInput('_method', 'POST'));
+
+                        document.body.appendChild(form);
+                        form.submit();
+
+                        // Remove item visually
+                        item.style.transition = 'all 0.4s ease';
+                        item.style.opacity = '0';
+                        setTimeout(() => item.remove(), 400);
+                    }
+                });
+            });
+        });
+    });
+
+    // Function to create hidden input elements
+    function createInput(name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        return input;
+    }
+</script>
