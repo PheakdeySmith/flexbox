@@ -167,47 +167,6 @@
             <!-- /.card -->
 
             <!-- Recent Reviews -->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-star mr-1"></i>
-                  Recent Reviews
-                </h3>
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                @forelse($recentReviews as $review)
-                <div class="post">
-                  <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="{{ $review->user->user_profile ?? asset('AdminLTE/dist/img/user2-160x160.jpg') }}" alt="User Image">
-                    <span class="username">
-                      <a href="#">{{ $review->user->name }}</a>
-                    </span>
-                    <span class="description">Reviewed {{ $review->movie->title }} - {{ $review->created_at->diffForHumans() }}</span>
-                  </div>
-                  <!-- /.user-block -->
-                  <p>{{ Str::limit($review->content, 150) }}</p>
-                  <p>
-                    <span class="float-right">
-                      <i class="fas fa-star text-warning"></i> {{ $review->rating }}/5
-                    </span>
-                  </p>
-                </div>
-                <hr>
-                @empty
-                <div class="text-center">
-                  <p class="text-muted">No recent reviews available</p>
-                </div>
-                @endforelse
-              </div>
-            </div>
             <!-- /.card -->
           </section>
           <!-- /.Left col -->
