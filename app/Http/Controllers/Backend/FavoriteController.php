@@ -59,7 +59,7 @@ class FavoriteController extends Controller
             ->where('movie_id', $movieId)
             ->first();
 
-        return response()->json(['message' => 'Added to favorites', 'status' => 'added', 'favorite_id' => $newFavorite->id], 201);
+        return redirect()->route('favorite.index')->with('success', 'Favorite created successfully.');
     }
 
 

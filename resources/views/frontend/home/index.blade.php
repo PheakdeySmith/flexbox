@@ -85,17 +85,6 @@
                                                 </div>
                                             </div>
                                             <div class="block-social-info align-items-center">
-                                                <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
-
-                                                    @if (auth()->check())
-                                                        <li
-                                                            class="share position-relative d-flex align-items-center text-center mb-0">
-                                                            <span class="w-100 h-100 d-inline-block bg-transparent">
-                                                                <i class="fa-regular fa-heart"></i>
-                                                            </span>
-                                                        </li>
-                                                    @endif
-                                                </ul>
                                                 <div class="iq-button">
                                                     <a href="{{ route('frontend.detail', $movie->id) }}"
                                                         class="btn text-uppercase position-relative rounded-circle">
