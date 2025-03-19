@@ -43,30 +43,34 @@ class FavoriteController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
 
         $request->validate([
             'movie_id' => 'required|exists:movies,id',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         $userId = Auth::id();
         $movieId = $request->movie_id;
 
-        // Check if the movie is already in favorites
-        $favorite = Favorite::where('user_id', $userId)
-            ->where('movie_id', $movieId)
-            ->first();
 
-        if ($favorite) {
-            return redirect()->route('favorite.create')->with('error', 'Movie already in favorites.');
+        $exists = Favorite::where('user_id', $request->user_id)
+            ->where('movie_id', $request->movie_id)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->with('info', 'This movie is already in your favorite.');
         }
+
 
         $favorite = Favorite::create([
             'user_id' => $userId,
             'movie_id' => $movieId,
+
         ]);
+
+        if ($request->source === 'frontend') {
+            return redirect()->route('frontend.watchlist')->with('success', 'Movie added to your favorite successfully.');
+        }
 
         return redirect()->route('favorite.index')->with('success', 'Favorite created successfully.');
     }

@@ -49,6 +49,13 @@
                                         {{ \Carbon\Carbon::parse($movie->release_date)->format('F j, Y') }}
                                     </span>
                                 </div>
+                                <form id="favorite-form-{{ $movie->id }}"
+                                    action="{{ route('favorite.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                                    <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+                                    <input type="hidden" name="source" value="frontend">
+                                </form>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
                                     <ul class="list-inline p-0 share-icons music-play-lists mb-n2  me-2">
                                         <form id="watchlist-form-{{ $movie->id }}"
@@ -65,7 +72,14 @@
                                                 <i class="fa-solid fa-bookmark"></i>
                                             </span>
                                         </li>
-                                        <li><span><i class="fa-solid fa-heart"></i></span></li>
+
+
+                                        <li onclick="document.getElementById('favorite-form-{{ $movie->id }}').submit()"
+                                            class="watchlist-btn" data-bs-toggle="tooltip" title="Add to Favorite">
+                                            <span class="btn-inner">
+                                                <i class="fa-solid fa-heart"></i>
+                                            </span>
+                                        </li>
 
                                         <li onclick="openModal()" class="watchlist-btn" data-bs-toggle="modal"
                                             data-bs-target="#showPlaylist" title="Add to Playlist">
