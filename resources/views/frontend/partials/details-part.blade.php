@@ -57,7 +57,8 @@
                                     <input type="hidden" name="source" value="frontend">
                                 </form>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-4">
-                                    <ul class="list-inline p-0 share-icons music-play-lists mb-n2  me-2">
+
+<ul class="list-inline p-0 share-icons music-play-lists mb-n2  me-2">
                                         <form id="watchlist-form-{{ $movie->id }}"
                                             action="{{ route('watchlist.store') }}" method="POST">
                                             @csrf
@@ -107,7 +108,7 @@
                                             }
                                         @endphp
 
-                                        @if (!$hasBoughtMovie && !$movie->is_free)
+@if (!$hasBoughtMovie && !$movie->is_free)
                                             <div class="iq-button">
                                                 <a href="{{ route('frontend.addToCart', $movie->id) }}"
                                                     class="btn btn-sm" id="button-addon2">Add to Cart</a>
@@ -140,7 +141,7 @@
                                         @endif
                                     @endif
 
-                                </div>
+</div>
                                 <ul class="iq-blogtag list-unstyled d-flex flex-wrap align-items-center gap-3 p-0">
                                     <li class="iq-tag-title text-primary mb-0">
                                         <i class="fa fa-tags" aria-hidden="true"></i>
