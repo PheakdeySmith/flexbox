@@ -159,11 +159,11 @@
                                             <div class="block-social-info align-items-center">
                                                 <ul class="p-0 m-0 d-flex gap-2 music-play-lists">
                                                     @if(auth()->check())
-                                                        <li class="share position-relative d-flex align-items-center text-center mb-0">
+                                                        {{-- <li class="share position-relative d-flex align-items-center text-center mb-0">
                                                             <span class="w-100 h-100 d-inline-block bg-transparent">
                                                                 <i class="fa-regular fa-heart"></i>
                                                             </span>
-                                                        </li>
+                                                        </li> --}}
                                                     @endif
                                                 </ul>
                                                 <div class="iq-button">
