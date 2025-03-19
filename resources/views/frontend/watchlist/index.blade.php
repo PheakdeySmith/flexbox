@@ -185,7 +185,7 @@
                                                 <div class="watchlist-warpper card-hover-style-two">
                                                     <div class="block-images position-relative w-100">
                                                         <div class="img-box">
-                                                            <a href="https://templates.iqonic.design/streamit-dist/frontend/html/watchlist-detail.html"
+                                                            <a href="{{ route('frontend.detail', $favorite->movie->id) }}"
                                                                 class="position-absolute top-0 bottom-0 start-0 end-0"></a>
                                                             <img src="{{ $favorite->movie->backdrop_url }}"
                                                                 alt="movie-card"
@@ -194,7 +194,7 @@
                                                         <div class="card-description">
                                                             <h5 class="text-capitalize fw-500">
                                                                 <a
-                                                                    href="https://templates.iqonic.design/streamit-dist/frontend/html/playlist.html">{{ $favorite->movie->title }}</a>
+                                                                    href="{{ route('frontend.detail', $favorite->movie->id) }}">{{ $favorite->movie->title }}</a>
                                                             </h5>
                                                             <div class="d-flex align-items-center gap-3">
                                                                 <div class="d-flex align-items-center gap-1 font-size-12">
