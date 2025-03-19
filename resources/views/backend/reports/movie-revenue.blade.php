@@ -119,11 +119,11 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="card-footer clearfix">
+                                {{-- <div class="card-footer clearfix">
                                     <div class="d-flex justify-content-center">
                                         {{ $movieRevenueData->appends(request()->except('page'))->links() }}
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
