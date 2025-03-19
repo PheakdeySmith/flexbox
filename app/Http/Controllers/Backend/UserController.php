@@ -204,6 +204,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'user_profile' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
         ]);
 
         // Check if current password is provided and new password fields are filled
@@ -225,6 +226,14 @@ class UserController extends Controller
             ]);
 
             $user->password = Hash::make($request->new_password);
+        }
+
+        if ($request->hasFile('user_profile')) {
+            if ($user->user_profile && Storage::disk('public')->exists($user->user_profile)) {
+                Storage::disk('public')->delete($user->user_profile);
+            }
+
+            $user->user_profile = Storage::url($request->file('user_profile')->store('profile-photos', 'public'));
         }
 
         // Update basic user information

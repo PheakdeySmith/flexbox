@@ -312,6 +312,10 @@
                                         <input type="email" name="email" value="{{ $user->email }}"
                                             class="form-control" required="required">
                                     </div>
+                                    <div class="form-group mb-5">
+                                        <label class="mb-2">Profile Image</label>
+                                        <input type="file" name="user_profile" class="form-control">
+                                    </div>
                                     <div id="profile-edit">
                                         <h2>Password Change</h2>
                                         <!-- Your profile edit form here -->
