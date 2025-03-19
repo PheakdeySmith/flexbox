@@ -185,7 +185,7 @@
                                                         </li>
                                                     @endif --}}
 
-                                                    <a href="{{ route('favorite.store') }}"
+                                                    <a href=""
                                                         class="btn btn-primary btn-sm favorite-btn"
                                                         data-movie-id="{{ $movie->id }}"
                                                         style="padding: 2px 7px; font-size: 12px; margin-left: 103px;">

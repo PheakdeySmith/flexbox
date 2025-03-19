@@ -310,15 +310,11 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fab fa-youtube"></i></span>
                                                         </div>
-                                            <input type="url" class="form-control" id="trailer_url" name="trailer_url"
+                                                    <input type="url" class="form-control" id="trailer_url" name="trailer_url"
                                                             value="{{ old('trailer_url') }}" placeholder="Enter trailer URL (YouTube, Vimeo, etc.)">
-                                                        <div class="input-group-append">
-                                                            <button type="button" class="btn btn-info" id="preview-trailer-btn" title="Preview Trailer">
-                                                                <i class="fas fa-play"></i> Preview
-                                                            </button>
-                                                        </div>
+                                                        
                                                     </div>
-                                                    <div id="trailer-preview-container" class="mt-3 d-none">
+                                                    {{-- <div id="trailer-preview-container" class="mt-3 d-none">
                                                         <div class="card">
                                                             <div class="card-body p-0">
                                                                 <div class="embed-responsive embed-responsive-16by9">
@@ -331,7 +327,7 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
 
