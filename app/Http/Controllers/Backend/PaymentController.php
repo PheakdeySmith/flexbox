@@ -17,6 +17,9 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $status = $request->input('status');
         $type = $request->input('type');
         $query = Payment::with(['user', 'detail.payable']);
@@ -88,6 +91,9 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $payment->load(['user', 'detail.payable']);
 
         return view('backend.payments.show', compact('payment'));
@@ -98,6 +104,9 @@ class PaymentController extends Controller
      */
     public function updateStatus(Request $request, Payment $payment)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'status' => 'required|in:pending,completed,failed,refunded',
         ]);
@@ -152,6 +161,9 @@ class PaymentController extends Controller
      */
     public function dashboard(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Get date range from request or use defaults
         $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : Carbon::now()->subDays(30);
         $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : Carbon::now();
@@ -300,6 +312,9 @@ class PaymentController extends Controller
      */
     public function userHistory(User $user)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $payments = Payment::with(['detail.payable'])
             ->where('user_id', $user->id)
             ->latest()
@@ -330,6 +345,9 @@ class PaymentController extends Controller
      */
     private function getMonthlyRevenueData($startDate, $endDate)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $data = [];
 
         // Determine the number of months to display based on date range
@@ -378,6 +396,9 @@ class PaymentController extends Controller
      */
     private function getWeeklyRevenueData($startDate, $endDate)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $data = [];
 
         // Determine the number of days to display based on date range

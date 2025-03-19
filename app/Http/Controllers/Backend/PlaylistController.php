@@ -15,6 +15,9 @@ class PlaylistController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $playlists = Playlist::paginate(15);
         return view('backend.playlist.index', compact('playlists'));
     }
@@ -24,6 +27,9 @@ class PlaylistController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.playlist.create', compact('users', 'movies'));
@@ -34,6 +40,7 @@ class PlaylistController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -64,6 +71,9 @@ class PlaylistController extends Controller
      */
     public function show(string $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $playlist = Playlist::findOrFail($id);
         return view('backend.playlist.show', compact('playlist'));
     }
@@ -73,6 +83,9 @@ class PlaylistController extends Controller
      */
     public function edit(Playlist $playlist)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $movies = Movie::orderBy('title')->get();
         return view('backend.playlist.edit', compact('playlist', 'movies'));
     }
@@ -82,6 +95,9 @@ class PlaylistController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',

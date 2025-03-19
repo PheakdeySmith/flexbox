@@ -17,6 +17,9 @@ class WatchlistController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $watchlists = Watchlist::with(['user', 'movie'])->latest()->paginate(10);
         return view('backend.watchlist.index', compact('watchlists'));
     }
@@ -26,6 +29,9 @@ class WatchlistController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.watchlist.create', compact('users', 'movies'));
@@ -68,6 +74,9 @@ class WatchlistController extends Controller
      */
     public function show(Watchlist $watchlist)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $watchlist->load(['user', 'movie']);
         return view('backend.watchlist.show', compact('watchlist'));
     }
@@ -77,6 +86,9 @@ class WatchlistController extends Controller
      */
     public function edit(Watchlist $watchlist)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::all();
         $movies = Movie::all();
         return view('backend.watchlist.edit', compact('watchlist', 'users', 'movies'));
@@ -87,6 +99,9 @@ class WatchlistController extends Controller
      */
     public function update(Request $request, Watchlist $watchlist)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'movie_id' => 'required|exists:movies,id',
@@ -128,6 +143,9 @@ class WatchlistController extends Controller
      */
     public function toggle(Request $request, Movie $movie)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $user = Auth::user();
 
         $watchlistItem = Watchlist::where('user_id', $user->id)

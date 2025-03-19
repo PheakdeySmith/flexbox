@@ -20,6 +20,9 @@ class SubscriptionController extends Controller
      */
     public function index(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $query = Subscription::with(['user', 'plan']);
 
         // Filter by status if provided
@@ -51,6 +54,9 @@ class SubscriptionController extends Controller
      */
     public function create()
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::orderBy('name')->get();
         $subscriptionPlans = SubscriptionPlan::active()->orderBy('name')->get();
         return view('backend.subscription.create', compact('users', 'subscriptionPlans'));
@@ -61,6 +67,9 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'subscription_plan_id' => 'required|exists:subscription_plans,id',
@@ -188,6 +197,9 @@ class SubscriptionController extends Controller
      */
     public function show(Subscription $subscription)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $subscription->load(['user', 'plan', 'payments']);
 
         // Get payment history
@@ -203,6 +215,9 @@ class SubscriptionController extends Controller
      */
     public function edit(Subscription $subscription)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $users = User::orderBy('name')->get();
         $subscriptionPlans = SubscriptionPlan::orderBy('name')->get();
         return view('backend.subscription.edit', compact('subscription', 'users', 'subscriptionPlans'));
@@ -213,6 +228,9 @@ class SubscriptionController extends Controller
      */
     public function update(Request $request, Subscription $subscription)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'subscription_plan_id' => 'required|exists:subscription_plans,id',
@@ -319,6 +337,9 @@ class SubscriptionController extends Controller
      */
     public function destroy(Subscription $subscription)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         // Check if the subscription has payments
         $hasPayments = Payment::where('subscription_id', $subscription->id)->exists();
 
@@ -384,6 +405,9 @@ class SubscriptionController extends Controller
      */
     public function extend(Request $request, Subscription $subscription)
     {
+        if (!auth()->user()->hasRole('admin')) {
+            return response()->view('frontend.404.index', [], 403);
+        }
         $request->validate([
             'days' => 'required|integer|min:1',
         ]);
