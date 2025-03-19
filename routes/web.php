@@ -91,6 +91,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscription/cancel/{id}', [FrontendSubscriptionController::class, 'cancel'])->name('frontend.cancelSubscription');
     Route::get('/subscription/history', [FrontendSubscriptionController::class, 'history'])->name('frontend.subscriptionHistory');
 
+});
+
 // Custom Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -98,8 +100,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 });
-
-
 
 
 Route::middleware('auth')->group(function () {
@@ -190,7 +190,3 @@ Route::middleware('auth')->group(function () {
     Route::get('/movies/{movie}/watch', [App\Http\Controllers\Frontend\MovieController::class, 'watch'])
         ->name('frontend.movies.watch');
 });
-
-// Demo routes for infinite scroll
-Route::get('/actor-demo', [FrontendController::class, 'actorDemo'])->name('frontend.actorDemo');
-Route::get('/director-demo', [FrontendController::class, 'directorDemo'])->name('frontend.directorDemo');
