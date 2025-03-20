@@ -43,6 +43,9 @@
     <!-- Custom Css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/custom.min.css">
 
+    <!-- Payment Methods Css -->
+    <link rel="stylesheet" href="{{ asset('frontend/assets/css/payment-methods.css') }}">
+
     <!-- Rtl Css -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/rtl.min.css">
 

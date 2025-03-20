@@ -1,0 +1,93 @@
+/* Payment Methods Styling */
+.payment-method-card {
+  display: block;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  background-color: #2a2a2a;
+  height: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.payment-method-card:hover {
+  border-color: #007bff;
+  background-color: #343434;
+  transform: translateY(-3px);
+}
+
+/* Selected payment method styling with bootstrap primary color */
+.payment-method-card.selected-payment {
+  background-color: rgb(229, 9, 20) !important;
+  border-color: rgb(229, 9, 20) !important;
+  transform: translateY(-3px);
+}
+
+.payment-method-card.selected-payment h5,
+.payment-method-card.selected-payment p {
+  color: white !important;
+}
+
+.payment-method-card.selected-payment .payment-icon {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.payment-radio {
+  position: absolute;
+  opacity: 0;
+}
+
+.payment-method-content {
+  position: relative;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.payment-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 30px;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.payment-icon.aba-pay {
+  background-color: #005792;
+}
+
+.payment-icon.khqr {
+  background-color: #d32f2f;
+}
+
+.payment-icon.credit-card {
+  background-color: #0277bd;
+}
+
+.payment-icon.paypal {
+  background-color: #1565c0;
+}
+
+/* Responsive adjustments */
+.payment-method-row .col-lg-12 {
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+@media (max-width: 767px) {
+  .payment-method-card {
+    margin-bottom: 20px;
+  }
+}
+
+/* Add more space between stacked payment methods */
+.payment-method-row .col-lg-12:not(:last-child) {
+  margin-bottom: 25px;
+}

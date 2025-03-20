@@ -103,7 +103,7 @@
             <li class="detail">DATE:<strong>{{ $order->created_at->format('F d, Y') }}</strong></li>
             <li class="detail">EMAIL:<strong>{{ $order->user->email }}</strong></li>
             <li class="detail">TOTAL:<strong>${{ $order->total_amount }}</strong></li>
-            <li class="detail">PAYMENT METHOD:<strong>{{ ucfirst($order->paymentDetail->payment->payment_method ?? 'N/A') }}</strong></li>
+            <li class="detail">PAYMENT METHOD:<strong>{{ ucwords(str_replace('_', ' ', $order->paymentDetail->payment->payment_method ?? 'N/A')) }}</strong></li>
           </ul>
         </div>
         <h5 class="order_details">Order Details</h5>
@@ -136,7 +136,7 @@
                   </tr>
                   <tr class="order_item">
                     <th>Payment method:</th>
-                    <td class="text-end">{{ ucfirst($order->paymentDetail->payment->payment_method ?? 'N/A') }}</td>
+                    <td class="text-end">{{ ucwords(str_replace('_', ' ', $order->paymentDetail->payment->payment_method ?? 'N/A')) }}</td>
                   </tr>
                   <tr>
                     <th>Total:</th>
