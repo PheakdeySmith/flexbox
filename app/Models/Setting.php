@@ -14,6 +14,10 @@ class Setting extends Model
         'logo',
         'apple_store_link',
         'google_play_link',
+        'twitter_link',
+        'facebook_link',
+        'instagram_link',
+        'whatsapp_link',
     ];
 
     /**

@@ -39,6 +39,10 @@ class SettingController extends Controller
                 'logo' => 'nullable|file|mimes:png,jpg,jpeg,gif,svg,webp|max:2048',
                 'apple_store_link' => 'nullable|url|max:255',
                 'google_play_link' => 'nullable|url|max:255',
+                'twitter_link' => 'nullable|url|max:255',
+                'facebook_link' => 'nullable|url|max:255',
+                'instagram_link' => 'nullable|url|max:255',
+                'whatsapp_link' => 'nullable|url|max:255',
             ]);
 
             $settings = Setting::getAllSettings();
@@ -105,6 +109,10 @@ class SettingController extends Controller
             $settings->copyright_text = $request->copyright_text;
             $settings->apple_store_link = $request->apple_store_link;
             $settings->google_play_link = $request->google_play_link;
+            $settings->twitter_link = $request->twitter_link;
+            $settings->facebook_link = $request->facebook_link;
+            $settings->instagram_link = $request->instagram_link;
+            $settings->whatsapp_link = $request->whatsapp_link;
 
             $settings->save();
 

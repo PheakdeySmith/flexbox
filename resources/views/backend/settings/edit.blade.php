@@ -139,7 +139,52 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Social Media Links</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="facebook_link">
+                                                        <i class="fab fa-facebook"></i> Facebook Link
+                                                    </label>
+                                                    <input type="url" class="form-control" id="facebook_link" name="facebook_link" value="{{ old('facebook_link', $settings->facebook_link) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="twitter_link">
+                                                        <i class="fab fa-twitter"></i> Twitter Link
+                                                    </label>
+                                                    <input type="url" class="form-control" id="twitter_link" name="twitter_link" value="{{ old('twitter_link', $settings->twitter_link) }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="instagram_link">
+                                                        <i class="fab fa-instagram"></i> Instagram Link
+                                                    </label>
+                                                    <input type="url" class="form-control" id="instagram_link" name="instagram_link" value="{{ old('instagram_link', $settings->instagram_link) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="whatsapp_link">
+                                                        <i class="fab fa-whatsapp"></i> WhatsApp Link
+                                                    </label>
+                                                    <input type="url" class="form-control" id="whatsapp_link" name="whatsapp_link" value="{{ old('whatsapp_link', $settings->whatsapp_link) }}">
+                                                    <small class="form-text text-muted">Format: https://wa.me/1234567890</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-primary">Save Settings</button>
                                 </div>
                             </form>
