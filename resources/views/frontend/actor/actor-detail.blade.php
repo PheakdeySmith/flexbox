@@ -39,8 +39,9 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-5">
                         <div class="cast-box position-relative">
-                            <img src="{{ $director->profile_photo ? $director->profile_photo : asset('frontend/assets/images/default-profile.png') }}" class="img-fluid"
-                                            alt="image" loading="lazy">
+                            <img src="{{ $director->profile_photo ? $director->profile_photo : asset('frontend/assets/images/default-profile.png') }}"
+                                class="img-fluid" alt="image" loading="lazy">
+
                             {{-- <ul class="p-0 m-0 list-unstyled widget_social_media position-absolute w-100 text-center">
                                 <li>
                                     <a href="#" class="position-relative">
@@ -241,10 +242,12 @@
                                                             <div class="cart-content">
                                                                 <div class="content-left w-100">
                                                                     <h5 class="iq-title text-capitalize">
-                                                                        <a href="">{{ Str::limit($movie->title, 15) }}</a>
+                                                                        <a
+                                                                            href="">{{ Str::limit($movie->title, 15) }}</a>
 
                                                                     </h5>
-                                                                    <div class="d-flex align-items-center justify-content-between my-2">
+                                                                    <div
+                                                                        class="d-flex align-items-center justify-content-between my-2">
                                                                         <div class="movie-time">
                                                                             <span
                                                                                 class="movie-time-text font-normal">{{ $movie->duration }}mins</span>
@@ -257,18 +260,22 @@
                                                                                     value="{{ auth()->id() }}">
                                                                                 <input type="hidden" name="movie_id"
                                                                                     value="{{ $movie->id }}">
-                                                                                <input type="hidden" name="source" value="frontend">
+                                                                                <input type="hidden" name="source"
+                                                                                    value="frontend">
                                                                                 <button type="submit"
                                                                                     class="watch-list-not border-0 bg-transparent">
                                                                                     <svg width="10" height="10"
                                                                                         viewBox="0 0 24 24" fill="none"
                                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                                         class="icon-10">
-                                                                                        <path d="M12 4V20M20 12H4" stroke="currentColor"
-                                                                                            stroke-width="2" stroke-linecap="round"
+                                                                                        <path d="M12 4V20M20 12H4"
+                                                                                            stroke="currentColor"
+                                                                                            stroke-width="2"
+                                                                                            stroke-linecap="round"
                                                                                             stroke-linejoin="round"></path>
                                                                                     </svg>
-                                                                                    <span class="watchlist-label"> Watchlist </span>
+                                                                                    <span class="watchlist-label">
+                                                                                        Watchlist </span>
                                                                                 </button>
                                                                             </form>
                                                                         </div>
