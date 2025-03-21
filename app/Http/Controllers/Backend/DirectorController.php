@@ -8,6 +8,7 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class DirectorController extends Controller
 {
@@ -61,7 +62,8 @@ class DirectorController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo_url' => 'nullable|string|url',
             'movies' => 'nullable|array',
             'movies.*' => 'exists:movies,id',
         ]);
@@ -73,10 +75,16 @@ class DirectorController extends Controller
                 ->with('error', 'There were errors in your submission.');
         }
 
-        // Handle the profile photo upload
+        // Handle the profile photo
         $profilePhotoPath = null;
+
+        // Check if a file was uploaded
         if ($request->hasFile('profile_photo')) {
             $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+        }
+        // If TMDB URL was provided, use it directly
+        elseif ($request->has('profile_photo_url') && !empty($request->profile_photo_url)) {
+            $profilePhotoPath = $request->profile_photo_url;
         }
 
         $director = Director::create([
@@ -131,7 +139,8 @@ class DirectorController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo_url' => 'nullable|string|url',
             'movies' => 'nullable|array',
             'movies.*' => 'exists:movies,id',
         ]);
@@ -145,11 +154,15 @@ class DirectorController extends Controller
 
         // Handle the profile photo update
         $profilePhotoPath = $director->profile_photo;
+
         if ($request->hasFile('profile_photo')) {
-            if ($director->profile_photo) {
+            // Only delete local files (not URLs)
+            if ($director->profile_photo && !filter_var($director->profile_photo, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete($director->profile_photo);
             }
             $profilePhotoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+        } elseif ($request->has('profile_photo_url') && !empty($request->profile_photo_url)) {
+            $profilePhotoPath = $request->profile_photo_url;
         }
 
         $director->update([
@@ -176,8 +189,8 @@ class DirectorController extends Controller
         }
         $director = Director::findOrFail($id);
 
-        // Delete the profile photo if it exists
-        if ($director->profile_photo) {
+        // Delete the profile photo if it exists and is local (not a URL)
+        if ($director->profile_photo && !filter_var($director->profile_photo, FILTER_VALIDATE_URL)) {
             Storage::disk('public')->delete($director->profile_photo);
         }
 

@@ -22,9 +22,9 @@
                             </div>
                         </div>
                         <div class="iq-button">
-                            <a href="https://templates.iqonic.design/streamit-dist/frontend/html/pricing-plan.html"
+                            <a href="{{ route('frontend.account') }}"
                                 class="btn text-uppercase position-relative">
-                                <span class="button-text">Subscription</span>
+                                <span class="button-text">Go to Profile</span>
                                 <i class="fa-solid fa-play"></i>
                             </a>
                         </div>

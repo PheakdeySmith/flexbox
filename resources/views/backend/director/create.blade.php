@@ -123,7 +123,7 @@
                                 </div>
                             </div>
 
-                            <form action="{{ route('director.store') }}" method="POST" id="directorForm">
+                            <form action="{{ route('director.store') }}" method="POST" id="directorForm" enctype="multipart/form-data">
                                 @csrf
 
                                 <div class="tab-content" id="directorTabContent">
@@ -229,14 +229,13 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="profile_photo">
-                                                        <i class="fas fa-image mr-1"></i> Profile Photo URL
+                                                        <i class="fas fa-image mr-1"></i> Profile Photo
                                                     </label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="fas fa-portrait"></i></span>
                                                         </div>
-                                                        <input type="text" class="form-control" id="profile_photo" name="profile_photo"
-                                                            value="{{ old('profile_photo') }}" placeholder="https://example.com/photo.jpg">
+                                                        <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/*">
                                                     </div>
                                                     <div id="profile-photo-preview" class="mt-2 text-center" style="display: none;">
                                                         <img src="" alt="Profile Preview" class="img-thumbnail" style="max-height: 200px;">
@@ -286,15 +285,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Preview profile photo when URL changes
-        document.getElementById('profile_photo').addEventListener('input', function() {
-            const photoUrl = this.value.trim();
+        // Preview profile photo when a file is selected
+        document.getElementById('profile_photo').addEventListener('change', function() {
+            const file = this.files[0];
             const previewContainer = document.getElementById('profile-photo-preview');
             const previewImg = previewContainer.querySelector('img');
 
-            if (photoUrl) {
-                previewImg.src = photoUrl;
-                previewContainer.style.display = 'block';
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
             } else {
                 previewImg.src = '';
                 previewContainer.style.display = 'none';
@@ -460,13 +463,32 @@
 
                 // Fill the form with director data
                 $('#name').val(directorName);
-                $('#profile_photo').val(profileUrl);
 
-                // Show profile photo preview
-                const previewContainer = document.getElementById('profile-photo-preview');
-                const previewImg = previewContainer.querySelector('img');
-                previewImg.src = profileUrl;
-                previewContainer.style.display = 'block';
+                // Automatically fetch the profile photo if available
+                if (profileUrl && profileUrl !== 'https://via.placeholder.com/185x278?text=No+Profile') {
+                    // Add hidden field to store the photo URL
+                    if (!$('#profile_photo_url').length) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            id: 'profile_photo_url',
+                            name: 'profile_photo_url',
+                            value: profileUrl
+                        }).appendTo('#directorForm');
+                    } else {
+                        $('#profile_photo_url').val(profileUrl);
+                    }
+
+                    // Show the preview of the profile photo
+                    const previewContainer = document.getElementById('profile-photo-preview');
+                    const previewImg = previewContainer.querySelector('img');
+                    previewImg.src = profileUrl;
+                    previewContainer.style.display = 'block';
+
+                    // Add helpful message
+                    if (!$('#photo-message').length) {
+                        $('#profile-photo-preview').after('<div id="photo-message" class="alert alert-info mt-2">Profile photo will be automatically downloaded from TMDB.</div>');
+                    }
+                }
 
                 // Fetch additional director details
                 fetchDirectorDetails(directorId);
